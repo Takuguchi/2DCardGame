@@ -319,6 +319,7 @@ GameObject:
   - component: {fileID: 5385820216612536597}
   - component: {fileID: 6133911190855834218}
   - component: {fileID: 68245383862483898}
+  - component: {fileID: 7056834461214822121}
   m_Layer: 5
   m_Name: Card
   m_TagString: Untagged
@@ -339,11 +340,11 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1597624738566237593}
-  - {fileID: 2476516256674260315}
-  - {fileID: 6065104153633619683}
-  - {fileID: 2097844565683260517}
-  - {fileID: 925992512852984307}
   - {fileID: 3587359820963685605}
+  - {fileID: 2097844565683260517}
+  - {fileID: 6065104153633619683}
+  - {fileID: 925992512852984307}
+  - {fileID: 2476516256674260315}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -371,6 +372,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29eadac8bb0e94940af8a6335f8583fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7056834461214822121
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3695390466116130217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 384f138b190b9ee4db151e79e5fc3821, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nameText: {fileID: 5557498066980609473}
+  hpText: {fileID: 4046769279172283315}
+  atText: {fileID: 4029502191121972764}
+  costText: {fileID: 4209412727570563509}
+  iconImage: {fileID: 1150543597661804438}
 --- !u!1 &7507088072568596548
 GameObject:
   m_ObjectHideFlags: 0
