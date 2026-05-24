@@ -12,9 +12,9 @@ public class CardController : MonoBehaviour
     CardModel model; // カードのデータを格納する変数
 
     // カードを生成したときに呼ばれるメソッド
-    public void Init()
+    public void Init(int cardID)
     {
-        model = new CardModel(); // カードのデータを生成
+        model = new CardModel(cardID); // カードのデータを生成
     }
     
 }
