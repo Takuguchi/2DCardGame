@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour
     {
         // カードのPrefabをCardController型としてインスタンス(生成)・親要素に任意のTransformを指定
         CardController card = Instantiate(cardPrefab, hand, false);
-        card.Init();    // CardControllerクラスのInit()メソッドを呼び出す→任意のカードデータの各種変数を取得
+        card.Init(1);    // CardControllerクラスのInit()メソッドを呼び出す→任意のカードデータの各種変数を取得
     }
 
 }

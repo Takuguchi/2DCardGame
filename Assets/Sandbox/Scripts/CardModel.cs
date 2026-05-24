@@ -13,19 +13,19 @@ public class CardModel
     public Sprite icon; // カードの絵柄
 
     // コンストラクタ
-    public CardModel()
+    public CardModel(int cardID)
     {
-        Debug.Log("CardModelのコンストラクタが呼ばれました");
-        Debug.Log($"1. 名前：{name}, HP：{hp}, 攻撃力：{at}, コスト：{cost}");
+        // Debug.Log("CardModelのコンストラクタが呼ばれました");
+        // Debug.Log($"1. 名前：{name}, HP：{hp}, 攻撃力：{at}, コスト：{cost}");
         // Card1のデータを入れ物(CardEntityクラス)に渡す
-        CardEntity cardEntity = Resources.Load<CardEntity>("CardEntityList/Card1");
+        CardEntity cardEntity = Resources.Load<CardEntity>("CardEntityList/Card" + cardID);
 
         // CardEntityのデータをCardModel(このクラス)の変数に代入
         name = cardEntity.name;
         hp = cardEntity.hp;
-        at = cardEntity.at; 
+        at = cardEntity.at;
         cost = cardEntity.cost;
         icon = cardEntity.icon;
-        Debug.Log($"2. 名前：{name}, HP：{hp}, 攻撃力：{at}, コスト：{cost}");
+        // Debug.Log($"2. 名前：{name}, HP：{hp}, 攻撃力：{at}, コスト：{cost}");
     }
 }
