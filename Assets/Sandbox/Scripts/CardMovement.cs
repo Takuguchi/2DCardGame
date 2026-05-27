@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 // カード側の動きを制御するクラス
 public class CardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
 {
-    Transform defaultParent; // カードの親の位置を保存する変数
+    public Transform defaultParent; // カードの親の位置を保存する変数
     
     // ドラッグ開始時に呼び出されるメソッド
     public void OnBeginDrag(PointerEventData eventData)
@@ -17,6 +17,9 @@ public class CardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
 
         // 親の親を、親に設定→カードの移動がスムーズになる
         transform.SetParent(defaultParent.parent, false);
+
+        // ドロップ先の判定をするため、カードのRaycastを無効にする
+        GetComponent<CanvasGroup>().blocksRaycasts = false; 
     }
     
     // カードをドラッグしている最中に呼び出されるメソッド
@@ -31,5 +34,8 @@ public class CardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
     {
         // カードの親をドラッグ開始時の親に設定→手札に戻る
         transform.SetParent(defaultParent, false);
+
+        // ドロップ先の判定をするため、カードのRaycastを有効にする
+        GetComponent<CanvasGroup>().blocksRaycasts = true;
     }
 }
