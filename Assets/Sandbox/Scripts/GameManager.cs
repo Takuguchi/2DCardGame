@@ -4,14 +4,21 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    // 手札にカードを生成
-
     [SerializeField] Transform playerHandTransform; // プレイヤーの手札のTransformを取得
     [SerializeField] CardController cardPrefab; // カードのPrefabをCardController型として取得
     void Start()
     {
-        CreateCard(playerHandTransform); // プレイヤーの手札にカードを生成
-        
+        StartGame(); // ゲーム開始時にStartGame()メソッドを呼び出す
+    }
+
+    // ゲーム開始時に呼ばれるメソッド
+    void StartGame()
+    {
+        // カードをそれぞれに3枚配る
+        for (int i = 0; i < 3; i++)
+        {
+            CreateCard(playerHandTransform); // プレイヤーの手札にカードを生成
+        }
     }
 
     // カードを生成するメソッド
