@@ -60,13 +60,14 @@ public class GameManager : MonoBehaviour
     void PlayerTurn()
     {
         Debug.Log("Playerのターン");
+        CreateCard(playerHandTransform); // プレイヤーの手札にカードを1枚生成（ドロー）
     }
 
     // 敵のターンの処理を行うメソッド
     void EnemyTurn()
     {
         Debug.Log("Enemyのターン");
-
+        CreateCard(enemyHandTransform);  // 敵の手札にカードを1枚生成（ドロー）
         ChangeTurn(); // 敵のターンが終了したら、プレイヤーのターンに切り替える
     }
 
