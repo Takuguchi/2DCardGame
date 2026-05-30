@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] Transform playerHandTransform; // プレイヤーの手札のTransformを取得
+    [SerializeField] Transform playerHandTransform, // プレイヤーの手札のTransformを取得
+                               enemyHandTransform;  // 敵の手札のTransformを取得 
     [SerializeField] CardController cardPrefab; // カードのPrefabをCardController型として取得
     void Start()
     {
@@ -14,10 +15,17 @@ public class GameManager : MonoBehaviour
     // ゲーム開始時に呼ばれるメソッド
     void StartGame()
     {
+        SettingInitHand();
+    }
+
+    // ゲーム開始時に手札を初期化するメソッド
+    void SettingInitHand()
+    {
         // カードをそれぞれに3枚配る
         for (int i = 0; i < 3; i++)
         {
             CreateCard(playerHandTransform); // プレイヤーの手札にカードを生成
+            CreateCard(enemyHandTransform);  // 敵の手札にカードを生成
         }
     }
 
