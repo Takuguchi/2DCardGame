@@ -1315,6 +1315,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerHandTransform: {fileID: 1480319886}
   enemyHandTransform: {fileID: 851633992}
+  enemyFieldTransform: {fileID: 862042951}
   cardPrefab: {fileID: 68245383862483898, guid: 3d6235cefc847a740bafdd14a99c4cc6, type: 3}
 --- !u!4 &1463810790
 Transform:

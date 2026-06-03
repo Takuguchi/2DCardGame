@@ -5,7 +5,8 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     [SerializeField] Transform playerHandTransform, // プレイヤーの手札のTransformを取得
-                               enemyHandTransform;  // 敵の手札のTransformを取得 
+                               enemyHandTransform,  // 敵の手札のTransformを取得 
+                               enemyFieldTransform; // 敵のフィールドのTransformを取得
     [SerializeField] CardController cardPrefab; // カードのPrefabをCardController型として取得
 
     bool isPlayerTurn; // プレイヤーのターンかどうかを判定する変数
@@ -75,7 +76,13 @@ public class GameManager : MonoBehaviour
     void EnemyTurn()
     {
         Debug.Log("Enemyのターン");
-        
+        // 手札のカードリストを取得
+        CardController[] cardList = enemyHandTransform.GetComponentsInChildren<CardController>();
+        // 場に出すカードを選択
+        CardController card = cardList[0]; // とりあえず手札の一番左のカードを選択
+        // カードを移動
+        card.movement.SetCardTransform(enemyFieldTransform); // カードの移動を行うCardMovementクラスのSetCardTransform()メソッドに、カードの移動先のTransformを渡す
+
         ChangeTurn(); // 敵のターンが終了したら、プレイヤーのターンに切り替える
     }
 
