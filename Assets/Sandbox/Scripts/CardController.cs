@@ -7,7 +7,7 @@ using UnityEngine;
 public class CardController : MonoBehaviour
 {
     CardView view;  // カードの見た目（view）に関することを操作
-    CardModel model;    // カードのデータ（model）に関することを操作
+    public CardModel model;    // カードのデータ（model）に関することを操作
     public CardMovement movement; // カードの移動（movement）に関することを操作
 
     void Awake()
