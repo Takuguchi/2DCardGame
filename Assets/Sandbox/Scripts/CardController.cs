@@ -23,5 +23,11 @@ public class CardController : MonoBehaviour
         model = new CardModel(cardID); // カードのデータを生成
         view.Show(model); // CardViewクラス内の、データをカードの見た目に反映するShow()メソッドにカードのデータを渡す
     }
+
+    // カードのデータが変化したときに呼ばれるメソッド
+    public void Refresh()
+    {
+        view.Refresh(model);
+    }
     
 }

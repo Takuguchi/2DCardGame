@@ -112,6 +112,8 @@ public class GameManager : MonoBehaviour
         
         Debug.Log("attacker HP:" + attacker.model.hp);
         Debug.Log("defender HP:" + defender.model.hp);
+        attacker.Refresh(); // attackerのカードの見た目を更新する
+        defender.Refresh(); // defenderのカードの見た目を更新する
     }
 
 

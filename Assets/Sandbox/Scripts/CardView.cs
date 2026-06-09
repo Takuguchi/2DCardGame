@@ -22,4 +22,12 @@ public class CardView : MonoBehaviour
         iconImage.sprite = cardModel.icon; // カードの絵柄を表示するImageにカードの絵柄を代入
 
     }
+
+    // カードのデータが変化したときに呼ばれるメソッド
+    public void Refresh(CardModel cardModel)
+    {
+        hpText.text = cardModel.hp.ToString(); // カードのHPを表示するTextにカードのHPを代入
+        atText.text = cardModel.at.ToString(); // カードの攻撃力を表示するTextにカードの攻撃力を代入
+    }
+
 }
