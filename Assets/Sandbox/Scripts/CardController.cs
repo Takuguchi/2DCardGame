@@ -24,10 +24,17 @@ public class CardController : MonoBehaviour
         view.Show(model); // CardViewクラス内の、データをカードの見た目に反映するShow()メソッドにカードのデータを渡す
     }
 
-    // カードのデータが変化したときに呼ばれるメソッド
-    public void Refresh()
-    {
-        view.Refresh(model);
-    }
     
+    // Aliveがfalseになっていたら破壊するメソッド
+    public void CheckAlive()
+    {
+        if (model.isAlive)  // カードが生きている状態なら
+        {
+            view.Refresh(model);    // カードの見た目を更新する
+        }
+        else    // カードが死んでいる状態なら
+        {
+            Destroy(this.gameObject);    // カードを破壊する
+        }
+    }
 }
