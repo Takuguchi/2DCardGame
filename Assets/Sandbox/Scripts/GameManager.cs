@@ -12,6 +12,17 @@ public class GameManager : MonoBehaviour
 
     bool isPlayerTurn; // プレイヤーのターンかどうかを判定する変数
 
+    // シングルトン化（GameManagerにどこからでもアクセスできるようにする）
+    public static GameManager instance;
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+    }
+
+
     void Start()
     {
         StartGame(); // ゲーム開始時にStartGame()メソッドを呼び出す
@@ -101,7 +112,7 @@ public class GameManager : MonoBehaviour
         ChangeTurn(); // 敵のターンが終了したら、プレイヤーのターンに切り替える
     }
 
-    void CardsBattle(CardController attacker, CardController defender)
+    public void CardsBattle(CardController attacker, CardController defender)
     {
         Debug.Log("CardsBattle");
         Debug.Log("attacker HP:" + attacker.model.hp);
