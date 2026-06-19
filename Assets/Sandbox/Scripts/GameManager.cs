@@ -13,6 +13,9 @@ public class GameManager : MonoBehaviour
 
     bool isPlayerTurn; // プレイヤーのターンかどうかを判定する変数
 
+    List<int> playerDeck = new List<int>() {3, 1, 2, 2, 3}, // プレイヤーのデッキのカードIDを格納するリスト
+              enemyDeck  = new List<int>() {2, 1, 3, 1, 3};  // 敵のデッキのカードIDを格納するリスト
+
     // シングルトン化（GameManagerにどこからでもアクセスできるようにする）
     public static GameManager instance;
     private void Awake()
@@ -43,9 +46,30 @@ public class GameManager : MonoBehaviour
         // カードをそれぞれに3枚配る
         for (int i = 0; i < 3; i++)
         {
-            CreateCard(playerHandTransform); // プレイヤーの手札にカードを生成
-            CreateCard(enemyHandTransform);  // 敵の手札にカードを生成
+            GiveCardToHand(playerDeck, playerHandTransform); // プレイヤーの手札にカードを生成
+            GiveCardToHand(enemyDeck, enemyHandTransform);  // 敵の手札にカードを生成
         }
+    }
+
+    // デッキからカードを手札に配るメソッド
+    void GiveCardToHand(List<int> deck, Transform hand)
+    {
+        if (deck.Count == 0) // デッキにカードがない場合
+        {
+            return; // 何も処理しないで終わる
+        }
+        int cardID = deck[0]; // デッキの一番上のカードIDを取得
+        deck.RemoveAt(0); // デッキの一番上のカードIDをデッキから削除
+        CreateCard(cardID, hand); // カードを生成するメソッドにカードIDと手札のTransformを渡す
+    }
+
+
+    // カードを生成するメソッド
+    void CreateCard(int cardID, Transform hand)
+    {
+        // カードのPrefabをCardController型としてインスタンス(生成)・親要素に任意のTransformを指定
+        CardController card = Instantiate(cardPrefab, hand, false);
+        card.Init(cardID);    // CardControllerクラスのInit()メソッドを呼び出す→任意のカードデータの各種変数を取得
     }
 
     // ターン処理を行うメソッド
@@ -69,11 +93,11 @@ public class GameManager : MonoBehaviour
         isPlayerTurn = !isPlayerTurn; // ターンを切り替える
         if (isPlayerTurn)
         {
-            CreateCard(playerHandTransform); // プレイヤーの手札にカードを1枚生成（ドロー）
+            GiveCardToHand(playerDeck, playerHandTransform); // プレイヤーの手札にカードを1枚生成（ドロー）
         }
         else
         {
-            CreateCard(enemyHandTransform);  // 敵の手札にカードを1枚生成（ドロー）
+            GiveCardToHand(enemyDeck, enemyHandTransform);  // 敵の手札にカードを1枚生成（ドロー）
         }
         TurnCalc(); // ターン処理を行うメソッドを呼び出
     }
@@ -142,14 +166,4 @@ public class GameManager : MonoBehaviour
         attacker.CheckAlive(); // attackerのカードの見た目を更新する
         defender.CheckAlive(); // defenderのカードの見た目を更新する
     }
-
-
-    // カードを生成するメソッド
-    void CreateCard(Transform hand)
-    {
-        // カードのPrefabをCardController型としてインスタンス(生成)・親要素に任意のTransformを指定
-        CardController card = Instantiate(cardPrefab, hand, false);
-        card.Init(2);    // CardControllerクラスのInit()メソッドを呼び出す→任意のカードデータの各種変数を取得
-    }
-
 }
