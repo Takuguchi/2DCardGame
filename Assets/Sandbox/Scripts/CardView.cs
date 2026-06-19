@@ -11,6 +11,7 @@ public class CardView : MonoBehaviour
     [SerializeField] Text atText;   // カードの攻撃力を表示するText
     [SerializeField] Text costText; // カードのコストを表示するText
     [SerializeField] Image iconImage; // カードの絵柄を表示するImage
+    [SerializeField] GameObject selectablePanel; // カードが選択可能かどうかを表示するパネル
 
     // CardModel型のデータを取得してカードの見た目に反映するメソッド
     public void Show(CardModel cardModel)
@@ -22,4 +23,18 @@ public class CardView : MonoBehaviour
         iconImage.sprite = cardModel.icon; // カードの絵柄を表示するImageにカードの絵柄を代入
 
     }
+
+    // カードのデータが変化したときに呼ばれるメソッド
+    public void Refresh(CardModel cardModel)
+    {
+        hpText.text = cardModel.hp.ToString(); // カードのHPを表示するTextにカードのHPを代入
+        atText.text = cardModel.at.ToString(); // カードの攻撃力を表示するTextにカードの攻撃力を代入
+    }
+
+    // カードが選択可能かどうかを表示するメソッド
+    public void SetActiveSelectablePanel(bool flag)
+    {
+        selectablePanel.SetActive(flag);
+    }
+
 }

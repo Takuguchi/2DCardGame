@@ -38,4 +38,10 @@ public class CardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
         // ドロップ先の判定をするため、カードのRaycastを有効にする
         GetComponent<CanvasGroup>().blocksRaycasts = true;
     }
+
+    public void SetCardTransform(Transform parentTransform)
+    {
+        defaultParent = parentTransform;
+        transform.SetParent(defaultParent);
+    }
 }

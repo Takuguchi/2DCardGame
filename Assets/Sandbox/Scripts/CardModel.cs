@@ -11,12 +11,12 @@ public class CardModel
     public int at;      // カードの攻撃力
     public int cost;    // カードのコスト
     public Sprite icon; // カードの絵柄
+    public bool isAlive;       // カードが生きているかどうか
+    public bool canAttack;     // カードが攻撃可能かどうか
 
     // コンストラクタ
     public CardModel(int cardID)
     {
-        Debug.Log("CardModelのコンストラクタが呼ばれました");
-        Debug.Log($"1. 名前：{name}, HP：{hp}, 攻撃力：{at}, コスト：{cost}");
         // Card1のデータを入れ物(CardEntityクラス)に渡す
         CardEntity cardEntity = Resources.Load<CardEntity>("CardEntityList/Card" + cardID);
 
@@ -26,6 +26,24 @@ public class CardModel
         at = cardEntity.at; 
         cost = cardEntity.cost;
         icon = cardEntity.icon;
-        Debug.Log($"2. 名前：{name}, HP：{hp}, 攻撃力：{at}, コスト：{cost}");
+        isAlive = true; // カードは最初は生きている状態
+    }
+
+    // カードのダメージ処理
+    void Damage(int dmg)
+    {
+        hp -= dmg;
+
+        if (hp <= 0) // HPが0以下になると不都合があるため、0にする
+        {
+            hp = 0;
+            isAlive = false; // カードは死んでいる状態
+        }
+    }
+
+    // カードの攻撃処理
+    public void Attack(CardController card)
+    {
+        card.model.Damage(at); // 攻撃力分のダメージを相手のカードに与える
     }
 }

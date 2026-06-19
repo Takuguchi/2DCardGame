@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,10 +6,23 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     [SerializeField] Transform playerHandTransform, // プレイヤーの手札のTransformを取得
-                               enemyHandTransform;  // 敵の手札のTransformを取得 
+                               playerFieldTransform, // プレイヤーのフィールドのTransformを取得   
+                               enemyHandTransform,  // 敵の手札のTransformを取得 
+                               enemyFieldTransform; // 敵のフィールドのTransformを取得
     [SerializeField] CardController cardPrefab; // カードのPrefabをCardController型として取得
 
     bool isPlayerTurn; // プレイヤーのターンかどうかを判定する変数
+
+    // シングルトン化（GameManagerにどこからでもアクセスできるようにする）
+    public static GameManager instance;
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+    }
+
 
     void Start()
     {
@@ -68,16 +82,67 @@ public class GameManager : MonoBehaviour
     void PlayerTurn()
     {
         Debug.Log("Playerのターン");
-        
+        // フィールドのカードを攻撃可能にする
+        CardController[] playerFieldCardList = playerFieldTransform.GetComponentsInChildren<CardController>();
+        foreach (CardController card in playerFieldCardList)
+        {
+            card.SetCanAttack(true);    // cardを攻撃可能にする
+        }
     }
 
     // 敵のターンの処理を行うメソッド
     void EnemyTurn()
     {
         Debug.Log("Enemyのターン");
+        // フィールドのカードを攻撃可能にする
         
+
+        /* 場にカードを出す */
+        // 手札のカードリストを取得
+        CardController[] handCardList = enemyHandTransform.GetComponentsInChildren<CardController>();
+        // 場に出すカードを選択
+        CardController enemyCard = handCardList[0]; // とりあえず手札の一番左のカードを選択
+        // カードを移動
+        enemyCard.movement.SetCardTransform(enemyFieldTransform); // カードの移動を行うCardMovementクラスのSetCardTransform()メソッドに、カードの移動先のTransformを渡す
+
+        /* 攻撃 */
+        // フィールドのカードリストを取得
+        CardController[] fieldCardList = enemyFieldTransform.GetComponentsInChildren<CardController>();
+        // 攻撃可能カードを取得
+        CardController[] enemyCanAttackCardList = Array.FindAll(fieldCardList, card => card.model.canAttack); // 検索：Array.FindAll
+        CardController[] playerFieldCardList = playerFieldTransform.GetComponentsInChildren<CardController>();
+
+
+        // 攻撃可能カードが存在する場合、かつプレイヤーのフィールドにカードが存在する場合
+        if (enemyCanAttackCardList.Length > 0 && playerFieldCardList.Length > 0)
+        {
+            // attackerカードを選択
+            CardController attacker = enemyCanAttackCardList[0]; // defenderカードを選択（フィールドの攻撃可能カードから選択）   
+            // defenderカードを選択
+            CardController defender = playerFieldCardList[0]; // とりあえずPlayerフィールドの一番左のカードを選択
+            // attackerとdefenderを戦わせる
+            CardsBattle(attacker, defender);
+        }
+
+
         ChangeTurn(); // 敵のターンが終了したら、プレイヤーのターンに切り替える
     }
+
+    public void CardsBattle(CardController attacker, CardController defender)
+    {
+        Debug.Log("CardsBattle");
+        Debug.Log("attacker HP:" + attacker.model.hp);
+        Debug.Log("defender HP:" + defender.model.hp);
+
+        attacker.Attack(defender); // attackerの攻撃力分のダメージをdefenderに与える
+        defender.Attack(attacker); // defenderの攻撃力分のダメージをattackerに与える
+        
+        Debug.Log("attacker HP:" + attacker.model.hp);
+        Debug.Log("defender HP:" + defender.model.hp);
+        attacker.CheckAlive(); // attackerのカードの見た目を更新する
+        defender.CheckAlive(); // defenderのカードの見た目を更新する
+    }
+
 
     // カードを生成するメソッド
     void CreateCard(Transform hand)
