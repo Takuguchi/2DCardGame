@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -107,15 +108,22 @@ public class GameManager : MonoBehaviour
         /* 攻撃 */
         // フィールドのカードリストを取得
         CardController[] fieldCardList = enemyFieldTransform.GetComponentsInChildren<CardController>();
-
-        // attackerカードを選択
-        CardController attacker = fieldCardList[0]; // defenderカードを選択（Playerフィールドから選択）
-        
-        // defenderカードを選択
+        // 攻撃可能カードを取得
+        CardController[] enemyCanAttackCardList = Array.FindAll(fieldCardList, card => card.model.canAttack); // 検索：Array.FindAll
         CardController[] playerFieldCardList = playerFieldTransform.GetComponentsInChildren<CardController>();
-        CardController defender = playerFieldCardList[0]; // とりあえずPlayerフィールドの一番左のカードを選択
-        // attackerとdefenderを戦わせる
-        CardsBattle(attacker, defender);
+
+
+        // 攻撃可能カードが存在する場合、かつプレイヤーのフィールドにカードが存在する場合
+        if (enemyCanAttackCardList.Length > 0 && playerFieldCardList.Length > 0)
+        {
+            // attackerカードを選択
+            CardController attacker = enemyCanAttackCardList[0]; // defenderカードを選択（フィールドの攻撃可能カードから選択）   
+            // defenderカードを選択
+            CardController defender = playerFieldCardList[0]; // とりあえずPlayerフィールドの一番左のカードを選択
+            // attackerとdefenderを戦わせる
+            CardsBattle(attacker, defender);
+        }
+
 
         ChangeTurn(); // 敵のターンが終了したら、プレイヤーのターンに切り替える
     }

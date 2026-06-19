@@ -28,12 +28,13 @@ public class CardController : MonoBehaviour
     public void Attack(CardController enemyCard)
     {
         model.Attack(enemyCard); // 自分のカードの攻撃処理を呼び出す
-        view.SetActiveSelectablePanel(false); // 攻撃したカードは選択不可にする(オーラが消える)
+        SetCanAttack(false);     // 攻撃したカードは攻撃できないようにする
     }
 
     // カードを攻撃可能にするメソッド
     public void SetCanAttack(bool canAttack)
     {
+        model.canAttack = canAttack; // カードのデータのcanAttackを引数のcanAttackにする
         view.SetActiveSelectablePanel(canAttack); // 攻撃可能なカードはオーラを表示する
     }
     

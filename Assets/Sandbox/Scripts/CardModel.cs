@@ -12,6 +12,7 @@ public class CardModel
     public int cost;    // カードのコスト
     public Sprite icon; // カードの絵柄
     public bool isAlive;       // カードが生きているかどうか
+    public bool canAttack;     // カードが攻撃可能かどうか
 
     // コンストラクタ
     public CardModel(int cardID)
