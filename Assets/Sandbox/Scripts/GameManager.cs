@@ -118,8 +118,8 @@ public class GameManager : MonoBehaviour
         Debug.Log("attacker HP:" + attacker.model.hp);
         Debug.Log("defender HP:" + defender.model.hp);
 
-        attacker.model.Attack(defender); // attackerの攻撃力分のダメージをdefenderに与える
-        defender.model.Attack(attacker); // defenderの攻撃力分のダメージをattackerに与える
+        attacker.Attack(defender); // attackerの攻撃力分のダメージをdefenderに与える
+        defender.Attack(attacker); // defenderの攻撃力分のダメージをattackerに与える
         
         Debug.Log("attacker HP:" + attacker.model.hp);
         Debug.Log("defender HP:" + defender.model.hp);

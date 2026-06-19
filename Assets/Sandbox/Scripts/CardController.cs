@@ -24,6 +24,12 @@ public class CardController : MonoBehaviour
         view.Show(model); // CardViewクラス内の、データをカードの見た目に反映するShow()メソッドにカードのデータを渡す
     }
 
+    // カードの攻撃処理
+    public void Attack(CardController enemyCard)
+    {
+        model.Attack(enemyCard); // 自分のカードの攻撃処理を呼び出す
+        view.SetActiveSelectablePanel(false); // 攻撃したカードは選択不可にする(オーラが消える)
+    }
     
     // Aliveがfalseになっていたら破壊するメソッド
     public void CheckAlive()
