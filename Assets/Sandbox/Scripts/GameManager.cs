@@ -81,13 +81,21 @@ public class GameManager : MonoBehaviour
     void PlayerTurn()
     {
         Debug.Log("Playerのターン");
-        
+        // フィールドのカードを攻撃可能にする
+        CardController[] playerFieldCardList = playerFieldTransform.GetComponentsInChildren<CardController>();
+        foreach (CardController card in playerFieldCardList)
+        {
+            card.SetCanAttack(true);    // cardを攻撃可能にする
+        }
     }
 
     // 敵のターンの処理を行うメソッド
     void EnemyTurn()
     {
         Debug.Log("Enemyのターン");
+        // フィールドのカードを攻撃可能にする
+        
+
         /* 場にカードを出す */
         // 手札のカードリストを取得
         CardController[] handCardList = enemyHandTransform.GetComponentsInChildren<CardController>();

@@ -30,6 +30,12 @@ public class CardController : MonoBehaviour
         model.Attack(enemyCard); // 自分のカードの攻撃処理を呼び出す
         view.SetActiveSelectablePanel(false); // 攻撃したカードは選択不可にする(オーラが消える)
     }
+
+    // カードを攻撃可能にするメソッド
+    public void SetCanAttack(bool canAttack)
+    {
+        view.SetActiveSelectablePanel(canAttack); // 攻撃可能なカードはオーラを表示する
+    }
     
     // Aliveがfalseになっていたら破壊するメソッド
     public void CheckAlive()
