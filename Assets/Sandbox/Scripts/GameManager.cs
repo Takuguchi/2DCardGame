@@ -13,8 +13,8 @@ public class GameManager : MonoBehaviour
 
     bool isPlayerTurn; // プレイヤーのターンかどうかを判定する変数
 
-    List<int> playerDeck = new List<int>() {1, 1, 2, 2}, // プレイヤーのデッキのカードIDを格納するリスト
-              enemyDeck  = new List<int>() {2, 1, 2, 1};  // 敵のデッキのカードIDを格納するリスト
+    List<int> playerDeck = new List<int>() {3, 1, 2, 2, 3}, // プレイヤーのデッキのカードIDを格納するリスト
+              enemyDeck  = new List<int>() {2, 1, 3, 1, 3};  // 敵のデッキのカードIDを格納するリスト
 
     // シングルトン化（GameManagerにどこからでもアクセスできるようにする）
     public static GameManager instance;
