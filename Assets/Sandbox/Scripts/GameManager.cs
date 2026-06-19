@@ -54,6 +54,10 @@ public class GameManager : MonoBehaviour
     // デッキからカードを手札に配るメソッド
     void GiveCardToHand(List<int> deck, Transform hand)
     {
+        if (deck.Count == 0) // デッキにカードがない場合
+        {
+            return; // 何も処理しないで終わる
+        }
         int cardID = deck[0]; // デッキの一番上のカードIDを取得
         deck.RemoveAt(0); // デッキの一番上のカードIDをデッキから削除
         CreateCard(cardID, hand); // カードを生成するメソッドにカードIDと手札のTransformを渡す
