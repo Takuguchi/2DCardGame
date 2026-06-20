@@ -130,6 +130,12 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Enemyのターン");
         // フィールドのカードを攻撃可能にする
+        CardController[] enemyFieldCardList = enemyFieldTransform.GetComponentsInChildren<CardController>();
+        foreach (CardController card in enemyFieldCardList)
+        {
+            card.SetCanAttack(true);    // cardを攻撃可能にする
+        }
+
         
 
         /* 場にカードを出す */
@@ -148,15 +154,24 @@ public class GameManager : MonoBehaviour
         CardController[] playerFieldCardList = playerFieldTransform.GetComponentsInChildren<CardController>();
 
 
-        // 攻撃可能カードが存在する場合、かつプレイヤーのフィールドにカードが存在する場合
-        if (enemyCanAttackCardList.Length > 0 && playerFieldCardList.Length > 0)
+        // 攻撃可能カードが存在する場合
+        if (enemyCanAttackCardList.Length > 0)
         {
             // attackerカードを選択
-            CardController attacker = enemyCanAttackCardList[0]; // defenderカードを選択（フィールドの攻撃可能カードから選択）   
-            // defenderカードを選択
-            CardController defender = playerFieldCardList[0]; // とりあえずPlayerフィールドの一番左のカードを選択
-            // attackerとdefenderを戦わせる
-            CardsBattle(attacker, defender);
+            CardController attacker = enemyCanAttackCardList[0]; // defenderカードを選択（フィールドの攻撃可能カードから選択）  
+            
+            // プレイヤーのフィールドにカードが存在する場合はカード同士で戦わせる
+            if (playerFieldCardList.Length > 0)
+            {
+                // defenderカードを選択
+                CardController defender = playerFieldCardList[0]; // とりあえずPlayerフィールドの一番左のカードを選択
+                // attackerとdefenderを戦わせる
+                CardsBattle(attacker, defender);
+            }
+            else // プレイヤーのフィールドにカードが存在しない場合は、敵はプレイヤーのHeroに攻撃する
+            {
+                AttackToHero(attacker, false); // 敵がHeroに攻撃するのでisPlayerCardはfalseにする    
+            }
         }
 
 
