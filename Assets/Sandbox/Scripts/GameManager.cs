@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -15,6 +16,13 @@ public class GameManager : MonoBehaviour
 
     List<int> playerDeck = new List<int>() {3, 1, 2, 2, 3}, // プレイヤーのデッキのカードIDを格納するリスト
               enemyDeck  = new List<int>() {2, 1, 3, 1, 3};  // 敵のデッキのカードIDを格納するリスト
+    
+    [SerializeField] Text playerHeroHpText; // プレイヤーのHeroのHPを表示するTextを取得
+    [SerializeField] Text enemyHeroHpText; // 敵のHeroのHPを表示するTextを取得   
+
+    int playerHeroHp = 30; // プレイヤーのHeroのHP
+    int enemyHeroHp  = 30; // 敵のHeroのHP
+    
 
     // シングルトン化（GameManagerにどこからでもアクセスできるようにする）
     public static GameManager instance;
@@ -35,6 +43,9 @@ public class GameManager : MonoBehaviour
     // ゲーム開始時に呼ばれるメソッド
     void StartGame()
     {
+        playerHeroHp = 30; // プレイヤーのHeroのHPを30にする
+        enemyHeroHp = 30; // 敵のHeroのHPを30にする
+        ShowHeroHP(); // HeroのHP表示を変更するメソッドを呼び出す
         SettingInitHand();
         isPlayerTurn = true; // プレイヤーのターンから開始する
         TurnCalc(); // ターン処理を行うメソッドを呼び出す
@@ -165,5 +176,28 @@ public class GameManager : MonoBehaviour
         Debug.Log("defender HP:" + defender.model.hp);
         attacker.CheckAlive(); // attackerのカードの見た目を更新する
         defender.CheckAlive(); // defenderのカードの見た目を更新する
+    }
+
+    // HeroのHP表示を変更するメソッド
+    void ShowHeroHP()
+    {
+        playerHeroHpText.text = playerHeroHp.ToString(); // プレイヤーのHeroのHPを表示するTextを変更
+        enemyHeroHpText.text = enemyHeroHp.ToString(); // 敵のHeroのHPを表示するTextを変更
+    }
+
+    // Heroに攻撃するメソッド
+    public void AttackToHero(CardController attacker, bool isPlayerCard)
+    {
+        // attackerがプレイヤーのカードだった場合
+        if (isPlayerCard)
+        {
+            enemyHeroHp -= attacker.model.at; // 敵のHeroのHPを攻撃力分下げる
+        }
+        // attackerが敵のカードだった場合
+        else
+        {
+            playerHeroHp -= attacker.model.at; // プレイヤーのHeroのHPを攻撃力分下げる
+        }
+        ShowHeroHP(); // HeroのHP表示を変更
     }
 }
