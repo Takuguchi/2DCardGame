@@ -198,6 +198,7 @@ public class GameManager : MonoBehaviour
         {
             playerHeroHp -= attacker.model.at; // プレイヤーのHeroのHPを攻撃力分下げる
         }
+        attacker.SetCanAttack(false); // 一度攻撃したらattackerを攻撃不可にする
         ShowHeroHP(); // HeroのHP表示を変更
     }
 }
