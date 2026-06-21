@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField] GameObject resultPanel; // ゲーム終了時に表示するパネルを取得
+    [SerializeField] Text resultText;  // ゲーム終了時に表示するテキストを取得
     [SerializeField] Transform playerHandTransform, // プレイヤーの手札のTransformを取得
                                playerFieldTransform, // プレイヤーのフィールドのTransformを取得   
                                enemyHandTransform,  // 敵の手札のTransformを取得 
@@ -43,8 +45,9 @@ public class GameManager : MonoBehaviour
     // ゲーム開始時に呼ばれるメソッド
     void StartGame()
     {
+        resultPanel.SetActive(false); // ゲーム開始時はリザルト画面を非表示にしておく
         playerHeroHp = 30; // プレイヤーのHeroのHPを30にする
-        enemyHeroHp = 30; // 敵のHeroのHPを30にする
+        enemyHeroHp = 1; // 敵のHeroのHPをリザルト画面の確認のために1にする
         ShowHeroHP(); // HeroのHP表示を変更するメソッドを呼び出す
         SettingInitHand();
         isPlayerTurn = true; // プレイヤーのターンから開始する
@@ -215,5 +218,23 @@ public class GameManager : MonoBehaviour
         }
         attacker.SetCanAttack(false); // 一度攻撃したらattackerを攻撃不可にする
         ShowHeroHP(); // HeroのHP表示を変更
+        CheckHeroHP(); // HeroのHPが0以下になったかどうかを判定
+    }
+
+    // HeroのHPが0以下になったかどうかを判定→リザルト画面を表示
+    void CheckHeroHP()
+    {
+        if (playerHeroHp <= 0 || enemyHeroHp <= 0) // HeroのHPが0以下になったら
+        {
+            resultPanel.SetActive(true); // リザルト画面を表示する
+            if (playerHeroHp <= 0) // プレイヤーのHeroが倒されていたのなら
+            {
+                resultText.text = "LOSE"; // LOSEと表示する
+            }
+            else // 敵のHeroを倒したのなら
+            {
+                resultText.text = "WIN"; // WINと表示する
+            }
+        }
     }
 }
