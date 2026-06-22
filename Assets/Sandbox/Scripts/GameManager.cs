@@ -46,12 +46,40 @@ public class GameManager : MonoBehaviour
     void StartGame()
     {
         resultPanel.SetActive(false); // ゲーム開始時はリザルト画面を非表示にしておく
-        playerHeroHp = 30; // プレイヤーのHeroのHPを30にする
+        playerHeroHp = 1; // プレイヤーのHeroのHPを1にする
         enemyHeroHp = 1; // 敵のHeroのHPをリザルト画面の確認のために1にする
         ShowHeroHP(); // HeroのHP表示を変更するメソッドを呼び出す
         SettingInitHand();
         isPlayerTurn = true; // プレイヤーのターンから開始する
         TurnCalc(); // ターン処理を行うメソッドを呼び出す
+    }
+
+    // ゲームをリスタートするメソッド
+    public void Restart()
+    {
+        // HandとFieldのカードを削除
+        foreach (Transform card in playerHandTransform)
+        {
+            Destroy(card.gameObject);
+        }
+        foreach (Transform card in playerFieldTransform)
+        {
+            Destroy(card.gameObject);
+        }
+        foreach (Transform card in enemyHandTransform)
+        {
+            Destroy(card.gameObject);
+        }
+        foreach (Transform card in enemyFieldTransform)
+        {
+            Destroy(card.gameObject);
+        }
+
+        // デッキを生成
+        playerDeck = new List<int>() {3, 1, 2, 2, 3}; // プレイヤーのデッキのカードIDを格納するリスト
+        enemyDeck  = new List<int>() {2, 1, 3, 1, 3};  // 敵のデッキのカードIDを格納するリスト
+
+        StartGame(); // ゲーム開始時に呼ばれるメソッドを呼び出す
     }
 
     // ゲーム開始時に手札を初期化するメソッド
