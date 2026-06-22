@@ -24,7 +24,13 @@ public class GameManager : MonoBehaviour
 
     int playerHeroHp = 30; // プレイヤーのHeroのHP
     int enemyHeroHp  = 30; // 敵のHeroのHP
-    
+
+    [SerializeField] Text playerManaCostText; // プレイヤーのマナコストを表示するTextを取得
+    [SerializeField] Text enemyManaCostText; // 敵のマナコストを表示するTextを取得   
+
+    int playerManaCost = 30; // プレイヤーのマナコスト
+    int enemyManaCost  = 30; // 敵のマナコスト
+
 
     // シングルトン化（GameManagerにどこからでもアクセスできるようにする）
     public static GameManager instance;
@@ -48,10 +54,20 @@ public class GameManager : MonoBehaviour
         resultPanel.SetActive(false); // ゲーム開始時はリザルト画面を非表示にしておく
         playerHeroHp = 1; // プレイヤーのHeroのHPを1にする
         enemyHeroHp = 1; // 敵のHeroのHPをリザルト画面の確認のために1にする
+        playerManaCost = 1; // プレイヤーのマナコストを1にする
+        enemyManaCost = 1; // 敵のマナコストを1にする
         ShowHeroHP(); // HeroのHP表示を変更するメソッドを呼び出す
+        ShowManaCost(); // マナコストの表示を変更するメソッドを呼び出す
         SettingInitHand();
         isPlayerTurn = true; // プレイヤーのターンから開始する
         TurnCalc(); // ターン処理を行うメソッドを呼び出す
+    }
+
+    // マナコストの表示を変更するメソッド
+    void ShowManaCost()
+    {
+        playerManaCostText.text = playerManaCost.ToString();
+        enemyManaCostText.text = enemyManaCost.ToString();
     }
 
     // ゲームをリスタートするメソッド
