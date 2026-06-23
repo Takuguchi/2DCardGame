@@ -70,6 +70,20 @@ public class GameManager : MonoBehaviour
         enemyManaCostText.text = enemyManaCost.ToString();
     }
 
+    // マナコストを消費するメソッド
+    public void ReduceManaCost(int cost, bool isPlayerCard)
+    {
+        if (isPlayerCard)
+        {
+            playerManaCost -= cost; // プレイヤーのマナコストを消費する
+        }
+        else
+        {
+            enemyManaCost -= cost; // 敵のマナコストを消費する
+        }
+        ShowManaCost(); // マナコストの表示を更新する
+    }
+
     // ゲームをリスタートするメソッド
     public void Restart()
     {

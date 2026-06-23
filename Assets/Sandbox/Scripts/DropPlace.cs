@@ -9,11 +9,11 @@ public class DropPlace : MonoBehaviour, IDropHandler
     public void OnDrop(PointerEventData eventData)
     {
         //　ドラッグしてきたデータを代入
-        CardMovement card = eventData.pointerDrag.GetComponent<CardMovement>();
+        CardController card = eventData.pointerDrag.GetComponent<CardController>();
         if (card != null) // カードがきちんと存在していれば
         {
-            // ドロップされたカードの親をフィールドにする
-            card.defaultParent = this.transform;
+            card.movement.defaultParent = this.transform; // ドロップされたカードの親をフィールドにする
+            GameManager.instance.ReduceManaCost(card.model.cost, true); // カードをドロップしたらPlayerのManaコストを減らす
         }
     }
 }
