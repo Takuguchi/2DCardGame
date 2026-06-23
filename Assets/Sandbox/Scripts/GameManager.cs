@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] Text playerManaCostText; // プレイヤーのマナコストを表示するTextを取得
     [SerializeField] Text enemyManaCostText; // 敵のマナコストを表示するTextを取得   
 
-    int playerManaCost = 30; // プレイヤーのマナコスト
+    public int playerManaCost = 30; // プレイヤーのマナコスト
     int enemyManaCost  = 30; // 敵のマナコスト
 
 
