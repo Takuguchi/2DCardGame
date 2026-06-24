@@ -10,6 +10,10 @@ public class DropPlace : MonoBehaviour, IDropHandler
     {
         //　ドラッグしてきたデータを代入
         CardController card = eventData.pointerDrag.GetComponent<CardController>();
+        if (!card.movement.isDraggable)
+        {
+            return; // ドラッグ不可なら処理を終了する
+        }
         if (card != null) // カードがきちんと存在していれば
         {
             card.movement.defaultParent = this.transform; // ドロップされたカードの親をフィールドにする
