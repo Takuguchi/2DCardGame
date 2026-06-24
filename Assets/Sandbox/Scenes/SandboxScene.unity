@@ -238,6 +238,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23dd9ab7bc6cc9949b83360fea39af25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 1
 --- !u!1 &192598037
 GameObject:
   m_ObjectHideFlags: 0
@@ -1718,6 +1719,7 @@ MonoBehaviour:
   enemyHeroHpText: {fileID: 212690289}
   playerManaCostText: {fileID: 1696876695}
   enemyManaCostText: {fileID: 559897495}
+  playerManaCost: 30
 --- !u!4 &1463810790
 Transform:
   m_ObjectHideFlags: 0
@@ -1848,6 +1850,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23dd9ab7bc6cc9949b83360fea39af25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 0
 --- !u!1 &1558740579
 GameObject:
   m_ObjectHideFlags: 0

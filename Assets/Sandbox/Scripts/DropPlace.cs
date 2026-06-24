@@ -6,8 +6,18 @@ using UnityEngine.EventSystems;
 // カードがドロップされたときにフィールドに重なっていればフィールドを親に変えるクラス
 public class DropPlace : MonoBehaviour, IDropHandler
 {
+    public enum TYPE
+    {
+        HAND,
+        FIELD,
+    }
+    public TYPE type; // ドロップ先の種類を判定する変数
     public void OnDrop(PointerEventData eventData)
     {
+        if (type == TYPE.HAND)
+        {
+            return; // ドロップ先が手札の場合は処理を終了する
+        }
         //　ドラッグしてきたデータを代入
         CardController card = eventData.pointerDrag.GetComponent<CardController>();
         
@@ -24,7 +34,7 @@ public class DropPlace : MonoBehaviour, IDropHandler
             {
                 return; // Manaコストを減らす必要はないため、処理を終了する
             }
-            
+
             GameManager.instance.ReduceManaCost(card.model.cost, true); // カードをドロップしたらPlayerのManaコストを減らす
             card.model.isFieldCard = true; // カードをドロップしたらフィールドのカードにする
         }
