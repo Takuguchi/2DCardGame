@@ -33,6 +33,10 @@ public class GameManager : MonoBehaviour
     int playerDefaultManaCost; // プレイヤーのマナコストの初期値(ターンごとに増加)
     int enemyDefaultManaCost; // 敵のマナコストの初期値(ターンごとに増加)
 
+    // 時間管理
+    [SerializeField] Text timeCountText; // カウントダウンのTextを取得
+    int timeCount; // 時間をカウントする変数
+
     // シングルトン化（GameManagerにどこからでもアクセスできるようにする）
     public static GameManager instance;
     private void Awake()
@@ -150,6 +154,8 @@ public class GameManager : MonoBehaviour
     // ターン処理を行うメソッド
     void TurnCalc()
     {
+        StopAllCoroutines(); // 安全のためにコルーチン開始前に他を止めておく
+        StartCoroutine(CountDown()); // カウントダウンを開始
         if (isPlayerTurn)
         {
             // プレイヤーのターンの処理
@@ -160,6 +166,22 @@ public class GameManager : MonoBehaviour
             // 敵のターンの処理
             EnemyTurn();
         }
+    }
+
+    // カウントダウンを表示するメソッド(コルーチンを使用)
+    IEnumerator CountDown()
+    {
+        timeCount = 8; // カウントダウンの初期値を8にする
+        timeCountText.text = timeCount.ToString(); // カウントダウンのTextを初期値にする
+
+        // カウントが0秒になるまではコルーチンを回す
+        while (timeCount > 0)
+        {
+            yield return new WaitForSeconds(1); // 1秒待機
+            timeCount--; // カウント(秒数)を1減らす
+            timeCountText.text = timeCount.ToString(); // カウントダウンのTextを更新する
+        }
+        ChangeTurn(); // カウントが0になったらターンを切り替える
     }
 
     // ターンを切り替えるメソッド
