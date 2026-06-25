@@ -202,10 +202,18 @@ public class GameManager : MonoBehaviour
         /* 場にカードを出す */
         // 手札のカードリストを取得
         CardController[] handCardList = enemyHandTransform.GetComponentsInChildren<CardController>();
-        // 場に出すカードを選択
-        CardController enemyCard = handCardList[0]; // とりあえず手札の一番左のカードを選択
-        // カードを移動
-        enemyCard.movement.SetCardTransform(enemyFieldTransform); // カードの移動を行うCardMovementクラスのSetCardTransform()メソッドに、カードの移動先のTransformを渡す
+        
+        // Manaコスト以下のカードリストを取得
+        CardController[] selectableHandCardList = Array.FindAll(handCardList, card => card.model.cost <= enemyManaCost);
+
+        // Manaコスト以下のカードリストが1枚以上存在する場合
+        if (selectableHandCardList.Length > 0)
+        {
+            // 場に出すカードを選択
+            CardController enemyCard = selectableHandCardList[0]; // とりあえずカードリストの一番最初のカードを選択
+            // カードを移動
+            enemyCard.movement.SetCardTransform(enemyFieldTransform); // カードの移動を行うCardMovementクラスのSetCardTransform()メソッドに、カードの移動先のTransformを渡す
+        }
 
         /* 攻撃 */
         // フィールドのカードリストを取得
