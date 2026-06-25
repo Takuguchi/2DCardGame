@@ -30,7 +30,8 @@ public class GameManager : MonoBehaviour
 
     public int playerManaCost = 30; // プレイヤーのマナコスト
     int enemyManaCost  = 30; // 敵のマナコスト
-
+    int playerDefaultManaCost; // プレイヤーのマナコストの初期値(ターンごとに増加)
+    int enemyDefaultManaCost; // 敵のマナコストの初期値(ターンごとに増加)
 
     // シングルトン化（GameManagerにどこからでもアクセスできるようにする）
     public static GameManager instance;
@@ -56,6 +57,8 @@ public class GameManager : MonoBehaviour
         enemyHeroHp = 1; // 敵のHeroのHPをリザルト画面の確認のために1にする
         playerManaCost = 1; // プレイヤーのマナコストを1にする
         enemyManaCost = 1; // 敵のマナコストを1にする
+        playerDefaultManaCost = 1; // プレイヤーのマナコストの初期値を1にする
+        enemyDefaultManaCost = 1; // 敵のマナコストの初期値を1にする
         ShowHeroHP(); // HeroのHP表示を変更するメソッドを呼び出す
         ShowManaCost(); // マナコストの表示を変更するメソッドを呼び出す
         SettingInitHand();
@@ -165,13 +168,18 @@ public class GameManager : MonoBehaviour
         isPlayerTurn = !isPlayerTurn; // ターンを切り替える
         if (isPlayerTurn)
         {
+            playerDefaultManaCost++; // プレイヤーのターンになったらマナコストを1増やす
+            playerManaCost = playerDefaultManaCost; // プレイヤーのマナコストに初期値を代入
             GiveCardToHand(playerDeck, playerHandTransform); // プレイヤーの手札にカードを1枚生成（ドロー）
         }
         else
         {
+            enemyDefaultManaCost++; // 敵のターンになったらマナコストを1増やす
+            enemyManaCost = enemyDefaultManaCost; // 敵のマナコストに初期値を代入
             GiveCardToHand(enemyDeck, enemyHandTransform);  // 敵の手札にカードを1枚生成（ドロー）
         }
-        TurnCalc(); // ターン処理を行うメソッドを呼び出
+        ShowManaCost(); // マナコストの表示を更新する
+        TurnCalc(); // ターン処理を行うメソッドを呼び出す
     }
 
     // プレイヤーのターンの処理を行うメソッド
