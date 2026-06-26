@@ -164,7 +164,7 @@ public class GameManager : MonoBehaviour
         else
         {
             // 敵のターンの処理
-            EnemyTurn();
+            StartCoroutine(EnemyTurn());
         }
     }
 
@@ -217,7 +217,7 @@ public class GameManager : MonoBehaviour
     }
 
     // 敵のターンの処理を行うメソッド
-    void EnemyTurn()
+    IEnumerator EnemyTurn()
     {
         Debug.Log("Enemyのターン");
         // フィールドのカードを攻撃可能にする
@@ -227,7 +227,7 @@ public class GameManager : MonoBehaviour
             card.SetCanAttack(true);    // cardを攻撃可能にする
         }
 
-        
+        yield return new WaitForSeconds(1); // カードをフィールドに出す前に1秒置く
 
         /* 場にカードを出す */
         // 手札のカードリストを取得
@@ -276,6 +276,7 @@ public class GameManager : MonoBehaviour
             }
         }
 
+        yield return new WaitForSeconds(1); // 1秒待機してからターン切替
 
         ChangeTurn(); // 敵のターンが終了したら、プレイヤーのターンに切り替える
     }
