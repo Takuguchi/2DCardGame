@@ -188,6 +188,12 @@ public class GameManager : MonoBehaviour
     public void ChangeTurn()
     {
         isPlayerTurn = !isPlayerTurn; // ターンを切り替える
+
+        CardController[] playerFieldCardList = playerFieldTransform.GetComponentsInChildren<CardController>();
+        SettingCanAttackView(playerFieldCardList, false); // フィールドのカードの攻撃可能オーラを消す
+        CardController[] enemyFieldCardList = enemyFieldTransform.GetComponentsInChildren<CardController>();
+        SettingCanAttackView(enemyFieldCardList, false); // フィールドのカードの攻撃可能オーラを消す
+
         if (isPlayerTurn)
         {
             playerDefaultManaCost++; // プレイヤーのターンになったらマナコストを1増やす
@@ -204,16 +210,22 @@ public class GameManager : MonoBehaviour
         TurnCalc(); // ターン処理を行うメソッドを呼び出す
     }
 
+    // 攻撃可能オーラを付けたり消したりするメソッド
+    void SettingCanAttackView(CardController[] fieldCardList, bool canAttack)
+    {
+        foreach (CardController card in fieldCardList)
+        {
+            card.SetCanAttack(canAttack);    // cardを攻撃可能にするかどうか
+        }
+    }
+
     // プレイヤーのターンの処理を行うメソッド
     void PlayerTurn()
     {
         Debug.Log("Playerのターン");
         // フィールドのカードを攻撃可能にする
         CardController[] playerFieldCardList = playerFieldTransform.GetComponentsInChildren<CardController>();
-        foreach (CardController card in playerFieldCardList)
-        {
-            card.SetCanAttack(true);    // cardを攻撃可能にする
-        }
+        SettingCanAttackView(playerFieldCardList, true); // フィールドのカードに攻撃可能オーラを付ける
     }
 
     // 敵のターンの処理を行うメソッド
@@ -222,10 +234,7 @@ public class GameManager : MonoBehaviour
         Debug.Log("Enemyのターン");
         // フィールドのカードを攻撃可能にする
         CardController[] enemyFieldCardList = enemyFieldTransform.GetComponentsInChildren<CardController>();
-        foreach (CardController card in enemyFieldCardList)
-        {
-            card.SetCanAttack(true);    // cardを攻撃可能にする
-        }
+        SettingCanAttackView(enemyFieldCardList, true); // フィールドのカードに攻撃可能オーラを付ける
 
         yield return new WaitForSeconds(1); // カードをフィールドに出す前に1秒置く
 
