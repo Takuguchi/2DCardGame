@@ -263,14 +263,14 @@ public class GameManager : MonoBehaviour
         /* 攻撃 */
         // フィールドのカードリストを取得
         CardController[] fieldCardList = enemyFieldTransform.GetComponentsInChildren<CardController>();
-        // 攻撃可能カードを取得
-        CardController[] enemyCanAttackCardList = Array.FindAll(fieldCardList, card => card.model.canAttack); // 検索：Array.FindAll
-        CardController[] playerFieldCardList = playerFieldTransform.GetComponentsInChildren<CardController>();
-
-
-        // 攻撃可能カードが存在する場合
-        if (enemyCanAttackCardList.Length > 0)
+        // 攻撃可能カードがあれば攻撃を繰り返す
+        while (Array.Exists(fieldCardList, card => card.model.canAttack))
         {
+            // 攻撃可能カードを取得
+            CardController[] enemyCanAttackCardList = Array.FindAll(fieldCardList, card => card.model.canAttack); // 検索：Array.FindAll
+            CardController[] playerFieldCardList = playerFieldTransform.GetComponentsInChildren<CardController>();
+
+
             // attackerカードを選択
             CardController attacker = enemyCanAttackCardList[0]; // defenderカードを選択（フィールドの攻撃可能カードから選択）  
             
@@ -286,7 +286,11 @@ public class GameManager : MonoBehaviour
             {
                 AttackToHero(attacker, false); // 敵がHeroに攻撃するのでisPlayerCardはfalseにする    
             }
+            fieldCardList = enemyFieldTransform.GetComponentsInChildren<CardController>(); // フィールドのカードリストを更新
+            yield return new WaitForSeconds(1);
         }
+
+        
 
         yield return new WaitForSeconds(1); // 1秒待機してからターン切替
 
