@@ -59,10 +59,8 @@ public class GameManager : MonoBehaviour
         resultPanel.SetActive(false); // ゲーム開始時はリザルト画面を非表示にしておく
         playerHeroHp = 1; // プレイヤーのHeroのHPを1にする
         enemyHeroHp = 1; // 敵のHeroのHPをリザルト画面の確認のために1にする
-        playerManaCost = 1; // プレイヤーのマナコストを1にする
-        enemyManaCost = 1; // 敵のマナコストを1にする
-        playerDefaultManaCost = 1; // プレイヤーのマナコストの初期値を1にする
-        enemyDefaultManaCost = 1; // 敵のマナコストの初期値を1にする
+        playerManaCost = playerDefaultManaCost = 10; // プレイヤーのマナコストを1にする
+        enemyManaCost = enemyDefaultManaCost = 10; // 敵のマナコストを1にする
         ShowHeroHP(); // HeroのHP表示を変更するメソッドを呼び出す
         ShowManaCost(); // マナコストの表示を変更するメソッドを呼び出す
         SettingInitHand();
@@ -242,12 +240,12 @@ public class GameManager : MonoBehaviour
         // 手札のカードリストを取得
         CardController[] handCardList = enemyHandTransform.GetComponentsInChildren<CardController>();
         
-        // Manaコスト以下のカードリストを取得
-        CardController[] selectableHandCardList = Array.FindAll(handCardList, card => card.model.cost <= enemyManaCost);
-
-        // Manaコスト以下のカードリストが1枚以上存在する場合
-        if (selectableHandCardList.Length > 0)
+        // コスト以下のカードがあれば、カードをフィールドに出し続ける
+        while (Array.Exists(handCardList, card => card.model.cost <= enemyManaCost))
         {
+            // Manaコスト以下のカードリストを取得
+            CardController[] selectableHandCardList = Array.FindAll(handCardList, card => card.model.cost <= enemyManaCost);
+            
             // 場に出すカードを選択
             CardController enemyCard = selectableHandCardList[0]; // とりあえずカードリストの一番最初のカードを選択
             // カードを移動
@@ -255,7 +253,12 @@ public class GameManager : MonoBehaviour
             ReduceManaCost(enemyCard.model.cost, false); // カードを出したら敵のManaコストを減らす　引数isPlayerCardはfalseで渡す
             enemyCard.model.isFieldCard = true; // カードを出したらフィールドのカードにする
 
+            // 手札のリストを更新
+            handCardList = enemyHandTransform.GetComponentsInChildren<CardController>();
+            yield return new WaitForSeconds(1);
         }
+
+        yield return new WaitForSeconds(1);
 
         /* 攻撃 */
         // フィールドのカードリストを取得
