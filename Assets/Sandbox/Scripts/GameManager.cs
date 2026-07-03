@@ -290,7 +290,9 @@ public class GameManager : MonoBehaviour
             {
                 StartCoroutine(attacker.movement.MoveToTarget(playerHero)); // カードの移動を行うCardMovementクラスのMoveToTarget()メソッドに、カードの移動先のTransformを渡す
                 yield return new WaitForSeconds(0.25f);
-                AttackToHero(attacker, false); // 敵がHeroに攻撃するのでisPlayerCardはfalseにする    
+                AttackToHero(attacker, false); // 敵がHeroに攻撃するのでisPlayerCardはfalseにする
+                yield return new WaitForSeconds(0.25f); // カードが戻る時間待ってから、HeroのHPが0以下になったかどうかを判定する
+                CheckHeroHP(); // HeroのHPが0以下になったかどうかを判定→リザルト画面表示
             }
             fieldCardList = enemyFieldTransform.GetComponentsInChildren<CardController>(); // フィールドのカードリストを更新
             yield return new WaitForSeconds(1);
@@ -340,7 +342,6 @@ public class GameManager : MonoBehaviour
         }
         attacker.SetCanAttack(false); // 一度攻撃したらattackerを攻撃不可にする
         ShowHeroHP(); // HeroのHP表示を変更
-        CheckHeroHP(); // HeroのHPが0以下になったかどうかを判定
     }
 
     // HeroのHPが0以下になったかどうかを判定→リザルト画面を表示
@@ -348,15 +349,23 @@ public class GameManager : MonoBehaviour
     {
         if (playerHeroHp <= 0 || enemyHeroHp <= 0) // HeroのHPが0以下になったら
         {
-            resultPanel.SetActive(true); // リザルト画面を表示する
-            if (playerHeroHp <= 0) // プレイヤーのHeroが倒されていたのなら
-            {
-                resultText.text = "LOSE"; // LOSEと表示する
-            }
-            else // 敵のHeroを倒したのなら
-            {
-                resultText.text = "WIN"; // WINと表示する
-            }
+            ShowResultPanel(playerHeroHp);
+            
         }
+    }
+
+    // リザルト画面を表示するメソッド
+    void ShowResultPanel(int heroHp)
+    {
+        StopAllCoroutines(); // コルーチンを止める
+        resultPanel.SetActive(true); // リザルト画面を表示する
+        if (heroHp <= 0) // Heroが倒されていたのなら
+        {
+            resultText.text = "LOSE"; // LOSEと表示する
+        }
+        else // 敵のHeroを倒したのなら
+        {
+            resultText.text = "WIN"; // WINと表示する
+        }        
     }
 }
