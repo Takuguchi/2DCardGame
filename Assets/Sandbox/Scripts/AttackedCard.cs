@@ -19,7 +19,11 @@ public class AttackedCard : MonoBehaviour, IDropHandler
         if (attacker == null || defender == null)
         {
             return; // 何も処理しないで終わる
-        }   
+        }
+        if (attacker.model.isPlayerCard == defender.model.isPlayerCard)
+        {
+            return; // attackerとdefenderがプレイヤー同士, または敵同士のカードだった場合は何も処理しないで終わる
+        }
 
         // attackerが攻撃可能だった場合
         if (attacker.model.canAttack)
