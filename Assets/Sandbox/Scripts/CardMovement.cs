@@ -89,8 +89,9 @@ public class CardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
 
     public IEnumerator MoveToTarget(Transform target)
     {
-        // 攻撃後にカードを元の位置に戻すために、自分の位置を保存しておく
+        // 攻撃後にカードを元の位置に戻すために、自分の位置と並びを保存しておく
         Vector3 currentPosition = transform.position;
+        int siblingIndex = transform.GetSiblingIndex();
         
         // 一度親をCanvasに変更する
         transform.SetParent(defaultParent.parent);
@@ -98,10 +99,11 @@ public class CardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
         transform.DOMove(target.position, 0.25f);        
         yield return new WaitForSeconds(0.25f);
 
-        // 元の位置に戻る
+        // 元の位置と並びに戻す
         transform.DOMove(currentPosition, 0.25f);
         yield return new WaitForSeconds(0.25f);
         transform.SetParent(defaultParent);
+        transform.SetSiblingIndex(siblingIndex);
     }
 
 
