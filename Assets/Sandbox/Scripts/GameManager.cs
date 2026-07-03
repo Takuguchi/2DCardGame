@@ -280,6 +280,7 @@ public class GameManager : MonoBehaviour
                 // defenderカードを選択
                 CardController defender = playerFieldCardList[0]; // とりあえずPlayerフィールドの一番左のカードを選択
                 // attackerとdefenderを戦わせる
+                StartCoroutine(attacker.movement.MoveToTarget(defender.transform)); // カードの移動を行うCardMovementクラスのMoveToTarget()メソッドに、カードの移動先のTransformを渡す
                 CardsBattle(attacker, defender);
             }
             else // プレイヤーのフィールドにカードが存在しない場合は、敵はプレイヤーのHeroに攻撃する
