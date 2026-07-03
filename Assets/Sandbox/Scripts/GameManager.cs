@@ -25,6 +25,8 @@ public class GameManager : MonoBehaviour
     int playerHeroHp = 30; // プレイヤーのHeroのHP
     int enemyHeroHp  = 30; // 敵のHeroのHP
 
+    [SerializeField] Transform playerHero; // プレイヤーのHeroのTransform
+
     [SerializeField] Text playerManaCostText; // プレイヤーのマナコストを表示するTextを取得
     [SerializeField] Text enemyManaCostText; // 敵のマナコストを表示するTextを取得   
 
@@ -281,10 +283,13 @@ public class GameManager : MonoBehaviour
                 CardController defender = playerFieldCardList[0]; // とりあえずPlayerフィールドの一番左のカードを選択
                 // attackerとdefenderを戦わせる
                 StartCoroutine(attacker.movement.MoveToTarget(defender.transform)); // カードの移動を行うCardMovementクラスのMoveToTarget()メソッドに、カードの移動先のTransformを渡す
+                yield return new WaitForSeconds(0.25f);
                 CardsBattle(attacker, defender);
             }
             else // プレイヤーのフィールドにカードが存在しない場合は、敵はプレイヤーのHeroに攻撃する
             {
+                StartCoroutine(attacker.movement.MoveToTarget(playerHero)); // カードの移動を行うCardMovementクラスのMoveToTarget()メソッドに、カードの移動先のTransformを渡す
+                yield return new WaitForSeconds(0.25f);
                 AttackToHero(attacker, false); // 敵がHeroに攻撃するのでisPlayerCardはfalseにする    
             }
             fieldCardList = enemyFieldTransform.GetComponentsInChildren<CardController>(); // フィールドのカードリストを更新
