@@ -14,9 +14,10 @@ public class CardModel
     public bool isAlive;       // カードが生きているかどうか
     public bool canAttack;     // カードが攻撃可能かどうか
     public bool isFieldCard;   // フィールドのカードかどうか
+    public bool isPlayerCard;  // プレイヤーのカードかどうか
 
     // コンストラクタ
-    public CardModel(int cardID)
+    public CardModel(int cardID, bool isPlayer)
     {
         // Card1のデータを入れ物(CardEntityクラス)に渡す
         CardEntity cardEntity = Resources.Load<CardEntity>("CardEntityList/Card" + cardID);
@@ -28,6 +29,7 @@ public class CardModel
         cost = cardEntity.cost;
         icon = cardEntity.icon;
         isAlive = true; // カードは最初は生きている状態
+        isPlayerCard = isPlayer; // 引数のisPlayerを代入
     }
 
     // カードのダメージ処理
