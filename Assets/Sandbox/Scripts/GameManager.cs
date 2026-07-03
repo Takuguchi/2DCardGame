@@ -249,7 +249,7 @@ public class GameManager : MonoBehaviour
             // 場に出すカードを選択
             CardController enemyCard = selectableHandCardList[0]; // とりあえずカードリストの一番最初のカードを選択
             // カードを移動
-            enemyCard.movement.SetCardTransform(enemyFieldTransform); // カードの移動を行うCardMovementクラスのSetCardTransform()メソッドに、カードの移動先のTransformを渡す
+            StartCoroutine(enemyCard.movement.MoveToField(enemyFieldTransform)); // カードの移動を行うCardMovementクラスのSetCardTransform()メソッドに、カードの移動先のTransformを渡す
             ReduceManaCost(enemyCard.model.cost, false); // カードを出したら敵のManaコストを減らす　引数isPlayerCardはfalseで渡す
             enemyCard.model.isFieldCard = true; // カードを出したらフィールドのカードにする
 

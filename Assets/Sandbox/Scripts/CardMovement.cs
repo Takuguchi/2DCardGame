@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using DG.Tweening;
 
 // カードのPrefabにアタッチ
 // カード側の動きを制御するクラス
@@ -73,9 +75,27 @@ public class CardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
         GetComponent<CanvasGroup>().blocksRaycasts = true;
     }
 
-    public void SetCardTransform(Transform parentTransform)
+    public IEnumerator MoveToField(Transform field)
     {
-        defaultParent = parentTransform;
+        // 一度親をCanvasに変更する
+        transform.SetParent(defaultParent.parent, false);
+        // DOTweenでカードをフィールドに移動
+        transform.DOMove(field.position, 0.25f);
+        yield return new WaitForSeconds(0.25f); 
+
+        defaultParent = field;
         transform.SetParent(defaultParent);
+    }
+
+    public IEnumerator MoveToTarget(Transform target)
+    {
+        
+        yield return new WaitForSeconds(0.25f);
+    }
+
+
+    void Start()
+    {
+        defaultParent = transform.parent;
     }
 }
