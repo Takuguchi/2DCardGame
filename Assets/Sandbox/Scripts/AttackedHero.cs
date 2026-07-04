@@ -24,6 +24,7 @@ public class AttackedHero : MonoBehaviour, IDropHandler
         {
             // attackerがHeroに攻撃する
             GameManager.instance.AttackToHero(attacker, true); // ドラッグアンドドロップによって攻撃するのはプレイヤーだけなのでisPlayerCardはtrueにする
+            GameManager.instance.CheckHeroHP(); // HeroのHPが0になったかどうかを確認する
         }
 
 

@@ -351,7 +351,7 @@ public class GameManager : MonoBehaviour
     }
 
     // HeroのHPが0以下になったかどうかを判定→リザルト画面を表示
-    void CheckHeroHP()
+    public void CheckHeroHP()
     {
         if (playerHeroHp <= 0 || enemyHeroHp <= 0) // HeroのHPが0以下になったら
         {
