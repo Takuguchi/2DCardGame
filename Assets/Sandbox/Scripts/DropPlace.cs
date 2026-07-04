@@ -34,9 +34,7 @@ public class DropPlace : MonoBehaviour, IDropHandler
             {
                 return; // Manaコストを減らす必要はないため、処理を終了する
             }
-
-            GameManager.instance.ReduceManaCost(card.model.cost, true); // カードをドロップしたらPlayerのManaコストを減らす
-            card.model.isFieldCard = true; // カードをドロップしたらフィールドのカードにする
+            card.OnField(true); // CardControllerクラスのOnField()メソッドを呼び出す
         }
     }
 }
