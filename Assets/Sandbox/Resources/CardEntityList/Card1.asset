@@ -17,3 +17,4 @@ MonoBehaviour:
   at: 2
   cost: 2
   icon: {fileID: 21300000, guid: 3bf7f2cb2f203db4198b99c41af1e3fd, type: 3}
+  ability: 1
