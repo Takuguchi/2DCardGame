@@ -59,8 +59,8 @@ public class GameManager : MonoBehaviour
     void StartGame()
     {
         resultPanel.SetActive(false); // ゲーム開始時はリザルト画面を非表示にしておく
-        playerHeroHp = 1; // プレイヤーのHeroのHPを1にする
-        enemyHeroHp = 1; // 敵のHeroのHPをリザルト画面の確認のために1にする
+        playerHeroHp = 10; // プレイヤーのHeroのHPを10にする
+        enemyHeroHp = 10; // 敵のHeroのHPを10にする
         playerManaCost = playerDefaultManaCost = 10; // プレイヤーのマナコストを1にする
         enemyManaCost = enemyDefaultManaCost = 10; // 敵のマナコストを1にする
         ShowHeroHP(); // HeroのHP表示を変更するメソッドを呼び出す
@@ -178,7 +178,7 @@ public class GameManager : MonoBehaviour
     // カウントダウンを表示するメソッド(コルーチンを使用)
     IEnumerator CountDown()
     {
-        timeCount = 8; // カウントダウンの初期値を8にする
+        timeCount = 20; // カウントダウンの初期値を8にする
         timeCountText.text = timeCount.ToString(); // カウントダウンのTextを初期値にする
 
         // カウントが0秒になるまではコルーチンを回す
@@ -289,7 +289,7 @@ public class GameManager : MonoBehaviour
                 CardController defender = playerFieldCardList[0]; // とりあえずPlayerフィールドの一番左のカードを選択
                 // attackerとdefenderを戦わせる
                 StartCoroutine(attacker.movement.MoveToTarget(defender.transform)); // カードの移動を行うCardMovementクラスのMoveToTarget()メソッドに、カードの移動先のTransformを渡す
-                yield return new WaitForSeconds(0.25f);
+                yield return new WaitForSeconds(0.51f);
                 CardsBattle(attacker, defender);
             }
             else // プレイヤーのフィールドにカードが存在しない場合は、敵はプレイヤーのHeroに攻撃する
