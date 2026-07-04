@@ -197,6 +197,15 @@ public class GameManager : MonoBehaviour
         return enemyFieldTransform.GetComponentsInChildren<CardController>();
     }
 
+    // ターンエンドボタンを押したときに呼ばれるメソッド
+    public void OnClickTurnEndButton()
+    {
+        if (isPlayerTurn) // プレイヤーのターンのときだけターンを切り替える
+        {
+            ChangeTurn(); 
+        }
+    }
+
     // ターンを切り替えるメソッド
     public void ChangeTurn()
     {
