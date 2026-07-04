@@ -12,6 +12,7 @@ public class CardView : MonoBehaviour
     [SerializeField] Text costText; // カードのコストを表示するText
     [SerializeField] Image iconImage; // カードの絵柄を表示するImage
     [SerializeField] GameObject selectablePanel; // カードが選択可能かどうかを表示するパネル
+    [SerializeField] GameObject shieldPanel; // カードがシールドを持っているかどうかを表示するパネル
 
     // CardModel型のデータを取得してカードの見た目に反映するメソッド
     public void Show(CardModel cardModel)
@@ -21,7 +22,15 @@ public class CardView : MonoBehaviour
         atText.text = cardModel.at.ToString(); // カードの攻撃力を表示するTextにカードの攻撃力を代入
         costText.text = cardModel.cost.ToString(); // カードのコストを表示するTextにカードのコストを代入
         iconImage.sprite = cardModel.icon; // カードの絵柄を表示するImageにカードの絵柄を代入
-
+        // カードのアビリティがシールドなら、シールドパネルを表示する
+        if (cardModel.ability == ABILITY.SHIELD)
+        {
+            shieldPanel.SetActive(true); // シールドパネルを表示する
+        }
+        else
+        {
+            shieldPanel.SetActive(false); // シールドパネルを非表示にする
+        }
     }
 
     // カードのデータが変化したときに呼ばれるメソッド

@@ -37,6 +37,17 @@ public class CardController : MonoBehaviour
         model.canAttack = canAttack; // カードのデータのcanAttackを引数のcanAttackにする
         view.SetActiveSelectablePanel(canAttack); // 攻撃可能なカードはオーラを表示する
     }
+
+    // フィールドにカードを出したときに呼ばれるメソッド
+    public void OnField(bool isPlayer)
+    {
+        GameManager.instance.ReduceManaCost(model.cost, isPlayer); // カードをドロップしたらPlayerのManaコストを減らす
+        model.isFieldCard = true; // カードをドロップしたらフィールドのカードにする
+        if (model.ability == ABILITY.INIT_ATTACKABLE)
+        {
+            SetCanAttack(true); // カードのアビリティがINIT_ATTACKABLEなら、攻撃可能にする
+        }
+    }
     
     // Aliveがfalseになっていたら破壊するメソッド
     public void CheckAlive()

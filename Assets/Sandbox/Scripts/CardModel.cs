@@ -11,6 +11,9 @@ public class CardModel
     public int at;      // カードの攻撃力
     public int cost;    // カードのコスト
     public Sprite icon; // カードの絵柄
+    public ABILITY ability; // カードのアビリティ
+
+
     public bool isAlive;       // カードが生きているかどうか
     public bool canAttack;     // カードが攻撃可能かどうか
     public bool isFieldCard;   // フィールドのカードかどうか
@@ -28,6 +31,7 @@ public class CardModel
         at = cardEntity.at; 
         cost = cardEntity.cost;
         icon = cardEntity.icon;
+        ability = cardEntity.ability;
         isAlive = true; // カードは最初は生きている状態
         isPlayerCard = isPlayer; // 引数のisPlayerを代入
     }

@@ -14,4 +14,12 @@ public class CardEntity : ScriptableObject
     public int at;      // カードの攻撃力
     public int cost;    // カードのコスト
     public Sprite icon; // カードの絵柄
+    public ABILITY ability; // カードのアビリティ
+}
+
+public enum ABILITY
+{
+    NONE,   // アビリティなし
+    INIT_ATTACKABLE, // 1ターン目で攻撃可能
+    SHIELD  // シールド
 }
