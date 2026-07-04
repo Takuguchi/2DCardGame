@@ -191,6 +191,12 @@ public class GameManager : MonoBehaviour
         ChangeTurn(); // カウントが0になったらターンを切り替える
     }
 
+    // 敵のフィールドのカードを取得するメソッド
+    public CardController[] GetEnemyFieldCards()
+    {
+        return enemyFieldTransform.GetComponentsInChildren<CardController>();
+    }
+
     // ターンを切り替えるメソッド
     public void ChangeTurn()
     {

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,6 +24,13 @@ public class AttackedCard : MonoBehaviour, IDropHandler
         if (attacker.model.isPlayerCard == defender.model.isPlayerCard)
         {
             return; // attackerとdefenderがプレイヤー同士, または敵同士のカードだった場合は何も処理しないで終わる
+        }
+
+        // シールドカードがあれば、シールドカード以外は攻撃できない
+        CardController[] enemyFieldCards = GameManager.instance.GetEnemyFieldCards();
+        if (Array.Exists(enemyFieldCards, card => card.model.ability == ABILITY.SHIELD) && defender.model.ability != ABILITY.SHIELD)
+        {
+            return; // 何も処理しないで終わる
         }
 
         // attackerが攻撃可能だった場合

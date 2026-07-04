@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,7 +18,13 @@ public class AttackedHero : MonoBehaviour, IDropHandler
         if (attacker == null)
         {
             return; // 何も処理しないで終わる
-        }   
+        }
+        // 敵フィールドにシールドカードがあれば攻撃できない
+        CardController[] enemyFieldCards = GameManager.instance.GetEnemyFieldCards();
+        if (Array.Exists(enemyFieldCards, card => card.model.ability == ABILITY.SHIELD))
+        {
+            return; // 何も処理しないで終わる
+        }
 
         // attackerが攻撃可能だった場合
         if (attacker.model.canAttack)
