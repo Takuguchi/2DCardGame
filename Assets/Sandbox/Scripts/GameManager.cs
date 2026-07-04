@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
                                enemyFieldTransform; // 敵のフィールドのTransformを取得
     [SerializeField] CardController cardPrefab; // カードのPrefabをCardController型として取得
 
-    bool isPlayerTurn; // プレイヤーのターンかどうかを判定する変数
+    public bool isPlayerTurn; // プレイヤーのターンかどうかを判定する変数
 
     List<int> playerDeck = new List<int>() {3, 1, 2, 2, 3}, // プレイヤーのデッキのカードIDを格納するリスト
               enemyDeck  = new List<int>() {2, 1, 3, 1, 3};  // 敵のデッキのカードIDを格納するリスト
