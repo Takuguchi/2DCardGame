@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0058304999a35334999acd26135d03d3, type: 3}
   m_Name: Card2
   m_EditorClassIdentifier: 
-  name: "\u51A5\u754C\u306E\u7344\u72AC\u30A4\u30F3\u30D5\u30A7\u30EB\u30CB"
-  hp: 2
-  at: 1
-  cost: 1
-  icon: {fileID: 21300000, guid: 8dea51b2539604649bf94af57cf7aba7, type: 3}
-  ability: 2
+  name: "\u96F7\u738B\u9F8D\u30B8\u30FC\u30AF\u30F4\u30EB\u30E0"
+  hp: 3
+  at: 2
+  cost: 6
+  icon: {fileID: 21300000, guid: e85b694c2e425744f99f13abed55e80d, type: 3}
+  ability: 1

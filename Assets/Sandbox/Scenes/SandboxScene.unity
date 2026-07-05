@@ -309,9 +309,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: '30
-
-'
+  m_Text: 5
 --- !u!222 &192598040
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -390,9 +388,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: '30
-
-'
+  m_Text: 5
 --- !u!222 &212690290
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -537,7 +533,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 720d7cf281516e04c8b3eba63d9d5819, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f5cefb60ee5dafd4a8c26ae42757154d, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -674,7 +670,7 @@ MonoBehaviour:
   deck: 
   heroHp: 0
   manaCost: 0
-  defaultManaCost: 0
+  defaultManaCost: 4
 --- !u!1 &452359996
 GameObject:
   m_ObjectHideFlags: 0
@@ -1288,7 +1284,7 @@ MonoBehaviour:
   deck: 
   heroHp: 0
   manaCost: 0
-  defaultManaCost: 0
+  defaultManaCost: 4
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -2112,7 +2108,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 0eb8b051563d3394bb967ef6362967de, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 6ba8e339500eb004a8b81c37b23a18e1, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

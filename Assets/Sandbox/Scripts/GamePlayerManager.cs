@@ -13,9 +13,9 @@ public class GamePlayerManager : MonoBehaviour
     public void Init(List<int> cardDeck)
     {
         this.deck = cardDeck; // デッキを初期化する
-        heroHp = 10;
-        manaCost = 10;
-        defaultManaCost = 10;
+        heroHp = 5;
+        manaCost = 4;
+        defaultManaCost = 4;
     }
 
     public void IncreaseManaCost()

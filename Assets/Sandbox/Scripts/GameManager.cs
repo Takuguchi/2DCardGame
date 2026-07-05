@@ -40,8 +40,8 @@ public class GameManager : MonoBehaviour
     void StartGame()
     {
         uiManager.HideResultPanel(); // ゲーム開始時はリザルト画面を非表示にする
-        player.Init(new List<int>() { 1, 2, 3, 3, 2 }); // プレイヤーのデッキを初期化する
-        enemy.Init(new List<int>() { 3, 1, 2, 2, 3 }); // 敵のデッキを初期化する
+        player.Init(new List<int>() { 1, 2, 3, 3, 1 }); // プレイヤーのデッキを初期化する
+        enemy.Init(new List<int>() { 4, 5, 6, 6, 4 }); // 敵のデッキを初期化する
         uiManager.ShowHeroHP(player.heroHp, enemy.heroHp); // HeroのHP表示を変更するメソッドを呼び出す
         uiManager.ShowManaCost(player.manaCost, enemy.manaCost); // マナコストの表示を変更するメソッドを呼び出す
         SettingInitHand();
@@ -86,8 +86,8 @@ public class GameManager : MonoBehaviour
         }
 
         // デッキを生成
-        player.deck = new List<int>() {3, 1, 2, 2, 3}; // プレイヤーのデッキのカードIDを格納するリスト
-        enemy.deck  = new List<int>() {2, 1, 3, 1, 3};  // 敵のデッキのカードIDを格納するリスト
+        player.deck = new List<int>() { 1, 2, 3, 3, 1 }; // プレイヤーのデッキのカードIDを格納するリスト
+        enemy.deck  = new List<int>() { 4, 5, 6, 6, 4 };  // 敵のデッキのカードIDを格納するリスト
 
         StartGame(); // ゲーム開始時に呼ばれるメソッドを呼び出す
     }
@@ -96,7 +96,7 @@ public class GameManager : MonoBehaviour
     void SettingInitHand()
     {
         // カードをそれぞれに3枚配る
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 4; i++)
         {
             GiveCardToHand(player.deck, playerHandTransform); // プレイヤーの手札にカードを生成
             GiveCardToHand(enemy.deck, enemyHandTransform);  // 敵の手札にカードを生成
