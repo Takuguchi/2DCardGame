@@ -6,9 +6,10 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField] AI enemyAI; // 敵のAIを取得;
     [SerializeField] GameObject resultPanel; // ゲーム終了時に表示するパネルを取得
     [SerializeField] Text resultText;  // ゲーム終了時に表示するテキストを取得
-    [SerializeField] Transform playerHandTransform, // プレイヤーの手札のTransformを取得
+    public Transform playerHandTransform, // プレイヤーの手札のTransformを取得
                                playerFieldTransform, // プレイヤーのフィールドのTransformを取得   
                                enemyHandTransform,  // 敵の手札のTransformを取得 
                                enemyFieldTransform; // 敵のフィールドのTransformを取得
@@ -25,13 +26,13 @@ public class GameManager : MonoBehaviour
     int playerHeroHp = 30; // プレイヤーのHeroのHP
     int enemyHeroHp  = 30; // 敵のHeroのHP
 
-    [SerializeField] Transform playerHero; // プレイヤーのHeroのTransform
+    public Transform playerHero; // プレイヤーのHeroのTransform
 
     [SerializeField] Text playerManaCostText; // プレイヤーのマナコストを表示するTextを取得
     [SerializeField] Text enemyManaCostText; // 敵のマナコストを表示するTextを取得   
 
     public int playerManaCost = 30; // プレイヤーのマナコスト
-    int enemyManaCost  = 30; // 敵のマナコスト
+    public int enemyManaCost  = 30; // 敵のマナコスト
     int playerDefaultManaCost; // プレイヤーのマナコストの初期値(ターンごとに増加)
     int enemyDefaultManaCost; // 敵のマナコストの初期値(ターンごとに増加)
 
@@ -171,7 +172,7 @@ public class GameManager : MonoBehaviour
         else
         {
             // 敵のターンの処理
-            StartCoroutine(EnemyTurn());
+            StartCoroutine(enemyAI.EnemyTurn());
         }
     }
 
@@ -233,7 +234,7 @@ public class GameManager : MonoBehaviour
     }
 
     // 攻撃可能オーラを付けたり消したりするメソッド
-    void SettingCanAttackView(CardController[] fieldCardList, bool canAttack)
+    public void SettingCanAttackView(CardController[] fieldCardList, bool canAttack)
     {
         foreach (CardController card in fieldCardList)
         {
@@ -250,87 +251,6 @@ public class GameManager : MonoBehaviour
         SettingCanAttackView(playerFieldCardList, true); // フィールドのカードに攻撃可能オーラを付ける
     }
 
-    // 敵のターンの処理を行うメソッド
-    IEnumerator EnemyTurn()
-    {
-        Debug.Log("Enemyのターン");
-        // フィールドのカードを攻撃可能にする
-        CardController[] enemyFieldCardList = enemyFieldTransform.GetComponentsInChildren<CardController>();
-        SettingCanAttackView(enemyFieldCardList, true); // フィールドのカードに攻撃可能オーラを付ける
-
-        yield return new WaitForSeconds(1); // カードをフィールドに出す前に1秒置く
-
-        /* 場にカードを出す */
-        // 手札のカードリストを取得
-        CardController[] handCardList = enemyHandTransform.GetComponentsInChildren<CardController>();
-        
-        // コスト以下のカードがあれば、カードをフィールドに出し続ける
-        while (Array.Exists(handCardList, card => card.model.cost <= enemyManaCost))
-        {
-            // Manaコスト以下のカードリストを取得
-            CardController[] selectableHandCardList = Array.FindAll(handCardList, card => card.model.cost <= enemyManaCost);
-            
-            // 場に出すカードを選択
-            CardController enemyCard = selectableHandCardList[0]; // とりあえずカードリストの一番最初のカードを選択
-            // カードを移動
-            StartCoroutine(enemyCard.movement.MoveToField(enemyFieldTransform)); // カードの移動を行うCardMovementクラスのSetCardTransform()メソッドに、カードの移動先のTransformを渡す
-            enemyCard.OnField(false); // CardControllerクラスのOnField()メソッドを呼び出す(敵側なのでisPlayer引数はfalseで渡す)
-
-            // 手札のリストを更新
-            handCardList = enemyHandTransform.GetComponentsInChildren<CardController>();
-            yield return new WaitForSeconds(1);
-        }
-
-        yield return new WaitForSeconds(1);
-
-        /* 攻撃 */
-        // フィールドのカードリストを取得
-        CardController[] fieldCardList = enemyFieldTransform.GetComponentsInChildren<CardController>();
-        // 攻撃可能カードがあれば攻撃を繰り返す
-        while (Array.Exists(fieldCardList, card => card.model.canAttack))
-        {
-            // 攻撃可能カードを取得
-            CardController[] enemyCanAttackCardList = Array.FindAll(fieldCardList, card => card.model.canAttack); // 検索：Array.FindAll
-            CardController[] playerFieldCardList = playerFieldTransform.GetComponentsInChildren<CardController>();
-
-
-            // attackerカードを選択
-            CardController attacker = enemyCanAttackCardList[0]; // defenderカードを選択（フィールドの攻撃可能カードから選択）  
-            
-            // プレイヤーのフィールドにカードが存在する場合はカード同士で戦わせる
-            if (playerFieldCardList.Length > 0)
-            {
-                // defenderカードを選択
-                // シールドカードのみ攻撃対象にする
-                if (Array.Exists(playerFieldCardList, card => card.model.ability == ABILITY.SHIELD))
-                {
-                    playerFieldCardList = Array.FindAll(playerFieldCardList, card => card.model.ability == ABILITY.SHIELD);
-                }
-
-                CardController defender = playerFieldCardList[0]; // とりあえずPlayerフィールドの一番左のカードを選択
-                // attackerとdefenderを戦わせる
-                StartCoroutine(attacker.movement.MoveToTarget(defender.transform)); // カードの移動を行うCardMovementクラスのMoveToTarget()メソッドに、カードの移動先のTransformを渡す
-                yield return new WaitForSeconds(0.51f);
-                CardsBattle(attacker, defender);
-            }
-            else // プレイヤーのフィールドにカードが存在しない場合は、敵はプレイヤーのHeroに攻撃する
-            {
-                StartCoroutine(attacker.movement.MoveToTarget(playerHero)); // カードの移動を行うCardMovementクラスのMoveToTarget()メソッドに、カードの移動先のTransformを渡す
-                yield return new WaitForSeconds(0.25f);
-                AttackToHero(attacker, false); // 敵がHeroに攻撃するのでisPlayerCardはfalseにする
-                yield return new WaitForSeconds(0.25f); // カードが戻る時間待ってから、HeroのHPが0以下になったかどうかを判定する
-                CheckHeroHP(); // HeroのHPが0以下になったかどうかを判定→リザルト画面表示
-            }
-            fieldCardList = enemyFieldTransform.GetComponentsInChildren<CardController>(); // フィールドのカードリストを更新
-            yield return new WaitForSeconds(1);
-        }
-
-        
-
-        yield return new WaitForSeconds(1); // 1秒待機してからターン切替
-
-        ChangeTurn(); // 敵のターンが終了したら、プレイヤーのターンに切り替える
-    }
 
     public void CardsBattle(CardController attacker, CardController defender)
     {

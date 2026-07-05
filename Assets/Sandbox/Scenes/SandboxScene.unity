@@ -567,6 +567,7 @@ GameObject:
   - component: {fileID: 386863022}
   - component: {fileID: 386863021}
   - component: {fileID: 386863023}
+  - component: {fileID: 386863024}
   m_Layer: 5
   m_Name: EnemyHero
   m_TagString: Untagged
@@ -643,6 +644,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e9b11c2bd8f204046a499953cf58a599, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &386863024
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 386863019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4c95cbb6da837748ade684799c3f4fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &452359996
@@ -1708,6 +1721,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d07c852f22c8cde44a7479195f6b5189, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyAI: {fileID: 386863024}
   resultPanel: {fileID: 452359996}
   resultText: {fileID: 1036677120}
   playerHandTransform: {fileID: 1480319886}
@@ -1715,12 +1729,14 @@ MonoBehaviour:
   enemyHandTransform: {fileID: 851633992}
   enemyFieldTransform: {fileID: 862042951}
   cardPrefab: {fileID: 68245383862483898, guid: 3d6235cefc847a740bafdd14a99c4cc6, type: 3}
+  isPlayerTurn: 0
   playerHeroHpText: {fileID: 192598039}
   enemyHeroHpText: {fileID: 212690289}
   playerHero: {fileID: 933675142}
   playerManaCostText: {fileID: 1696876695}
   enemyManaCostText: {fileID: 559897495}
   playerManaCost: 30
+  enemyManaCost: 30
   timeCountText: {fileID: 1558740581}
 --- !u!4 &1463810790
 Transform:
