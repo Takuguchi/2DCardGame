@@ -20,7 +20,7 @@ public class CardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
         CardController card = GetComponent<CardController>();
 
         // フィールドのカードじゃない場合＝手札のカードの場合
-        if (card.model.isPlayerCard && GameManager.instance.isPlayerTurn && !card.model.isFieldCard && card.model.cost <= GameManager.instance.playerManaCost)
+        if (card.model.isPlayerCard && GameManager.instance.isPlayerTurn && !card.model.isFieldCard && card.model.cost <= GameManager.instance.player.manaCost)
         {
             isDraggable = true; // カードのコストがPlayerのManaコスト以下ならドラッグ可能
         }
