@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    public GamePlayerManager player; 
+    public GamePlayerManager enemy;
     [SerializeField] AI enemyAI; // 敵のAIを取得;
     [SerializeField] UIManager uiManager; // UIManagerを取得
     public Transform playerHandTransform, // プレイヤーの手札のTransformを取得
@@ -14,19 +16,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] CardController cardPrefab; // カードのPrefabをCardController型として取得
 
     public bool isPlayerTurn; // プレイヤーのターンかどうかを判定する変数
-
-    List<int> playerDeck = new List<int>() {3, 1, 2, 2, 3}, // プレイヤーのデッキのカードIDを格納するリスト
-              enemyDeck  = new List<int>() {2, 1, 3, 1, 3};  // 敵のデッキのカードIDを格納するリスト
-
-    int playerHeroHp = 30; // プレイヤーのHeroのHP
-    int enemyHeroHp  = 30; // 敵のHeroのHP
-
     public Transform playerHero; // プレイヤーのHeroのTransform
-
-    public int playerManaCost = 30; // プレイヤーのマナコスト
-    public int enemyManaCost  = 30; // 敵のマナコスト
-    int playerDefaultManaCost; // プレイヤーのマナコストの初期値(ターンごとに増加)
-    int enemyDefaultManaCost; // 敵のマナコストの初期値(ターンごとに増加)
 
     int timeCount; // 時間をカウントする変数
 
@@ -50,12 +40,10 @@ public class GameManager : MonoBehaviour
     void StartGame()
     {
         uiManager.HideResultPanel(); // ゲーム開始時はリザルト画面を非表示にする
-        playerHeroHp = 10; // プレイヤーのHeroのHPを10にする
-        enemyHeroHp = 10; // 敵のHeroのHPを10にする
-        playerManaCost = playerDefaultManaCost = 10; // プレイヤーのマナコストを1にする
-        enemyManaCost = enemyDefaultManaCost = 10; // 敵のマナコストを1にする
-        uiManager.ShowHeroHP(playerHeroHp, enemyHeroHp); // HeroのHP表示を変更するメソッドを呼び出す
-        uiManager.ShowManaCost(playerManaCost, enemyManaCost); // マナコストの表示を変更するメソッドを呼び出す
+        player.Init(new List<int>() { 1, 2, 3, 3, 2 }); // プレイヤーのデッキを初期化する
+        enemy.Init(new List<int>() { 3, 1, 2, 2, 3 }); // 敵のデッキを初期化する
+        uiManager.ShowHeroHP(player.heroHp, enemy.heroHp); // HeroのHP表示を変更するメソッドを呼び出す
+        uiManager.ShowManaCost(player.manaCost, enemy.manaCost); // マナコストの表示を変更するメソッドを呼び出す
         SettingInitHand();
         isPlayerTurn = true; // プレイヤーのターンから開始する
         TurnCalc(); // ターン処理を行うメソッドを呼び出す
@@ -67,13 +55,13 @@ public class GameManager : MonoBehaviour
     {
         if (isPlayerCard)
         {
-            playerManaCost -= cost; // プレイヤーのマナコストを消費する
+            player.manaCost -= cost; // プレイヤーのマナコストを消費する
         }
         else
         {
-            enemyManaCost -= cost; // 敵のマナコストを消費する
+            enemy.manaCost -= cost; // 敵のマナコストを消費する
         }
-        uiManager.ShowManaCost(playerManaCost, enemyManaCost); // マナコストの表示を変更するメソッドを呼び出す
+        uiManager.ShowManaCost(player.manaCost, enemy.manaCost); // マナコストの表示を変更するメソッドを呼び出す
     }
 
     // ゲームをリスタートするメソッド
@@ -98,8 +86,8 @@ public class GameManager : MonoBehaviour
         }
 
         // デッキを生成
-        playerDeck = new List<int>() {3, 1, 2, 2, 3}; // プレイヤーのデッキのカードIDを格納するリスト
-        enemyDeck  = new List<int>() {2, 1, 3, 1, 3};  // 敵のデッキのカードIDを格納するリスト
+        player.deck = new List<int>() {3, 1, 2, 2, 3}; // プレイヤーのデッキのカードIDを格納するリスト
+        enemy.deck  = new List<int>() {2, 1, 3, 1, 3};  // 敵のデッキのカードIDを格納するリスト
 
         StartGame(); // ゲーム開始時に呼ばれるメソッドを呼び出す
     }
@@ -110,8 +98,8 @@ public class GameManager : MonoBehaviour
         // カードをそれぞれに3枚配る
         for (int i = 0; i < 3; i++)
         {
-            GiveCardToHand(playerDeck, playerHandTransform); // プレイヤーの手札にカードを生成
-            GiveCardToHand(enemyDeck, enemyHandTransform);  // 敵の手札にカードを生成
+            GiveCardToHand(player.deck, playerHandTransform); // プレイヤーの手札にカードを生成
+            GiveCardToHand(enemy.deck, enemyHandTransform);  // 敵の手札にカードを生成
         }
     }
 
@@ -203,17 +191,15 @@ public class GameManager : MonoBehaviour
 
         if (isPlayerTurn)
         {
-            playerDefaultManaCost++; // プレイヤーのターンになったらマナコストを1増やす
-            playerManaCost = playerDefaultManaCost; // プレイヤーのマナコストに初期値を代入
-            GiveCardToHand(playerDeck, playerHandTransform); // プレイヤーの手札にカードを1枚生成（ドロー）
+            player.IncreaseManaCost(); // プレイヤーのターンになったらマナコストを1増やす
+            GiveCardToHand(player.deck, playerHandTransform); // プレイヤーの手札にカードを1枚生成（ドロー）
         }
         else
         {
-            enemyDefaultManaCost++; // 敵のターンになったらマナコストを1増やす
-            enemyManaCost = enemyDefaultManaCost; // 敵のマナコストに初期値を代入
-            GiveCardToHand(enemyDeck, enemyHandTransform);  // 敵の手札にカードを1枚生成（ドロー）
+            enemy.IncreaseManaCost(); // 敵のターンになったらマナコストを1増やす
+            GiveCardToHand(enemy.deck, enemyHandTransform);  // 敵の手札にカードを1枚生成（ドロー）
         }
-        uiManager.ShowManaCost(playerManaCost, enemyManaCost); // マナコストの表示を更新する
+        uiManager.ShowManaCost(player.manaCost, enemy.manaCost); // マナコストの表示を更新する
         TurnCalc(); // ターン処理を行うメソッドを呼び出す
     }
 
@@ -257,23 +243,23 @@ public class GameManager : MonoBehaviour
         // attackerがプレイヤーのカードだった場合
         if (isPlayerCard)
         {
-            enemyHeroHp -= attacker.model.at; // 敵のHeroのHPを攻撃力分下げる
+            enemy.heroHp -= attacker.model.at; // 敵のHeroのHPを攻撃力分下げる
         }
         // attackerが敵のカードだった場合
         else
         {
-            playerHeroHp -= attacker.model.at; // プレイヤーのHeroのHPを攻撃力分下げる
+            player.heroHp -= attacker.model.at; // プレイヤーのHeroのHPを攻撃力分下げる
         }
         attacker.SetCanAttack(false); // 一度攻撃したらattackerを攻撃不可にする
-        uiManager.ShowHeroHP(playerHeroHp, enemyHeroHp); // HeroのHP表示を変更
+        uiManager.ShowHeroHP(player.heroHp, enemy.heroHp); // HeroのHP表示を変更
     }
 
     // HeroのHPが0以下になったかどうかを判定→リザルト画面を表示
     public void CheckHeroHP()
     {
-        if (playerHeroHp <= 0 || enemyHeroHp <= 0) // HeroのHPが0以下になったら
+        if (player.heroHp <= 0 || enemy.heroHp <= 0) // HeroのHPが0以下になったら
         {
-            ShowResultPanel(playerHeroHp);
+            ShowResultPanel(player.heroHp);
             
         }
     }
