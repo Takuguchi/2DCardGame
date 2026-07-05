@@ -1758,7 +1758,7 @@ MonoBehaviour:
   player: {fileID: 933675146}
   enemy: {fileID: 386863025}
   enemyAI: {fileID: 386863024}
-  uiManager: {fileID: 0}
+  uiManager: {fileID: 2008018496}
   playerHandTransform: {fileID: 1480319886}
   playerFieldTransform: {fileID: 85752552}
   enemyHandTransform: {fileID: 851633992}
