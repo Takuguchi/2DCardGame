@@ -568,6 +568,7 @@ GameObject:
   - component: {fileID: 386863021}
   - component: {fileID: 386863023}
   - component: {fileID: 386863024}
+  - component: {fileID: 386863025}
   m_Layer: 5
   m_Name: EnemyHero
   m_TagString: Untagged
@@ -658,6 +659,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4c95cbb6da837748ade684799c3f4fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &386863025
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 386863019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0992a23a58715694e90975c904c086f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deck: 
+  heroHp: 0
+  manaCost: 0
+  defaultManaCost: 0
 --- !u!1 &452359996
 GameObject:
   m_ObjectHideFlags: 0
@@ -1177,6 +1194,7 @@ GameObject:
   - component: {fileID: 933675144}
   - component: {fileID: 933675143}
   - component: {fileID: 933675145}
+  - component: {fileID: 933675146}
   m_Layer: 5
   m_Name: PlayerHero
   m_TagString: Untagged
@@ -1255,6 +1273,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9b11c2bd8f204046a499953cf58a599, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &933675146
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 933675141}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0992a23a58715694e90975c904c086f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deck: 
+  heroHp: 0
+  manaCost: 0
+  defaultManaCost: 0
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -1721,6 +1755,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d07c852f22c8cde44a7479195f6b5189, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 933675146}
+  enemy: {fileID: 386863025}
   enemyAI: {fileID: 386863024}
   uiManager: {fileID: 2008018496}
   playerHandTransform: {fileID: 1480319886}
@@ -1730,8 +1766,6 @@ MonoBehaviour:
   cardPrefab: {fileID: 68245383862483898, guid: 3d6235cefc847a740bafdd14a99c4cc6, type: 3}
   isPlayerTurn: 0
   playerHero: {fileID: 933675142}
-  playerManaCost: 30
-  enemyManaCost: 30
 --- !u!4 &1463810790
 Transform:
   m_ObjectHideFlags: 0
