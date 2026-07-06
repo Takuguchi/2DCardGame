@@ -10,6 +10,8 @@ public class CardController : MonoBehaviour
     public CardModel model;    // カードのデータ（model）に関することを操作
     public CardMovement movement; // カードの移動（movement）に関することを操作
 
+    public Transform cardTransform; // カードのTransformを取得する変数
+
     void Awake()
     {
         view = GetComponent<CardView>();  // カードの見た目（view）のデータをCardViewコンポーネントから取得
@@ -39,10 +41,11 @@ public class CardController : MonoBehaviour
     }
 
     // フィールドにカードを出したときに呼ばれるメソッド
-    public void OnField(bool isPlayer)
+    public void OnField(bool isPlayer, Transform cardTransform)
     {
         GameManager.instance.ReduceManaCost(model.cost, isPlayer); // カードをドロップしたらPlayerのManaコストを減らす
         model.isFieldCard = true; // カードをドロップしたらフィールドのカードにする
+        GameManager.instance.CreateCore(cardTransform,1);
         if (model.ability == ABILITY.INIT_ATTACKABLE)
         {
             SetCanAttack(true); // カードのアビリティがINIT_ATTACKABLEなら、攻撃可能にする

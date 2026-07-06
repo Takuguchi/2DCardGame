@@ -12,8 +12,12 @@ public class GameManager : MonoBehaviour
     public Transform playerHandTransform, // プレイヤーの手札のTransformを取得
                                playerFieldTransform, // プレイヤーのフィールドのTransformを取得   
                                enemyHandTransform,  // 敵の手札のTransformを取得 
-                               enemyFieldTransform; // 敵のフィールドのTransformを取得
+                               enemyFieldTransform, // 敵のフィールドのTransformを取得
+                               playerReserveTransform,  // プレイヤーのコアのTransformを取得
+                               enemyReserveTransform;   // 敵のコアのTransformを取得
+
     [SerializeField] CardController cardPrefab; // カードのPrefabをCardController型として取得
+    [SerializeField] CoreController corePrefab; // コアのPrefabをCoreController型として取得
 
     public bool isPlayerTurn; // プレイヤーのターンかどうかを判定する変数
     public Transform playerHero; // プレイヤーのHeroのTransform
@@ -38,7 +42,9 @@ public class GameManager : MonoBehaviour
 
     // ゲーム開始時に呼ばれるメソッド
     void StartGame()
-    {
+    {   
+        CreateCore(playerReserveTransform, 4); // プレイヤーのコアを生成する
+        CreateCore(enemyReserveTransform, 4); // 敵のコアを生成する
         uiManager.HideResultPanel(); // ゲーム開始時はリザルト画面を非表示にする
         player.Init(new List<int>() { 0, 1, 2, 3, 7, 3, 1 }); // プレイヤーのデッキを初期化する
         enemy.Init(new List<int>() { 4, 5, 5, 6, 4 }); // 敵のデッキを初期化する
@@ -130,6 +136,16 @@ public class GameManager : MonoBehaviour
             card.Init(cardID, false);    // CardControllerクラスのInit()メソッドを呼び出す(isPlayerはfalseで渡す)
         }
     }
+
+    // リザーブにコアを生成するメソッド
+    public void CreateCore(Transform reserve, int coreCount)
+    {
+        for (int i = 0; i < coreCount; i++)
+        {
+            CoreController core = Instantiate(corePrefab, reserve, false);        
+        }
+    }
+
 
     // ターン処理を行うメソッド
     void TurnCalc()

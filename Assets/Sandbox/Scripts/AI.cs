@@ -35,7 +35,7 @@ public class AI : MonoBehaviour
             CardController enemyCard = selectableHandCardList[0]; // とりあえずカードリストの一番最初のカードを選択
             // カードを移動
             StartCoroutine(enemyCard.movement.MoveToField(gameManager.enemyFieldTransform)); // カードの移動を行うCardMovementクラスのSetCardTransform()メソッドに、カードの移動先のTransformを渡す
-            enemyCard.OnField(false); // CardControllerクラスのOnField()メソッドを呼び出す(敵側なのでisPlayer引数はfalseで渡す)
+            enemyCard.OnField(false, enemyCard.transform); // CardControllerクラスのOnField()メソッドを呼び出す(敵側なのでisPlayer引数はfalseで渡す)
 
             // 手札のリストを更新
             handCardList = gameManager.enemyHandTransform.GetComponentsInChildren<CardController>();
