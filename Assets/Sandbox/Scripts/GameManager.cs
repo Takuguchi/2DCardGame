@@ -208,11 +208,13 @@ public class GameManager : MonoBehaviour
         if (isPlayerTurn)
         {
             player.IncreaseManaCost(); // プレイヤーのターンになったらマナコストを1増やす
+            CreateCore(playerReserveTransform, 1); // プレイヤーのコアを1つ生成する
             GiveCardToHand(player.deck, playerHandTransform); // プレイヤーの手札にカードを1枚生成（ドロー）
         }
         else
         {
             enemy.IncreaseManaCost(); // 敵のターンになったらマナコストを1増やす
+            CreateCore(enemyReserveTransform, 1); // 敵のコアを1つ生成する
             GiveCardToHand(enemy.deck, enemyHandTransform);  // 敵の手札にカードを1枚生成（ドロー）
         }
         uiManager.ShowManaCost(player.manaCost, enemy.manaCost); // マナコストの表示を更新する
