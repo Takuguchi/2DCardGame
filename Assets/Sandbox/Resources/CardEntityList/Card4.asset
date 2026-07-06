@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0058304999a35334999acd26135d03d3, type: 3}
   m_Name: Card4
   m_EditorClassIdentifier: 
-  name: "\u6A5F\u4EBA\u30C9\u30ED\u30A4\u30C7\u30F3"
+  name: "\u30AC\u30C9\u30D5\u30A1\u30F3\u30C8"
   hp: 3
   at: 2
-  cost: 4
-  icon: {fileID: 21300000, guid: f6e1182da52a3bf4b89e59d9cc16e76f, type: 3}
+  cost: 2
+  icon: {fileID: 21300000, guid: 2915067725fcb6443809d2216fcea508, type: 3}
   ability: 1
