@@ -90,6 +90,14 @@ public class GameManager : MonoBehaviour
         {
             Destroy(card.gameObject);
         }
+        foreach (Transform core in playerReserveTransform)
+        {
+            Destroy(core.gameObject);
+        }
+        foreach (Transform core in enemyReserveTransform)
+        {
+            Destroy(core.gameObject);
+        }
 
         // デッキを生成
         player.deck = new List<int>() { 0, 1, 2, 3, 3, 1 }; // プレイヤーのデッキのカードIDを格納するリスト
