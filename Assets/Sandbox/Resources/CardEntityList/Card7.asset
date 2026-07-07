@@ -18,3 +18,9 @@ MonoBehaviour:
   cost: 8
   icon: {fileID: 21300000, guid: 4c6589a29ffc770488462baf453f9671, type: 3}
   ability: 1
+  coreLv1: 1
+  bpLv1: 6000
+  coreLv2: 3
+  bpLv2: 10000
+  coreLv3: 5
+  bpLv3: 13000

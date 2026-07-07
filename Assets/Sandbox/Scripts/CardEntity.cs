@@ -15,6 +15,13 @@ public class CardEntity : ScriptableObject
     public int cost;    // カードのコスト
     public Sprite icon; // カードの絵柄
     public ABILITY ability; // カードのアビリティ
+
+    public int coreLv1; // レベル1の所要コア
+    public int bpLv1;   // レベル1のBP
+    public int coreLv2; // レベル2の所要コア
+    public int bpLv2;   // レベル2のBP
+    public int coreLv3; // レベル3の所要コア
+    public int bpLv3;   // レベル3のBP
 }
 
 public enum ABILITY

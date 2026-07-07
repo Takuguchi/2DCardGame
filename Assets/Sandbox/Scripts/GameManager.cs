@@ -245,6 +245,8 @@ public class GameManager : MonoBehaviour
         Debug.Log("CardsBattle");
         Debug.Log("attacker HP:" + attacker.model.hp);
         Debug.Log("defender HP:" + defender.model.hp);
+        Debug.Log("attacker:" + attacker.model.name + " BP:" + attacker.model.GetBp());
+        Debug.Log("defender:" + defender.model.name + " BP:" + defender.model.GetBp());
 
         attacker.Attack(defender); // attackerの攻撃力分のダメージをdefenderに与える
         defender.Attack(attacker); // defenderの攻撃力分のダメージをattackerに与える

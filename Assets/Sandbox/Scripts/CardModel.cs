@@ -13,6 +13,13 @@ public class CardModel
     public Sprite icon; // カードの絵柄
     public ABILITY ability; // カードのアビリティ
 
+    public int coreLv1; // レベル1の所要コア
+    public int bpLv1;   // レベル1のBP
+    public int coreLv2; // レベル2の所要コア
+    public int bpLv2;   // レベル2のBP
+    public int coreLv3; // レベル3の所要コア
+    public int bpLv3;   // レベル3のBP
+
 
     public bool isAlive;       // カードが生きているかどうか
     public bool canAttack;     // カードが攻撃可能かどうか
@@ -34,11 +41,20 @@ public class CardModel
         ability = cardEntity.ability;
         isAlive = true; // カードは最初は生きている状態
         isPlayerCard = isPlayer; // 引数のisPlayerを代入
+        
+        // 所要コアとLvごとのBPを代入
+        coreLv1 = cardEntity.coreLv1;
+        bpLv1 = cardEntity.bpLv1;
+        coreLv2 = cardEntity.coreLv2;
+        bpLv2 = cardEntity.bpLv2;
+        coreLv3 = cardEntity.coreLv3;
+        bpLv3 = cardEntity.bpLv3;
     }
 
     // カードのダメージ処理
     void Damage(int dmg)
     {
+        /*
         hp -= dmg;
 
         if (hp <= 0) // HPが0以下になると不都合があるため、0にする
@@ -46,11 +62,45 @@ public class CardModel
             hp = 0;
             isAlive = false; // カードは死んでいる状態
         }
+        else
+        {
+            hp += dmg;  // HPが0以下にならなかった場合は、ダメージを受ける前のHPに戻す
+            isAlive = true; // カードは生きている状態
+        }
+        */
+
+        // バトスピ用
+        hp = GetHp();
+        Debug.Log(name + ": " + hp);
+        hp -= dmg;
+
+        if (hp <= 0) // HPが0以下になると不都合があるため、0にする
+        {
+            hp = 0;
+            isAlive = false; // カードは死んでいる状態
+        }
+        else
+        {
+            hp += dmg;  // HPが0以下にならなかった場合は、ダメージを受ける前のHPに戻す
+            isAlive = true; // カードは生きている状態
+        }
     }
 
     // カードの攻撃処理
     public void Attack(CardController card)
     {
-        card.model.Damage(at); // 攻撃力分のダメージを相手のカードに与える
+        card.model.Damage(GetBp());
+        // card.model.Damage(at); // 攻撃力分のダメージを相手のカードに与える
+    }
+
+    // BP取得
+    public int GetBp()
+    {
+        return bpLv2;
+    } 
+
+    public int GetHp()
+    {
+        return bpLv2;
     }
 }
