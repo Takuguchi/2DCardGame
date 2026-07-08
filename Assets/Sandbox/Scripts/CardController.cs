@@ -46,10 +46,14 @@ public class CardController : MonoBehaviour
         GameManager.instance.ReduceManaCost(model.cost, isPlayer); // カードをドロップしたらPlayerのManaコストを減らす
         model.isFieldCard = true; // カードをドロップしたらフィールドのカードにする
         GameManager.instance.CreateCore(cardTransform,1);
+        
+        /*
         if (model.ability == ABILITY.INIT_ATTACKABLE)
         {
             SetCanAttack(true); // カードのアビリティがINIT_ATTACKABLEなら、攻撃可能にする
         }
+        */
+        SetCanAttack(true); // バトスピは召喚したターンでも攻撃できるので。
     }
     
     // Aliveがfalseになっていたら破壊するメソッド
