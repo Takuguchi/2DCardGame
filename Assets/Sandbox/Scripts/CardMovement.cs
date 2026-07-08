@@ -20,9 +20,9 @@ public class CardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
         CardController card = GetComponent<CardController>();
 
         // フィールドのカードじゃない場合＝手札のカードの場合
-        if (card.model.isPlayerCard && GameManager.instance.isPlayerTurn && !card.model.isFieldCard && card.model.cost <= GameManager.instance.player.manaCost)
+        if (card.model.isPlayerCard && GameManager.instance.isPlayerTurn && !card.model.isFieldCard && card.model.cost < GameManager.instance.player.manaCost)
         {
-            isDraggable = true; // カードのコストがPlayerのManaコスト以下ならドラッグ可能
+            isDraggable = true; // カードのコストがPlayerのManaコスト"未満"ならドラッグ可能(維持コアが1個以上必要なため)
         }
         else if (card.model.isPlayerCard && GameManager.instance.isPlayerTurn && card.model.isFieldCard && card.model.canAttack) // フィールドのカードで、かつ攻撃可能なら
         {
@@ -30,7 +30,7 @@ public class CardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
         }
         else
         {
-            isDraggable = false; // カードのコストがPlayerのManaコストより大きいならドラッグ不可
+            isDraggable = false; // カードのコストがPlayerのManaコスト"以上"ならドラッグ不可(維持コアが1個以上必要なため)
         }
 
         if (!isDraggable) 

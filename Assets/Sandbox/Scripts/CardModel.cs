@@ -10,6 +10,7 @@ public class CardModel
     public int hp;      // カードのHP
     public int at;      // カードのシンボル数
     public int cost;    // カードのコスト
+    public int coreNum; // カード上に乗っているコアの数
     public Sprite icon; // カードの絵柄
     public ABILITY ability; // カードのアビリティ
 
@@ -19,7 +20,6 @@ public class CardModel
     public int bpLv2;   // レベル2のBP
     public int coreLv3; // レベル3の所要コア
     public int bpLv3;   // レベル3のBP
-
 
     public bool isAlive;       // カードが生きているかどうか
     public bool canAttack;     // カードが攻撃可能かどうか
@@ -37,6 +37,7 @@ public class CardModel
         hp = cardEntity.hp;
         at = cardEntity.at; 
         cost = cardEntity.cost;
+        coreNum = cardEntity.coreNum;
         icon = cardEntity.icon;
         ability = cardEntity.ability;
         isAlive = true; // カードは最初は生きている状態

@@ -10,6 +10,7 @@ public class CardView : MonoBehaviour
     [SerializeField] Text hpText;   // カードのHPを表示するText
     [SerializeField] Text atText;   // カードの攻撃力を表示するText
     [SerializeField] Text costText; // カードのコストを表示するText
+    [SerializeField] Text coreNumText; // カード上のコアの数を表示するText
     [SerializeField] Image iconImage; // カードの絵柄を表示するImage
     [SerializeField] GameObject selectablePanel; // カードが選択可能かどうかを表示するパネル
     [SerializeField] GameObject shieldPanel; // カードがシールドを持っているかどうかを表示するパネル
@@ -38,6 +39,7 @@ public class CardView : MonoBehaviour
     {
         hpText.text = cardModel.hp.ToString(); // カードのHPを表示するTextにカードのHPを代入
         atText.text = cardModel.at.ToString(); // カードの攻撃力を表示するTextにカードの攻撃力を代入
+        coreNumText.text = cardModel.coreNum.ToString(); // カード上のコアの数を表示するTextにカードのカード上のコアの数を代入
     }
 
     // カードが選択可能かどうかを表示するメソッド

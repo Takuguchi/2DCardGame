@@ -70,6 +70,24 @@ public class GameManager : MonoBehaviour
         uiManager.ShowManaCost(player.manaCost, enemy.manaCost); // マナコストの表示を変更するメソッドを呼び出す
     }
 
+    // バトスピ用（オーバーロード）
+    public void ReduceManaCost(int cost, bool isPlayerCard, CardController card)
+    {
+        if (isPlayerCard)
+        {
+            player.manaCost -= cost; // プレイヤーのマナコストを消費する
+            player.manaCost--; // 維持コア1個分のマナコストを消費する
+            card.model.coreNum++; // カード上のコアの数を1増やす
+        }
+        else
+        {
+            enemy.manaCost -= cost; // 敵のマナコストを消費する
+            enemy.manaCost--; // 維持コア1個分のマナコストを消費する
+            card.model.coreNum++; // カード上のコアの数を1増やす
+        }
+        uiManager.ShowManaCost(player.manaCost, enemy.manaCost); // マナコストの表示を変更するメソッドを呼び出す
+    }
+
     // ゲームをリスタートするメソッド
     public void Restart()
     {

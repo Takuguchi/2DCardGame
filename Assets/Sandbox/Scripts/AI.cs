@@ -26,10 +26,10 @@ public class AI : MonoBehaviour
         CardController[] handCardList = gameManager.enemyHandTransform.GetComponentsInChildren<CardController>();
         
         // コスト以下のカードがあれば、カードをフィールドに出し続ける
-        while (Array.Exists(handCardList, card => card.model.cost <= gameManager.enemy.manaCost))
+        while (Array.Exists(handCardList, card => card.model.cost < gameManager.enemy.manaCost))
         {
             // Manaコスト以下のカードリストを取得
-            CardController[] selectableHandCardList = Array.FindAll(handCardList, card => card.model.cost <= gameManager.enemy.manaCost);
+            CardController[] selectableHandCardList = Array.FindAll(handCardList, card => card.model.cost < gameManager.enemy.manaCost);
             
             // 場に出すカードを選択
             CardController enemyCard = selectableHandCardList[0]; // とりあえずカードリストの一番最初のカードを選択
