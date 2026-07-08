@@ -272,14 +272,17 @@ public class GameManager : MonoBehaviour
         if (isPlayerCard)
         {
             enemy.heroHp -= attacker.model.at; // 敵のHeroのHPを攻撃力分下げる
+            enemy.IncreaseManaCost(); // ライフで受けたコアをリザーブに移動
         }
         // attackerが敵のカードだった場合
         else
         {
             player.heroHp -= attacker.model.at; // プレイヤーのHeroのHPを攻撃力分下げる
+            player.IncreaseManaCost(); // ライフで受けたコアをリザーブに移動
         }
         attacker.SetCanAttack(false); // 一度攻撃したらattackerを攻撃不可にする
         uiManager.ShowHeroHP(player.heroHp, enemy.heroHp); // HeroのHP表示を変更
+        uiManager.ShowManaCost(player.manaCost, enemy.manaCost); // マナコストの表示を更新する
     }
 
     // HeroのHPが0以下になったかどうかを判定→リザルト画面を表示
