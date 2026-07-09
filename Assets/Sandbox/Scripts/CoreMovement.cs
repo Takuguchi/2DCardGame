@@ -15,6 +15,9 @@ public class CoreMovement : MonoBehaviour
     {
         // 一度親をCanvasに変更する
         transform.SetParent(defaultParent.parent, true);
+
+        yield return new WaitForEndOfFrame(); // カード側のレイアウト確定を待つ(要検索)
+        
         // DOTweenでコアをフィールドに移動
         transform.DOMove(card.position, 0.25f);
         yield return new WaitForSeconds(0.25f); 

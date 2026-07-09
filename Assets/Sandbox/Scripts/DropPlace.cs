@@ -35,6 +35,14 @@ public class DropPlace : MonoBehaviour, IDropHandler
                 return; // Manaコストを減らす必要はないため、処理を終了する
             }
             card.OnField(true, card.transform); // CardControllerクラスのOnField()メソッドを呼び出す
+            
+            // コアの移動
+            CoreController[] reserveCoreList = GameManager.instance.playerReserveTransform.GetComponentsInChildren<CoreController>();
+            CoreController core = reserveCoreList[reserveCoreList.Length - 1];
+            StartCoroutine(core.movement.MoveToCard(card.transform));
+
+            // リザーブのコアのリストを更新
+            reserveCoreList = GameManager.instance.enemyReserveTransform.GetComponentsInChildren<CoreController>();
         }
     }
 }
