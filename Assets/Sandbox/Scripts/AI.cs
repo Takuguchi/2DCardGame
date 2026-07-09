@@ -24,6 +24,9 @@ public class AI : MonoBehaviour
         /* 場にカードを出す */
         // 手札のカードリストを取得
         CardController[] handCardList = gameManager.enemyHandTransform.GetComponentsInChildren<CardController>();
+
+        // リザーブのコアのリストを取得
+        CoreController[] reserveCoreList = gameManager.enemyReserveTransform.GetComponentsInChildren<CoreController>();
         
         // コスト以下のカードがあれば、カードをフィールドに出し続ける
         while (Array.Exists(handCardList, card => card.model.cost < gameManager.enemy.manaCost))
@@ -33,12 +36,22 @@ public class AI : MonoBehaviour
             
             // 場に出すカードを選択
             CardController enemyCard = selectableHandCardList[0]; // とりあえずカードリストの一番最初のカードを選択
+
+            // カードに乗せるコアを選択
+            CoreController core = reserveCoreList[reserveCoreList.Length - 1]; // とりあえずリザーブのコアリストの一番最後のコアを選択
+
             // カードを移動
             StartCoroutine(enemyCard.movement.MoveToField(gameManager.enemyFieldTransform)); // カードの移動を行うCardMovementクラスのSetCardTransform()メソッドに、カードの移動先のTransformを渡す
+            yield return new WaitForSeconds(0.51f); // カードが移動する時間待つ
+            StartCoroutine(core.movement.MoveToCard(enemyCard.transform)); // コアの移動を行うCoreMovementクラスのMoveToCard()メソッドに、コアの移動先のTransformを渡す
             enemyCard.OnField(false, enemyCard.transform); // CardControllerクラスのOnField()メソッドを呼び出す(敵側なのでisPlayer引数はfalseで渡す)
 
             // 手札のリストを更新
             handCardList = gameManager.enemyHandTransform.GetComponentsInChildren<CardController>();
+
+            // リザーブのコアのリストを更新
+            reserveCoreList = gameManager.enemyReserveTransform.GetComponentsInChildren<CoreController>();
+
             yield return new WaitForSeconds(1);
         }
 

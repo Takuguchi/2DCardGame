@@ -47,7 +47,7 @@ public class CardController : MonoBehaviour
         GameManager.instance.ReduceManaCost(model.cost, isPlayer, this); //バトスピ用
         view.Refresh(model); // coreNumが増加したはずなのでカードの見た目を更新する
         model.isFieldCard = true; // カードをドロップしたらフィールドのカードにする
-        GameManager.instance.CreateCore(cardTransform, 1);
+        // GameManager.instance.CreateCore(cardTransform, 1);
         
         /*
         if (model.ability == ABILITY.INIT_ATTACKABLE)
