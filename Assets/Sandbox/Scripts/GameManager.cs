@@ -285,16 +285,25 @@ public class GameManager : MonoBehaviour
         defender.CheckAlive(); // defenderのカードの見た目を更新する
     }
 
-    public void OnDestroyed(bool isPlayerCard)
+    public void OnDestroyed(bool isPlayerCard, CoreController[] cores)
     {
+        Transform reserve;
         if (isPlayerCard)
         {
             player.manaCost++;
+            reserve = playerReserveTransform;
         }
         else
         {
             enemy.manaCost++;
+            reserve = enemyReserveTransform;
         }
+
+        foreach (CoreController core in cores)
+        {
+            StartCoroutine(core.movement.MoveToCard(reserve)); // コアをリザーブへ移動
+        }
+
         uiManager.ShowManaCost(player.manaCost, enemy.manaCost); // マナコストの表示を更新する
     }
 

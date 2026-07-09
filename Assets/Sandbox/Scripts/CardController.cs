@@ -67,8 +67,9 @@ public class CardController : MonoBehaviour
         }
         else    // カードが死んでいる状態なら
         {
+            CoreController[] cores = GetComponentsInChildren<CoreController>(); // 破壊されるカードに乗っているコアを取得
             Destroy(this.gameObject);    // カードを破壊する
-            GameManager.instance.OnDestroyed(model.isPlayerCard); // 破壊されたカード上のコアをリザーブに移動
+            GameManager.instance.OnDestroyed(model.isPlayerCard, cores); // 破壊されたカード上のコアをリザーブに移動
         }
     }
 }
