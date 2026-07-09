@@ -68,6 +68,7 @@ public class CardController : MonoBehaviour
         else    // カードが死んでいる状態なら
         {
             Destroy(this.gameObject);    // カードを破壊する
+            GameManager.instance.OnDestroyed(model.isPlayerCard); // 破壊されたカード上のコアをリザーブに移動
         }
     }
 }

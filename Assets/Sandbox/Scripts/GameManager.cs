@@ -233,13 +233,15 @@ public class GameManager : MonoBehaviour
 
         if (isPlayerTurn)
         {
-            player.IncreaseManaCost(); // プレイヤーのターンになったらマナコストを1増やす
+            // player.IncreaseManaCost(); // プレイヤーのターンになったらマナコストを1増やす
+            player.IncreaseManaCost(playerFieldCardList.Length); // 今は各カードに乗せるコアは1つずつなのでリストの長さを引数に渡す
             CreateCore(playerReserveTransform, 1); // プレイヤーのコアを1つ生成する
             GiveCardToHand(player.deck, playerHandTransform); // プレイヤーの手札にカードを1枚生成（ドロー）
         }
         else
         {
-            enemy.IncreaseManaCost(); // 敵のターンになったらマナコストを1増やす
+            // enemy.IncreaseManaCost(); // 敵のターンになったらマナコストを1増やす
+            enemy.IncreaseManaCost(enemyFieldCardList.Length);
             CreateCore(enemyReserveTransform, 1); // 敵のコアを1つ生成する
             GiveCardToHand(enemy.deck, enemyHandTransform);  // 敵の手札にカードを1枚生成（ドロー）
         }
@@ -283,6 +285,19 @@ public class GameManager : MonoBehaviour
         defender.CheckAlive(); // defenderのカードの見た目を更新する
     }
 
+    public void OnDestroyed(bool isPlayerCard)
+    {
+        if (isPlayerCard)
+        {
+            player.manaCost++;
+        }
+        else
+        {
+            enemy.manaCost++;
+        }
+        uiManager.ShowManaCost(player.manaCost, enemy.manaCost); // マナコストの表示を更新する
+    }
+
     // Heroに攻撃するメソッド
     public void AttackToHero(CardController attacker, bool isPlayerCard)
     {
@@ -290,13 +305,17 @@ public class GameManager : MonoBehaviour
         if (isPlayerCard)
         {
             enemy.heroHp -= attacker.model.at; // 敵のHeroのHPを攻撃力分下げる
-            enemy.IncreaseManaCost(); // ライフで受けたコアをリザーブに移動
+            // enemy.IncreaseManaCost(); // ライフで受けたコアをリザーブに移動
+            enemy.manaCost++; // リザーブを1増やす
+            enemy.defaultManaCost++; // コアの総数も1増やす
         }
         // attackerが敵のカードだった場合
         else
         {
             player.heroHp -= attacker.model.at; // プレイヤーのHeroのHPを攻撃力分下げる
-            player.IncreaseManaCost(); // ライフで受けたコアをリザーブに移動
+            // player.IncreaseManaCost(); // ライフで受けたコアをリザーブに移動
+            player.manaCost++; // リザーブを1増やす
+            player.defaultManaCost++; // コアの総数も1増やす
         }
         attacker.SetCanAttack(false); // 一度攻撃したらattackerを攻撃不可にする
         uiManager.ShowHeroHP(player.heroHp, enemy.heroHp); // HeroのHP表示を変更
