@@ -83,14 +83,12 @@ public class GameManager : MonoBehaviour
 
             // 支払った分（維持コアを除く）のコアをリザーブからトラッシュへ移動する
             CoreController[] reserveCoreList = playerReserveTransform.GetComponentsInChildren<CoreController>();
-            Debug.Log("GameManager.reserveCoreList.Length:" + reserveCoreList.Length);
             for (int i = 0; i < cost && i < reserveCoreList.Length; i++)
             {
                 CoreController core = reserveCoreList[reserveCoreList.Length - 1 - i];
-                Debug.Log("GameManager.[reserveCoreList.Length - 1 - i]:" + "[" + (reserveCoreList.Length - 1 - i) + "]");
-                StartCoroutine(core.movement.MoveToCard(playerTrashTransform));
+                // GameManagerではなくcore自身にコルーチンを紐付ける（GameManager.StopAllCoroutines()の影響を受けないようにするため）
+                core.StartCoroutine(core.movement.MoveToCard(playerTrashTransform));
             }
-            reserveCoreList = GameManager.instance.playerReserveTransform.GetComponentsInChildren<CoreController>();
         }
         else
         {
@@ -100,15 +98,11 @@ public class GameManager : MonoBehaviour
 
             // 支払った分（維持コアを除く）のコアをリザーブからトラッシュへ移動する
             CoreController[] reserveCoreList = enemyReserveTransform.GetComponentsInChildren<CoreController>();
-            Debug.Log("GameManager.reserveCoreList.Length:" + reserveCoreList.Length);
             for (int i = 0; i < cost && i < reserveCoreList.Length; i++)
             {
                 CoreController core = reserveCoreList[reserveCoreList.Length - 1 - i];
-                Debug.Log("GameManager.[reserveCoreList.Length - 1 - i]:" + "[" + (reserveCoreList.Length - 1 - i) + "]");
-                StartCoroutine(core.movement.MoveToCard(enemyTrashTransform));
+                core.StartCoroutine(core.movement.MoveToCard(enemyTrashTransform));
             }
-            reserveCoreList = GameManager.instance.enemyReserveTransform.GetComponentsInChildren<CoreController>();
-            
         }
         uiManager.ShowManaCost(player.manaCost, enemy.manaCost); // マナコストの表示を変更するメソッドを呼び出す
     }
@@ -246,6 +240,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /*
     // ターンを切り替えるメソッド
     public void ChangeTurn()
     {
@@ -273,6 +268,57 @@ public class GameManager : MonoBehaviour
         uiManager.ShowManaCost(player.manaCost, enemy.manaCost); // マナコストの表示を更新する
         TurnCalc(); // ターン処理を行うメソッドを呼び出す
     }
+    */
+
+    // ターンを切り替えるメソッド
+    public void ChangeTurn()
+    {
+        isPlayerTurn = !isPlayerTurn; // ターンを切り替える
+
+        CardController[] playerFieldCardList = playerFieldTransform.GetComponentsInChildren<CardController>();
+        SettingCanAttackView(playerFieldCardList, false); // フィールドのカードの攻撃可能オーラを消す
+        CardController[] enemyFieldCardList = enemyFieldTransform.GetComponentsInChildren<CardController>();
+        SettingCanAttackView(enemyFieldCardList, false); // フィールドのカードの攻撃可能オーラを消す
+
+        CoreController[] playerFieldCoreList = playerFieldTransform.GetComponentsInChildren<CoreController>();
+        CoreController[] playerReserveCoreList = playerReserveTransform.GetComponentsInChildren<CoreController>();
+        CoreController[] playerTrashCoreList = playerTrashTransform.GetComponentsInChildren<CoreController>();
+        CoreController[] enemyFieldCoreList = enemyFieldTransform.GetComponentsInChildren<CoreController>();
+        CoreController[] enemyReserveCoreList = enemyReserveTransform.GetComponentsInChildren<CoreController>();
+        CoreController[] enemyTrashCoreList = enemyTrashTransform.GetComponentsInChildren<CoreController>();
+
+        Debug.Log("playerFieldCoreList.Length:" + playerFieldCoreList.Length);
+        if (isPlayerTurn)
+        {
+            // player.IncreaseManaCost(); // プレイヤーのターンになったらマナコストを1増やす
+            player.IncreaseManaCost(playerFieldCoreList.Length);
+            CreateCore(playerReserveTransform, 1); // プレイヤーのコアを1つ生成する
+            GiveCardToHand(player.deck, playerHandTransform); // プレイヤーの手札にカードを1枚生成（ドロー）
+            
+            // トラッシュのコアを全てリザーブに移動
+            foreach (CoreController core in playerTrashCoreList)
+            {
+                // GameManagerではなくcore自身にコルーチンを紐付ける（直後のTurnCalc()内のStopAllCoroutines()で移動が中断されないようにするため）
+                core.StartCoroutine(core.movement.MoveToCard(playerReserveTransform)); // コアをリザーブへ移動
+            }
+        }
+        else
+        {
+            // enemy.IncreaseManaCost(); // 敵のターンになったらマナコストを1増やす
+            enemy.IncreaseManaCost(enemyFieldCoreList.Length);
+            CreateCore(enemyReserveTransform, 1); // 敵のコアを1つ生成する
+            GiveCardToHand(enemy.deck, enemyHandTransform);  // 敵の手札にカードを1枚生成（ドロー）
+
+            // トラッシュのコアを全てリザーブに移動
+            foreach (CoreController core in enemyTrashCoreList)
+            {
+                core.StartCoroutine(core.movement.MoveToCard(enemyReserveTransform)); // コアをリザーブへ移動
+            }
+        }
+        uiManager.ShowManaCost(player.manaCost, enemy.manaCost); // マナコストの表示を更新する
+        TurnCalc(); // ターン処理を行うメソッドを呼び出す
+    }
+
 
     // 攻撃可能オーラを付けたり消したりするメソッド
     public void SettingCanAttackView(CardController[] fieldCardList, bool canAttack)
