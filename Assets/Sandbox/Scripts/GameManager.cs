@@ -10,11 +10,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] AI enemyAI; // 敵のAIを取得;
     [SerializeField] UIManager uiManager; // UIManagerを取得
     public Transform playerHandTransform, // プレイヤーの手札のTransformを取得
-                               playerFieldTransform, // プレイヤーのフィールドのTransformを取得   
-                               enemyHandTransform,  // 敵の手札のTransformを取得 
+                               playerFieldTransform, // プレイヤーのフィールドのTransformを取得
+                               enemyHandTransform,  // 敵の手札のTransformを取得
                                enemyFieldTransform, // 敵のフィールドのTransformを取得
-                               playerReserveTransform,  // プレイヤーのコアのTransformを取得
-                               enemyReserveTransform;   // 敵のコアのTransformを取得
+                               playerReserveTransform,  // プレイヤーのリザーブのTransformを取得
+                               enemyReserveTransform,   // 敵のリザーブのTransformを取得
+                               playerTrashTransform,    // プレイヤーのトラッシュのTransformを取得
+                               enemyTrashTransform;     // 敵のトラッシュのTransformを取得
 
     [SerializeField] CardController cardPrefab; // カードのPrefabをCardController型として取得
     [SerializeField] CoreController corePrefab; // コアのPrefabをCoreController型として取得
@@ -78,12 +80,35 @@ public class GameManager : MonoBehaviour
             player.manaCost -= cost; // プレイヤーのマナコストを消費する
             player.manaCost--; // 維持コア1個分のマナコストを消費する
             card.model.coreNum++; // カード上のコアの数を1増やす
+
+            // 支払った分（維持コアを除く）のコアをリザーブからトラッシュへ移動する
+            CoreController[] reserveCoreList = playerReserveTransform.GetComponentsInChildren<CoreController>();
+            Debug.Log("GameManager.reserveCoreList.Length:" + reserveCoreList.Length);
+            for (int i = 0; i < cost && i < reserveCoreList.Length; i++)
+            {
+                CoreController core = reserveCoreList[reserveCoreList.Length - 1 - i];
+                Debug.Log("GameManager.[reserveCoreList.Length - 1 - i]:" + "[" + (reserveCoreList.Length - 1 - i) + "]");
+                StartCoroutine(core.movement.MoveToCard(playerTrashTransform));
+            }
+            reserveCoreList = GameManager.instance.playerReserveTransform.GetComponentsInChildren<CoreController>();
         }
         else
         {
             enemy.manaCost -= cost; // 敵のマナコストを消費する
             enemy.manaCost--; // 維持コア1個分のマナコストを消費する
             card.model.coreNum++; // カード上のコアの数を1増やす
+
+            // 支払った分（維持コアを除く）のコアをリザーブからトラッシュへ移動する
+            CoreController[] reserveCoreList = enemyReserveTransform.GetComponentsInChildren<CoreController>();
+            Debug.Log("GameManager.reserveCoreList.Length:" + reserveCoreList.Length);
+            for (int i = 0; i < cost && i < reserveCoreList.Length; i++)
+            {
+                CoreController core = reserveCoreList[reserveCoreList.Length - 1 - i];
+                Debug.Log("GameManager.[reserveCoreList.Length - 1 - i]:" + "[" + (reserveCoreList.Length - 1 - i) + "]");
+                StartCoroutine(core.movement.MoveToCard(enemyTrashTransform));
+            }
+            reserveCoreList = GameManager.instance.enemyReserveTransform.GetComponentsInChildren<CoreController>();
+            
         }
         uiManager.ShowManaCost(player.manaCost, enemy.manaCost); // マナコストの表示を変更するメソッドを呼び出す
     }

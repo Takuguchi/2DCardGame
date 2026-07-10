@@ -36,13 +36,13 @@ public class DropPlace : MonoBehaviour, IDropHandler
             }
             card.OnField(true, card.transform); // CardControllerクラスのOnField()メソッドを呼び出す
             
-            // コアの移動
+            // 召喚したカードにリザーブからコアを移動
             CoreController[] reserveCoreList = GameManager.instance.playerReserveTransform.GetComponentsInChildren<CoreController>();
             CoreController core = reserveCoreList[reserveCoreList.Length - 1];
             StartCoroutine(core.movement.MoveToCard(card.transform));
 
             // リザーブのコアのリストを更新
-            reserveCoreList = GameManager.instance.enemyReserveTransform.GetComponentsInChildren<CoreController>();
+            reserveCoreList = GameManager.instance.playerReserveTransform.GetComponentsInChildren<CoreController>();
         }
     }
 }
