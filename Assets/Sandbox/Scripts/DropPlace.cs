@@ -35,6 +35,7 @@ public class DropPlace : MonoBehaviour, IDropHandler
                 return; // Manaコストを減らす必要はないため、処理を終了する
             }
             card.OnField(true, card.transform); // CardControllerクラスのOnField()メソッドを呼び出す
+            Debug.Log(card.model.name + "を召喚！");
             
             // 召喚したカードにリザーブからコアを移動
             CoreController[] reserveCoreList = GameManager.instance.playerReserveTransform.GetComponentsInChildren<CoreController>();

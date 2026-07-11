@@ -79,15 +79,16 @@ public class GameManager : MonoBehaviour
     // バトスピ用（オーバーロード）
     public void ReduceManaCost(int cost, bool isPlayerCard, CardController card)
     {
+        int netCost = CalcNetCost(card);
         if (isPlayerCard)
         {
-            player.manaCost -= cost; // プレイヤーのマナコストを消費する
+            player.manaCost -= netCost;
             player.manaCost--; // 維持コア1個分のマナコストを消費する
             card.model.coreNum++; // カード上のコアの数を1増やす
 
             // 支払った分（維持コアを除く）のコアをリザーブからトラッシュへ移動する
             CoreController[] reserveCoreList = playerReserveTransform.GetComponentsInChildren<CoreController>();
-            for (int i = 0; i < cost && i < reserveCoreList.Length; i++)
+            for (int i = 0; i < netCost && i < reserveCoreList.Length; i++)
             {
                 CoreController core = reserveCoreList[reserveCoreList.Length - 1 - i];
                 // GameManagerではなくcore自身にコルーチンを紐付ける（GameManager.StopAllCoroutines()の影響を受けないようにするため）
@@ -96,19 +97,58 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            enemy.manaCost -= cost; // 敵のマナコストを消費する
+            enemy.manaCost -= netCost;
             enemy.manaCost--; // 維持コア1個分のマナコストを消費する
             card.model.coreNum++; // カード上のコアの数を1増やす
 
             // 支払った分（維持コアを除く）のコアをリザーブからトラッシュへ移動する
             CoreController[] reserveCoreList = enemyReserveTransform.GetComponentsInChildren<CoreController>();
-            for (int i = 0; i < cost && i < reserveCoreList.Length; i++)
+            for (int i = 0; i < netCost && i < reserveCoreList.Length; i++)
             {
                 CoreController core = reserveCoreList[reserveCoreList.Length - 1 - i];
                 core.StartCoroutine(core.movement.MoveToCard(enemyTrashTransform));
             }
         }
         uiManager.ShowManaCost(player.manaCost, enemy.manaCost); // マナコストの表示を変更するメソッドを呼び出す
+    }
+
+    // 軽減シンボルを加味した正味コストを計算するメソッド
+    public int CalcNetCost(CardController card)
+    {
+        int netCost = card.model.cost;
+        int fieldSymbols = 0;
+
+        if (isPlayerTurn)
+        {
+            // フィールドの総シンボルを計算(パターン1：coreNumを合算)
+            CardController[] playerFieldCardList = playerFieldTransform.GetComponentsInChildren<CardController>();
+
+            foreach (CardController cards in playerFieldCardList)
+            {
+                fieldSymbols += cards.model.coreNum;
+            }
+        }
+        else
+        {
+            CardController[] enemyFieldCardList = enemyFieldTransform.GetComponentsInChildren<CardController>();
+
+            foreach (CardController cards in enemyFieldCardList)
+            {
+                fieldSymbols += cards.model.coreNum;
+            }
+        }
+        Debug.Log("フィールドのシンボルの数:" + fieldSymbols);
+        
+        if (fieldSymbols > card.model.reductionSymbols)
+        {
+            fieldSymbols = card.model.reductionSymbols;
+        }
+
+        netCost -= fieldSymbols;
+
+        Debug.Log(card.model.cost + "コスト" + fieldSymbols + "軽減" + netCost + "コスト");
+
+        return netCost;
     }
 
     // ゲームをリスタートするメソッド
