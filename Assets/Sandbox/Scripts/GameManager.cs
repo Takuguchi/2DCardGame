@@ -16,7 +16,9 @@ public class GameManager : MonoBehaviour
                                playerReserveTransform,  // プレイヤーのリザーブのTransformを取得
                                enemyReserveTransform,   // 敵のリザーブのTransformを取得
                                playerTrashTransform,    // プレイヤーのトラッシュのTransformを取得
-                               enemyTrashTransform;     // 敵のトラッシュのTransformを取得
+                               enemyTrashTransform,     // 敵のトラッシュのTransformを取得
+                               playerLifeTransform,     // プレイヤーのライフのTransformを取得
+                               enemyLifeTransform;      // 敵のライフのTransformを取得
 
     [SerializeField] CardController cardPrefab; // カードのPrefabをCardController型として取得
     [SerializeField] CoreController corePrefab; // コアのPrefabをCoreController型として取得
@@ -47,6 +49,8 @@ public class GameManager : MonoBehaviour
     {   
         CreateCore(playerReserveTransform, 4); // プレイヤーのコアを生成する
         CreateCore(enemyReserveTransform, 4); // 敵のコアを生成する
+        CreateCore(playerLifeTransform, 5);
+        CreateCore(enemyLifeTransform, 5);
         uiManager.HideResultPanel(); // ゲーム開始時はリザルト画面を非表示にする
         player.Init(new List<int>() { 0, 1, 2, 3, 7, 3, 1 }); // プレイヤーのデッキを初期化する
         enemy.Init(new List<int>() { 4, 5, 5, 6, 4 }); // 敵のデッキを初期化する
@@ -132,6 +136,22 @@ public class GameManager : MonoBehaviour
             Destroy(core.gameObject);
         }
         foreach (Transform core in enemyReserveTransform)
+        {
+            Destroy(core.gameObject);
+        }
+        foreach (Transform core in playerTrashTransform)
+        {
+            Destroy(core.gameObject);
+        }
+        foreach (Transform core in enemyTrashTransform)
+        {
+            Destroy(core.gameObject);
+        }
+        foreach (Transform core in playerLifeTransform)
+        {
+            Destroy(core.gameObject);
+        }
+        foreach (Transform core in enemyLifeTransform)
         {
             Destroy(core.gameObject);
         }
@@ -381,6 +401,8 @@ public class GameManager : MonoBehaviour
     // Heroに攻撃するメソッド
     public void AttackToHero(CardController attacker, bool isPlayerCard)
     {
+        CoreController[] playerLifeCoreList = playerLifeTransform.GetComponentsInChildren<CoreController>();
+        CoreController[] enemyLifeCoreList = enemyLifeTransform.GetComponentsInChildren<CoreController>();
         // attackerがプレイヤーのカードだった場合
         if (isPlayerCard)
         {
@@ -388,6 +410,7 @@ public class GameManager : MonoBehaviour
             // enemy.IncreaseManaCost(); // ライフで受けたコアをリザーブに移動
             enemy.manaCost++; // リザーブを1増やす
             enemy.defaultManaCost++; // コアの総数も1増やす
+            playerLifeCoreList[enemyLifeCoreList.Length - 1].StartCoroutine(enemyLifeCoreList[enemyLifeCoreList.Length - 1].movement.MoveToCard(enemyReserveTransform)); // コアをリザーブへ移動            
         }
         // attackerが敵のカードだった場合
         else
@@ -396,6 +419,7 @@ public class GameManager : MonoBehaviour
             // player.IncreaseManaCost(); // ライフで受けたコアをリザーブに移動
             player.manaCost++; // リザーブを1増やす
             player.defaultManaCost++; // コアの総数も1増やす
+            playerLifeCoreList[playerLifeCoreList.Length - 1].StartCoroutine(playerLifeCoreList[playerLifeCoreList.Length - 1].movement.MoveToCard(playerReserveTransform)); // コアをリザーブへ移動
         }
         attacker.SetCanAttack(false); // 一度攻撃したらattackerを攻撃不可にする
         uiManager.ShowHeroHP(player.heroHp, enemy.heroHp); // HeroのHP表示を変更
