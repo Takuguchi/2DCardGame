@@ -450,7 +450,7 @@ public class GameManager : MonoBehaviour
             // enemy.IncreaseManaCost(); // ライフで受けたコアをリザーブに移動
             enemy.manaCost++; // リザーブを1増やす
             enemy.defaultManaCost++; // コアの総数も1増やす
-            playerLifeCoreList[enemyLifeCoreList.Length - 1].StartCoroutine(enemyLifeCoreList[enemyLifeCoreList.Length - 1].movement.MoveToCard(enemyReserveTransform)); // コアをリザーブへ移動            
+            enemyLifeCoreList[enemyLifeCoreList.Length - 1].StartCoroutine(enemyLifeCoreList[enemyLifeCoreList.Length - 1].movement.MoveToCard(enemyReserveTransform)); // コアをリザーブへ移動            
         }
         // attackerが敵のカードだった場合
         else

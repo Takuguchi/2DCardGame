@@ -29,11 +29,11 @@ public class AI : MonoBehaviour
         CoreController[] reserveCoreList = gameManager.enemyReserveTransform.GetComponentsInChildren<CoreController>();
         
         // コスト以下のカードがあれば、カードをフィールドに出し続ける
-        while (Array.Exists(handCardList, card => card.model.cost < gameManager.enemy.manaCost))
+        while (Array.Exists(handCardList, card => gameManager.CalcNetCost(card) < gameManager.enemy.manaCost))
         {
-            // Manaコスト以下のカードリストを取得
-            CardController[] selectableHandCardList = Array.FindAll(handCardList, card => card.model.cost < gameManager.enemy.manaCost);
-            
+            // Net(正味)コストがManaコスト未満のカードリストを取得
+            CardController[] selectableHandCardList = Array.FindAll(handCardList, card => gameManager.CalcNetCost(card) < gameManager.enemy.manaCost);
+
             // 場に出すカードを選択
             CardController enemyCard = selectableHandCardList[0]; // とりあえずカードリストの一番最初のカードを選択
 
@@ -45,6 +45,7 @@ public class AI : MonoBehaviour
             yield return new WaitForSeconds(0.51f); // カードが移動する時間待つ
             StartCoroutine(core.movement.MoveToCard(enemyCard.transform)); // コアの移動を行うCoreMovementクラスのMoveToCard()メソッドに、コアの移動先のTransformを渡す
             enemyCard.OnField(false, enemyCard.transform); // CardControllerクラスのOnField()メソッドを呼び出す(敵側なのでisPlayer引数はfalseで渡す)
+            Debug.Log(enemyCard.model.name + "を召喚！");            
 
             // 手札のリストを更新
             handCardList = gameManager.enemyHandTransform.GetComponentsInChildren<CardController>();
