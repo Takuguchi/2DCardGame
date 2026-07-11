@@ -120,12 +120,12 @@ public class GameManager : MonoBehaviour
 
         if (isPlayerTurn)
         {
-            // フィールドの総シンボルを計算(パターン1：coreNumを合算)
+            // フィールドの総シンボルを計算(パターン1：symbolsを合算)
             CardController[] playerFieldCardList = playerFieldTransform.GetComponentsInChildren<CardController>();
 
             foreach (CardController cards in playerFieldCardList)
             {
-                fieldSymbols += cards.model.coreNum;
+                fieldSymbols += cards.model.symbols;
             }
         }
         else
@@ -134,7 +134,7 @@ public class GameManager : MonoBehaviour
 
             foreach (CardController cards in enemyFieldCardList)
             {
-                fieldSymbols += cards.model.coreNum;
+                fieldSymbols += cards.model.symbols;
             }
         }
         Debug.Log("フィールドのシンボルの数:" + fieldSymbols);
