@@ -43,7 +43,7 @@ public class AI : MonoBehaviour
             // カードを移動
             StartCoroutine(enemyCard.movement.MoveToField(gameManager.enemyFieldTransform)); // カードの移動を行うCardMovementクラスのSetCardTransform()メソッドに、カードの移動先のTransformを渡す
             yield return new WaitForSeconds(0.51f); // カードが移動する時間待つ
-            StartCoroutine(core.movement.MoveToCard(enemyCard.transform)); // コアの移動を行うCoreMovementクラスのMoveToCard()メソッドに、コアの移動先のTransformを渡す
+            StartCoroutine(core.movement.MoveTo(enemyCard.transform)); // コアの移動を行うCoreMovementクラスのMoveTo()メソッドに、コアの移動先のTransformを渡す
             enemyCard.OnField(false, enemyCard.transform); // CardControllerクラスのOnField()メソッドを呼び出す(敵側なのでisPlayer引数はfalseで渡す)
             Debug.Log(enemyCard.model.name + "を召喚！");            
 

@@ -11,18 +11,21 @@ public class CoreMovement : MonoBehaviour
 {
     public Transform defaultParent; // コアの親の位置を保存する変数
 
-    public IEnumerator MoveToCard(Transform card)
+    public IEnumerator MoveTo(Transform place)
     {
         // 一度親をCanvasに変更する
-        transform.SetParent(defaultParent.parent, true);
+        // ※ defaultParent.parent だと、フィールド上のカードが持つコア（Card→Coreの2階層）の場合に
+        //   PlayerFieldのHorizontalLayoutGroup直下へ一瞬入ってしまい、Cardの再配置が起きて見た目が乱れるため、
+        //   常にヒエラルキーのルート（Canvas）へ退避させる
+        transform.SetParent(transform.root, true);
 
         yield return new WaitForEndOfFrame(); // カード側のレイアウト確定を待つ(要検索)
         
         // DOTweenでコアをフィールドに移動
-        transform.DOMove(card.position, 0.25f);
+        transform.DOMove(place.position, 0.25f);
         yield return new WaitForSeconds(0.25f); 
 
-        defaultParent = card;
+        defaultParent = place;
         transform.SetParent(defaultParent);
     }
 

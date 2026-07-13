@@ -86,14 +86,7 @@ public class GameManager : MonoBehaviour
             player.manaCost--; // 維持コア1個分のマナコストを消費する
             card.model.coreNum++; // カード上のコアの数を1増やす
 
-            // 支払った分（維持コアを除く）のコアをリザーブからトラッシュへ移動する
-            CoreController[] reserveCoreList = playerReserveTransform.GetComponentsInChildren<CoreController>();
-            for (int i = 0; i < netCost && i < reserveCoreList.Length; i++)
-            {
-                CoreController core = reserveCoreList[reserveCoreList.Length - 1 - i];
-                // GameManagerではなくcore自身にコルーチンを紐付ける（GameManager.StopAllCoroutines()の影響を受けないようにするため）
-                core.StartCoroutine(core.movement.MoveToCard(playerTrashTransform));
-            }
+            MoveCores(card);
         }
         else
         {
@@ -106,11 +99,90 @@ public class GameManager : MonoBehaviour
             for (int i = 0; i < netCost && i < reserveCoreList.Length; i++)
             {
                 CoreController core = reserveCoreList[reserveCoreList.Length - 1 - i];
-                core.StartCoroutine(core.movement.MoveToCard(enemyTrashTransform));
+                core.StartCoroutine(core.movement.MoveTo(enemyTrashTransform));
             }
         }
         uiManager.ShowManaCost(player.manaCost, enemy.manaCost); // マナコストの表示を変更するメソッドを呼び出す
     }
+
+    // コスト支払い時のコアの移動処理
+    public void MoveCores(CardController card)
+    {
+        // リザーブのコアを取得
+        CoreController[] reserveCoreList = playerReserveTransform.GetComponentsInChildren<CoreController>();
+
+        int netCost = CalcNetCost(card); // 正味コスト
+        Debug.Log("netCost:" +  netCost);
+        Debug.Log("reserveCoreList.Length:" +  reserveCoreList.Length);
+        
+        // 召喚したカードにリザーブからコアを移動
+        if (netCost < reserveCoreList.Length)
+        {
+            Debug.Log("召喚コストと維持コアをリザーブから支払える場合");
+
+            // 支払った分（維持コアを除く）のコアをリザーブからトラッシュへ移動する
+            for (int i = 0; i < netCost && i < reserveCoreList.Length; i++)
+            {
+                CoreController costCore = reserveCoreList[reserveCoreList.Length - 1 - i];
+                // GameManagerではなくcore自身にコルーチンを紐付ける（GameManager.StopAllCoroutines()の影響を受けないようにするため）
+                costCore.StartCoroutine(costCore.movement.MoveTo(playerTrashTransform));
+            }
+
+            // リザーブのコアのリストを更新
+            reserveCoreList = playerReserveTransform.GetComponentsInChildren<CoreController>();
+
+            Debug.Log("reserveCoreList.Length:" +  reserveCoreList.Length);
+            // 維持コア1個乗せる
+            CoreController core = reserveCoreList[reserveCoreList.Length - 1]; 
+            StartCoroutine(core.movement.MoveTo(card.transform));
+        }
+        else if (netCost == player.manaCost)
+        {
+            // 召喚コストはリザーブから支払えるが、維持コアはフィールドから支払う必要がある場合
+            Debug.Log("召喚コストはリザーブから支払えるが、維持コアはフィールドから支払う必要がある場合");
+            
+            // 支払った分（維持コアを除く）のコアをリザーブからトラッシュへ移動する
+            for (int i = 0; i < netCost && i < reserveCoreList.Length; i++)
+            {
+                CoreController costCore = reserveCoreList[reserveCoreList.Length - 1 - i];
+                // GameManagerではなくcore自身にコルーチンを紐付ける（GameManager.StopAllCoroutines()の影響を受けないようにするため）
+                costCore.StartCoroutine(costCore.movement.MoveTo(playerTrashTransform));
+            }
+
+            CardController[] fieldCards = GetPlayerFieldCards();
+
+            // フィールドの一番左のカードのコアを維持コアとして使用
+            CoreController core = fieldCards[0].GetComponentInChildren<CoreController>();
+            StartCoroutine(core.movement.MoveTo(card.transform));
+        }
+        else
+        {
+            // 召喚コストをリザーブとフィールドから支払い、維持コアもフィールドから支払う場合
+            Debug.Log("召喚コストをリザーブとフィールドから支払い、維持コアもフィールドから支払う場合");
+            
+            foreach (CoreController reserveCores in reserveCoreList)
+            {
+                // とりあえずリザーブにある分は全部トラッシュに支払う
+                StartCoroutine(reserveCores.movement.MoveTo(playerTrashTransform));                    
+            }
+            // 不足コスト
+            int lackCoreNum = netCost - reserveCoreList.Length;
+            Debug.Log("不足コスト：" + lackCoreNum);
+            CardController[] fieldCards = GetPlayerFieldCards();
+            // コアをいくつフィールドから支払うか
+            for (int i = 0; i < lackCoreNum; i++)
+            {
+                CoreController lackCore = fieldCards[i].GetComponentInChildren<CoreController>();
+                StartCoroutine(lackCore.movement.MoveTo(playerTrashTransform));
+                // fieldCards = GetPlayerFieldCards(); // カードリストを更新
+            }                
+            Debug.Log("不足コストは" + fieldCards[lackCoreNum].model.name + "から確保");
+            CoreController core = fieldCards[lackCoreNum].GetComponentInChildren<CoreController>();
+            StartCoroutine(core.movement.MoveTo(card.transform));
+        }
+        
+    }
+
 
     // 軽減シンボルを加味した正味コストを計算するメソッド
     public int CalcNetCost(CardController card)
@@ -285,6 +357,12 @@ public class GameManager : MonoBehaviour
         ChangeTurn(); // カウントが0になったらターンを切り替える
     }
 
+    // プレイヤーのフィールドのカードを取得するメソッド
+    public CardController[] GetPlayerFieldCards()
+    {
+        return playerFieldTransform.GetComponentsInChildren<CardController>();
+    }
+    
     // 敵のフィールドのカードを取得するメソッド
     public CardController[] GetEnemyFieldCards()
     {
@@ -359,7 +437,7 @@ public class GameManager : MonoBehaviour
             foreach (CoreController core in playerTrashCoreList)
             {
                 // GameManagerではなくcore自身にコルーチンを紐付ける（直後のTurnCalc()内のStopAllCoroutines()で移動が中断されないようにするため）
-                core.StartCoroutine(core.movement.MoveToCard(playerReserveTransform)); // コアをリザーブへ移動
+                core.StartCoroutine(core.movement.MoveTo(playerReserveTransform)); // コアをリザーブへ移動
             }
         }
         else
@@ -372,7 +450,7 @@ public class GameManager : MonoBehaviour
             // トラッシュのコアを全てリザーブに移動
             foreach (CoreController core in enemyTrashCoreList)
             {
-                core.StartCoroutine(core.movement.MoveToCard(enemyReserveTransform)); // コアをリザーブへ移動
+                core.StartCoroutine(core.movement.MoveTo(enemyReserveTransform)); // コアをリザーブへ移動
             }
         }
         uiManager.ShowManaCost(player.manaCost, enemy.manaCost); // マナコストの表示を更新する
@@ -432,7 +510,7 @@ public class GameManager : MonoBehaviour
 
         foreach (CoreController core in cores)
         {
-            StartCoroutine(core.movement.MoveToCard(reserve)); // コアをリザーブへ移動
+            StartCoroutine(core.movement.MoveTo(reserve)); // コアをリザーブへ移動
         }
 
         uiManager.ShowManaCost(player.manaCost, enemy.manaCost); // マナコストの表示を更新する
@@ -450,7 +528,7 @@ public class GameManager : MonoBehaviour
             // enemy.IncreaseManaCost(); // ライフで受けたコアをリザーブに移動
             enemy.manaCost++; // リザーブを1増やす
             enemy.defaultManaCost++; // コアの総数も1増やす
-            enemyLifeCoreList[enemyLifeCoreList.Length - 1].StartCoroutine(enemyLifeCoreList[enemyLifeCoreList.Length - 1].movement.MoveToCard(enemyReserveTransform)); // コアをリザーブへ移動            
+            enemyLifeCoreList[enemyLifeCoreList.Length - 1].StartCoroutine(enemyLifeCoreList[enemyLifeCoreList.Length - 1].movement.MoveTo(enemyReserveTransform)); // コアをリザーブへ移動            
         }
         // attackerが敵のカードだった場合
         else
@@ -459,7 +537,7 @@ public class GameManager : MonoBehaviour
             // player.IncreaseManaCost(); // ライフで受けたコアをリザーブに移動
             player.manaCost++; // リザーブを1増やす
             player.defaultManaCost++; // コアの総数も1増やす
-            playerLifeCoreList[playerLifeCoreList.Length - 1].StartCoroutine(playerLifeCoreList[playerLifeCoreList.Length - 1].movement.MoveToCard(playerReserveTransform)); // コアをリザーブへ移動
+            playerLifeCoreList[playerLifeCoreList.Length - 1].StartCoroutine(playerLifeCoreList[playerLifeCoreList.Length - 1].movement.MoveTo(playerReserveTransform)); // コアをリザーブへ移動
         }
         attacker.SetCanAttack(false); // 一度攻撃したらattackerを攻撃不可にする
         uiManager.ShowHeroHP(player.heroHp, enemy.heroHp); // HeroのHP表示を変更

@@ -19,10 +19,21 @@ public class CardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
         // カードのコストとPlayerのManaコストを比較
         CardController card = GetComponent<CardController>();
 
-        // フィールドのカードじゃない場合＝手札のカードの場合
-        if (card.model.isPlayerCard && GameManager.instance.isPlayerTurn && !card.model.isFieldCard && GameManager.instance.CalcNetCost(card) < GameManager.instance.player.manaCost)
+        // フィールドのコアの総数を取得
+        int filedCoreNum = 0;
+        CardController[] playerFieldCards = GameManager.instance.GetPlayerFieldCards();
+        foreach (CardController cards in playerFieldCards)
         {
-            isDraggable = true; // カードのNet(正味)コストがPlayerのManaコスト"未満"ならドラッグ可能(維持コアが1個以上必要なため)
+            filedCoreNum += cards.model.coreNum;
+        }
+
+        // フィールドのカードじゃない場合＝手札のカードの場合
+        if (card.model.isPlayerCard 
+            && GameManager.instance.isPlayerTurn
+            && !card.model.isFieldCard
+            && GameManager.instance.CalcNetCost(card) < GameManager.instance.player.manaCost + filedCoreNum)
+        {
+            isDraggable = true; // カードのNet(正味)コストがPlayerのManaコスト+フィールドのコアの総数"未満"ならドラッグ可能(維持コアが1個以上必要なため)
         }
         else if (card.model.isPlayerCard && GameManager.instance.isPlayerTurn && card.model.isFieldCard && card.model.canAttack) // フィールドのカードで、かつ攻撃可能なら
         {
