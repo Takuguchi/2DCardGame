@@ -22,16 +22,22 @@ public class CardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
         // フィールドのコアの総数を取得
         int filedCoreNum = 0;
         CardController[] playerFieldCards = GameManager.instance.GetPlayerFieldCards();
-        foreach (CardController cards in playerFieldCards)
+        for (int i = 0; i < playerFieldCards.Length; i++)
         {
-            filedCoreNum += cards.model.coreNum;
+            CoreController[] cores = playerFieldCards[i].GetComponentsInChildren<CoreController>(); // カードに乗っているコアを取得
+            filedCoreNum += cores.Length;
         }
+        Debug.Log("フィールドのコアの総数：" + filedCoreNum);
+
+        // リザーブのコアを取得
+        CoreController[] reserveCoreList = GameManager.instance.playerReserveTransform.GetComponentsInChildren<CoreController>();
+
 
         // フィールドのカードじゃない場合＝手札のカードの場合
         if (card.model.isPlayerCard 
             && GameManager.instance.isPlayerTurn
             && !card.model.isFieldCard
-            && GameManager.instance.CalcNetCost(card) < GameManager.instance.player.manaCost + filedCoreNum)
+            && GameManager.instance.CalcNetCost(card) < reserveCoreList.Length + filedCoreNum)
         {
             isDraggable = true; // カードのNet(正味)コストがPlayerのManaコスト+フィールドのコアの総数"未満"ならドラッグ可能(維持コアが1個以上必要なため)
         }

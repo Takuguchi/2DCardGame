@@ -2230,7 +2230,7 @@ MonoBehaviour:
   playerLifeTransform: {fileID: 1447455157}
   enemyLifeTransform: {fileID: 701360166}
   cardPrefab: {fileID: 68245383862483898, guid: 3d6235cefc847a740bafdd14a99c4cc6, type: 3}
-  corePrefab: {fileID: -8897685334276171010, guid: c7816bd785ad4b543ad71097898c3e16, type: 3}
+  corePrefab: {fileID: -1587533959833757984, guid: c7816bd785ad4b543ad71097898c3e16, type: 3}
   isPlayerTurn: 0
   playerHero: {fileID: 933675142}
 --- !u!4 &1463810790
