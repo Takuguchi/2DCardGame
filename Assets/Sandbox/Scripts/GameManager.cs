@@ -694,6 +694,12 @@ public class GameManager : MonoBehaviour
         // フィールドのカードを攻撃可能にする
         CardController[] playerFieldCardList = playerFieldTransform.GetComponentsInChildren<CardController>();
         SettingCanAttackView(playerFieldCardList, true); // フィールドのカードに攻撃可能オーラを付ける
+
+        //フィールドのカードを全て回復状態にする
+        foreach (CardController playerFieldCard in playerFieldCardList)
+        {
+            playerFieldCard.ChangeIsRefreshed(true);
+        }
     }
 
 
@@ -709,6 +715,9 @@ public class GameManager : MonoBehaviour
 
         attacker.Attack(defender); // attackerの攻撃力分のダメージをdefenderに与える
         defender.Attack(attacker); // defenderの攻撃力分のダメージをattackerに与える
+
+        attacker.ChangeIsRefreshed(false);
+        defender.ChangeIsRefreshed(false);
         
         // Debug.Log("attacker HP:" + attacker.model.hp);
         // Debug.Log("defender HP:" + defender.model.hp);
@@ -762,6 +771,7 @@ public class GameManager : MonoBehaviour
             playerLifeCoreList[playerLifeCoreList.Length - 1].StartCoroutine(playerLifeCoreList[playerLifeCoreList.Length - 1].movement.MoveTo(playerReserveTransform)); // コアをリザーブへ移動
         }
         attacker.SetCanAttack(false); // 一度攻撃したらattackerを攻撃不可にする
+        attacker.ChangeIsRefreshed(false);
         uiManager.ShowHeroHP(player.heroHp, enemy.heroHp); // HeroのHP表示を変更
         uiManager.ShowManaCost(player.manaCost, enemy.manaCost); // マナコストの表示を更新する
     }

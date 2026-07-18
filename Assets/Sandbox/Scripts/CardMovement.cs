@@ -123,9 +123,28 @@ public class CardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
         transform.SetSiblingIndex(siblingIndex);
     }
 
+    // カードの疲労/回復状態にするメソッド
+    public IEnumerator TapCard(bool isRefreshed)
+    {
+        if (isRefreshed == true)
+        {
+            transform.DORotate(new Vector3(0, 0, 0), 0.1f);
+        }
+        else
+        {
+            transform.DORotate(new Vector3(0, 0, 90), 0.1f);
+        }
+        yield return new WaitForSeconds(0.1f);
+    }
 
     void Start()
     {
         defaultParent = transform.parent;
+    }
+
+    void OnDestroy()
+    {
+        // 破棄されるカードに対して実行中のTweenが残っているとDOTweenがエラーを出すため、破棄時にkillする
+        transform.DOKill();
     }
 }

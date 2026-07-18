@@ -40,6 +40,13 @@ public class CardController : MonoBehaviour
         view.SetActiveSelectablePanel(canAttack); // 攻撃可能なカードはオーラを表示する
     }
 
+    // カードの疲労/回復状態を切り替えるメソッド
+    public void ChangeIsRefreshed(bool isRefreshed)
+    {
+        model.isRefreshed = isRefreshed;
+        StartCoroutine(movement.TapCard(isRefreshed));
+    }
+
     // フィールドにカードを出したときに呼ばれるメソッド
     public void OnField(bool isPlayer, Transform cardTransform)
     {

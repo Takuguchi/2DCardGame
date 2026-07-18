@@ -27,6 +27,7 @@ public class CardModel
 
     public bool isAlive;       // カードが生きているかどうか
     public bool canAttack;     // カードが攻撃可能かどうか
+    public bool isRefreshed;     // カードが回復状態かどうか
     public bool isFieldCard;   // フィールドのカードかどうか
     public bool isPlayerCard;  // プレイヤーのカードかどうか
 

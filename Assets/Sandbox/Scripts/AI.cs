@@ -19,6 +19,12 @@ public class AI : MonoBehaviour
         CardController[] enemyFieldCardList = gameManager.enemyFieldTransform.GetComponentsInChildren<CardController>();
         gameManager.SettingCanAttackView(enemyFieldCardList, true); // フィールドのカードに攻撃可能オーラを付ける
 
+        //フィールドのカードを全て回復状態にする
+        foreach (CardController enemyFieldCard in enemyFieldCardList)
+        {
+            enemyFieldCard.ChangeIsRefreshed(true);
+        }
+
         yield return new WaitForSeconds(1); // カードをフィールドに出す前に1秒置く
 
         /* 場にカードを出す */
