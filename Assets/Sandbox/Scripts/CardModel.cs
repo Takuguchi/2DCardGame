@@ -11,6 +11,7 @@ public class CardModel
     public int at;      // カードのシンボル数
     public int cost;    // カードのコスト
     public int coreNum; // カード上に乗っているコアの数
+    public int currentLv; // 現在のレベル
     public int reductionSymbols; // 軽減シンボルの数
     public int symbols; // シンボルの数
     public Sprite icon; // カードの絵柄
@@ -40,6 +41,7 @@ public class CardModel
         at = cardEntity.at; 
         cost = cardEntity.cost;
         coreNum = cardEntity.coreNum;
+        currentLv = cardEntity.currentLv;
         reductionSymbols = cardEntity.reductionSymbols;
         symbols = cardEntity.symbols;
         icon = cardEntity.icon;

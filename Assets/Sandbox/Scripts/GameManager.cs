@@ -152,6 +152,28 @@ public class GameManager : MonoBehaviour
                 Vector2 offset = CoreMovement.GetRadialOffset(i, reserveCoreList.Length);
                 coreMoveCoroutines.Add(StartCoroutine(reserveCoreList[i].movement.MoveTo(card.transform, offset)));
             }
+
+            CardController[] fieldCards = GetPlayerFieldCards();
+
+            // (7コスト以上のカードを召喚する場合は、なるべくLv2に上げる)
+            if (card.model.cost > 6)
+            {
+                // 周りを全て消滅させる
+                List<CoreController> coresToMove = new List<CoreController>();
+                for (int i = 0; i < fieldCards.Length; i++)
+                {
+                    CoreController[] onCores = fieldCards[i].GetComponentsInChildren<CoreController>();
+                    for (int j = 0; j < onCores.Length; j++)
+                    {
+                        coresToMove.Add(onCores[j]);
+                    }
+                }
+                for (int i = 0; i < coresToMove.Count; i++)
+                {
+                    Vector2 offset = CoreMovement.GetRadialOffset(i, coresToMove.Count);
+                    coreMoveCoroutines.Add(StartCoroutine(coresToMove[i].movement.MoveTo(card.transform, offset)));
+                }
+            }
         }
         else if (netCost == reserveCoreList.Length)
         {
@@ -188,24 +210,44 @@ public class GameManager : MonoBehaviour
             }
             */
 
-            // フィールドのカードのコアが各何個か調べ、一番多く乗っているところから〇個移動？(消滅させないに越したことはない)
             Debug.Log("フィールドのカード:" + fieldCards.Length + "枚");
-            int onMaxCoreNum = 1;
-            int onMaxCoreIndex = 0;
-            // 一番乗っているコアの数が多いカードを特定
-            for (int i = 0; i < fieldCards.Length; i++)
+            // (7コスト以上のカードを召喚する場合は、フィールドのコアを全て乗せる)
+            if (card.model.cost > 6)
             {
-                CoreController[] onCores = fieldCards[i].GetComponentsInChildren<CoreController>();
-                Debug.Log("fieldCards[" + i + "]上のコアの数:" + onCores.Length + "個");
-                if (onCores.Length > onMaxCoreNum)
+                // 周りを全て消滅させる
+                List<CoreController> coresToMove = new List<CoreController>();
+                for (int i = 0; i < fieldCards.Length; i++)
                 {
-                    onMaxCoreNum = onCores.Length;
-                    onMaxCoreIndex = i;
+                    CoreController[] onCores = fieldCards[i].GetComponentsInChildren<CoreController>();
+                    for (int j = 0; j < onCores.Length; j++)
+                    {
+                        coresToMove.Add(onCores[j]);
+                    }
+                }
+                for (int i = 0; i < coresToMove.Count; i++)
+                {
+                    Vector2 offset = CoreMovement.GetRadialOffset(i, coresToMove.Count);
+                    coreMoveCoroutines.Add(StartCoroutine(coresToMove[i].movement.MoveTo(card.transform, offset)));
                 }
             }
-            CoreController[] moveCores = fieldCards[onMaxCoreIndex].GetComponentsInChildren<CoreController>();
-            coreMoveCoroutines.Add(StartCoroutine(moveCores[0].movement.MoveTo(card.transform, new Vector2(0f, -40f))));
-            // (7コスト以上のカードを召喚する場合は、Lv2にできるのなら他のスピリットを消滅させてでもLv2にして召喚する、とか)
+            else // それ以外のザコカードの場合
+            {
+                int onMaxCoreNum = 1;
+                int onMaxCoreIndex = 0;
+                // 一番乗っているコアの数が多いカードを特定
+                for (int i = 0; i < fieldCards.Length; i++)
+                {
+                    CoreController[] onCores = fieldCards[i].GetComponentsInChildren<CoreController>();
+                    Debug.Log("fieldCards[" + i + "]上のコアの数:" + onCores.Length + "個");
+                    if (onCores.Length > onMaxCoreNum)
+                    {
+                        onMaxCoreNum = onCores.Length;
+                        onMaxCoreIndex = i;
+                    }
+                }
+                CoreController[] moveCores = fieldCards[onMaxCoreIndex].GetComponentsInChildren<CoreController>();
+                coreMoveCoroutines.Add(StartCoroutine(moveCores[0].movement.MoveTo(card.transform, new Vector2(0f, -40f))));
+            }
         }
         else
         {
@@ -250,24 +292,46 @@ public class GameManager : MonoBehaviour
                 lackRemaining -= payNum;
             }
 
-            // フィールドのカードのコアが各何個か調べ、一番多く乗っているところから1個移動
             Debug.Log("フィールドのカード:" + fieldCards.Length + "枚");
-            int onMaxCoreNum = 0;
-            int onMaxCoreIndex = 0;
-            // 一番乗っているコアの数が多いカードを特定
-            for (int i = 0; i < fieldCards.Length; i++)
+
+            // (7コスト以上のカードを召喚する場合は、フィールドのコアを全て乗せる)
+            if (card.model.cost > 6)
             {
-                CoreController[] onCores = fieldCards[i].GetComponentsInChildren<CoreController>();
-                Debug.Log("fieldCards[" + i + "]上のコアの数:" + onCores.Length + "個");
-                if (onCores.Length > onMaxCoreNum)
+                // 周りを全て消滅させる
+                List<CoreController> coresToMove = new List<CoreController>();
+                for (int i = 0; i < fieldCards.Length; i++)
                 {
-                    onMaxCoreNum = onCores.Length;
-                    onMaxCoreIndex = i;
+                    CoreController[] onCores = fieldCards[i].GetComponentsInChildren<CoreController>();
+                    for (int j = 0; j < onCores.Length; j++)
+                    {
+                        coresToMove.Add(onCores[j]);
+                    }
+                }
+                for (int i = 0; i < coresToMove.Count; i++)
+                {
+                    Vector2 offset = CoreMovement.GetRadialOffset(i, coresToMove.Count);
+                    coreMoveCoroutines.Add(StartCoroutine(coresToMove[i].movement.MoveTo(card.transform, offset)));
                 }
             }
-            CoreController[] moveCores = fieldCards[onMaxCoreIndex].GetComponentsInChildren<CoreController>();
-            coreMoveCoroutines.Add(StartCoroutine(moveCores[0].movement.MoveTo(card.transform, new Vector2(0f, -40f))));
-
+            else
+            {
+                // フィールドのカードのコアが各何個か調べ、一番多く乗っているところから1個移動
+                int onMaxCoreNum = 0;
+                int onMaxCoreIndex = 0;
+                // 一番乗っているコアの数が多いカードを特定
+                for (int i = 0; i < fieldCards.Length; i++)
+                {
+                    CoreController[] onCores = fieldCards[i].GetComponentsInChildren<CoreController>();
+                    Debug.Log("fieldCards[" + i + "]上のコアの数:" + onCores.Length + "個");
+                    if (onCores.Length > onMaxCoreNum)
+                    {
+                        onMaxCoreNum = onCores.Length;
+                        onMaxCoreIndex = i;
+                    }
+                }
+                CoreController[] moveCores = fieldCards[onMaxCoreIndex].GetComponentsInChildren<CoreController>();
+                coreMoveCoroutines.Add(StartCoroutine(moveCores[0].movement.MoveTo(card.transform, new Vector2(0f, -40f))));
+            }
         }
 
         return coreMoveCoroutines;
@@ -285,11 +349,12 @@ public class GameManager : MonoBehaviour
 
         yield return new WaitForEndOfFrame();
 
-        // コアの配置とLv・BPを更新
-        // 別のメソッドで定義する？
-        // コア動かしたカードだけ変更すればいいんだけど
-        // ※ MoveTo()は開始直後にコアの親をCanvas直下へ退避させるため、
-        //   ここでonCoresを取得し直すと空になってしまう。1回取得した配列を使い回すこと。
+        ArrangeCoresAndFixLv();
+    }
+
+    // コアの配置とLv・BPを更新するメソッド
+    public void ArrangeCoresAndFixLv()
+    {
         CardController[] fieldCards = GetPlayerFieldCards();
         for (int i = 0; i < fieldCards.Length; i++)
         {
@@ -305,20 +370,23 @@ public class GameManager : MonoBehaviour
             Debug.Log(onCores.Length + "個");
             if (onCores.Length >= fieldCards[i].model.coreLv1)
             {
+                fieldCards[i].model.currentLv = 1;
                 fieldCards[i].model.at = fieldCards[i].model.bpLv1; // コアが減ってたらLv1だもんね。
                 if (onCores.Length >= fieldCards[i].model.coreLv2)
                 {
+                    fieldCards[i].model.currentLv = 2;
                     fieldCards[i].model.at = fieldCards[i].model.bpLv2;
-                    if (onCores.Length >= fieldCards[i].model.coreLv3)
+                    if (fieldCards[i].model.coreLv3 != 0 && onCores.Length >= fieldCards[i].model.coreLv3)
                     {
+                        fieldCards[i].model.currentLv = 3;
                         fieldCards[i].model.at = fieldCards[i].model.bpLv3;
                     }
                 }
             }
-            Debug.Log(fieldCards[i].model.name +" BP:" + fieldCards[i].model.at);
+            Debug.Log(fieldCards[i].model.name + " Lv:" + fieldCards[i].model.currentLv + " BP:" + fieldCards[i].model.at);
         }
+        
     }
-
 
     // 軽減シンボルを加味した正味コストを計算するメソッド
     public int CalcNetCost(CardController card)
