@@ -743,7 +743,7 @@ public class GameManager : MonoBehaviour
         // attackerがプレイヤーのカードだった場合
         if (isPlayerCard)
         {
-            enemy.heroHp -= attacker.model.at; // 敵のHeroのHPを攻撃力分下げる
+            enemy.heroHp -= attacker.model.symbols; // 敵のHeroのライフをシンボル分下げる
             // enemy.IncreaseManaCost(); // ライフで受けたコアをリザーブに移動
             enemy.manaCost++; // リザーブを1増やす
             enemy.defaultManaCost++; // コアの総数も1増やす
@@ -752,7 +752,7 @@ public class GameManager : MonoBehaviour
         // attackerが敵のカードだった場合
         else
         {
-            player.heroHp -= attacker.model.at; // プレイヤーのHeroのHPを攻撃力分下げる
+            player.heroHp -= attacker.model.symbols; // プレイヤーのライフをシンボル分下げる
             // player.IncreaseManaCost(); // ライフで受けたコアをリザーブに移動
             player.manaCost++; // リザーブを1増やす
             player.defaultManaCost++; // コアの総数も1増やす
