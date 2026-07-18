@@ -102,8 +102,7 @@ public class GameManager : MonoBehaviour
                 CoreController core = reserveCoreList[reserveCoreList.Length - 1 - i];
                 core.StartCoroutine(core.movement.MoveTo(enemyTrashTransform));
             }
-
-            ArrangeCoresAndFixLv(GetEnemyFieldCards());
+            // Lv・BPの再計算は、維持コアがカードの子になった後にAI側で呼び出す
         }
         uiManager.ShowManaCost(player.manaCost, enemy.manaCost); // マナコストの表示を変更するメソッドを呼び出す
     }

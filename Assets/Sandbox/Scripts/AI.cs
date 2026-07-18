@@ -43,10 +43,13 @@ public class AI : MonoBehaviour
             // カードを移動
             StartCoroutine(enemyCard.movement.MoveToField(gameManager.enemyFieldTransform)); // カードの移動を行うCardMovementクラスのSetCardTransform()メソッドに、カードの移動先のTransformを渡す
             yield return new WaitForSeconds(0.51f); // カードが移動する時間待つ
+            // 維持コアの移動と召喚コストの支払いアニメーションを同時に開始する
             Coroutine coreMoveCoroutine = StartCoroutine(core.movement.MoveTo(enemyCard.transform, new Vector2(0f, -40f))); // コアの移動を行うCoreMovementクラスのMoveTo()メソッドに、コアの移動先のTransformを渡す
-            yield return coreMoveCoroutine; // コアがenemyCardの子になる（MoveTo完了）まで待つ
-
             enemyCard.OnField(false, enemyCard.transform); // CardControllerクラスのOnField()メソッドを呼び出す(敵側なのでisPlayer引数はfalseで渡す)
+
+            yield return coreMoveCoroutine; // コアがenemyCardの子になる（MoveTo完了）まで待ってからLv/BPを確定させる
+            gameManager.ArrangeCoresAndFixLv(gameManager.GetEnemyFieldCards());
+
             Debug.Log($"{enemyCard.model.name}をLv{enemyCard.model.currentLv}で召喚！");
 
             // 手札のリストを更新
