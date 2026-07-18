@@ -174,16 +174,38 @@ public class GameManager : MonoBehaviour
             coreMoveCoroutines.Add(StartCoroutine(core.movement.MoveTo(card.transform, new Vector2(0f, -40f))));
             */
 
-            // フィールドの一番左のカードのコアに乗っているコア全て(仮)を維持コアとして使用
-            CoreController[] cores = fieldCards[0].GetComponentsInChildren<CoreController>();
-            
+            // フィールドのカードのコアが各1個の場合は、やむなくフィールドの一番左のカードのコアに乗っているコア全て(仮)を維持コアとして使用
+            // CoreController[] cores = fieldCards[0].GetComponentsInChildren<CoreController>();
             // coreMoveCoroutines.Add(StartCoroutine(cores[0].movement.MoveTo(card.transform, new Vector2(0f, -40f))));
+            // Debug.Log("1個移動, cores.Length:" + cores.Length);
 
+            /*
             for (int i = 0; i < cores.Length - 1; i++)
             {
                 Vector2 offset = CoreMovement.GetRadialOffset(i, cores.Length - 1);
                 coreMoveCoroutines.Add(StartCoroutine(cores[i].movement.MoveTo(card.transform, offset)));
+                Debug.Log("cores[" + i + "]移動");
             }
+            */
+
+            // フィールドのカードのコアが各何個か調べ、一番多く乗っているところから〇個移動？(消滅させないに越したことはない)
+            Debug.Log("フィールドのカード:" + fieldCards.Length + "枚");
+            int onMaxCoreNum = 1;
+            int onMaxCoreIndex = 0;
+            // 一番乗っているコアの数が多いカードを特定
+            for (int i = 0; i < fieldCards.Length; i++)
+            {
+                CoreController[] onCores = fieldCards[i].GetComponentsInChildren<CoreController>();
+                Debug.Log("fieldCards[" + i + "]上のコアの数:" + onCores.Length + "個");
+                if (onCores.Length > onMaxCoreNum)
+                {
+                    onMaxCoreNum = onCores.Length;
+                    onMaxCoreIndex = i;
+                }
+            }
+            CoreController[] moveCores = fieldCards[onMaxCoreIndex].GetComponentsInChildren<CoreController>();
+            coreMoveCoroutines.Add(StartCoroutine(moveCores[0].movement.MoveTo(card.transform, new Vector2(0f, -40f))));
+            // (7コスト以上のカードを召喚する場合は、Lv2にできるのなら他のスピリットを消滅させてでもLv2にして召喚する、とか)
         }
         else
         {
@@ -199,6 +221,8 @@ public class GameManager : MonoBehaviour
             int lackCoreNum = netCost - reserveCoreList.Length;
             Debug.Log("不足コスト：" + lackCoreNum);
             CardController[] fieldCards = GetPlayerFieldCards();
+            
+            /*
             // コアをいくつフィールドから支払うか
             for (int i = 0; i < lackCoreNum; i++)
             {
@@ -209,6 +233,41 @@ public class GameManager : MonoBehaviour
             Debug.Log("不足コストは" + fieldCards[lackCoreNum].model.name + "から確保");
             CoreController core = fieldCards[lackCoreNum].GetComponentInChildren<CoreController>();
             coreMoveCoroutines.Add(StartCoroutine(core.movement.MoveTo(card.transform)));
+            */
+            
+            // 不足分を、フィールドの各カードから順番に（コアが足りなければ次のカードから）支払う
+            int lackRemaining = lackCoreNum;
+            foreach (CardController fieldCard in fieldCards)
+            {
+                if (lackRemaining <= 0) break;
+
+                CoreController[] onCores = fieldCard.GetComponentsInChildren<CoreController>();
+                int payNum = Mathf.Min(lackRemaining, onCores.Length);
+                for (int i = 0; i < payNum; i++)
+                {
+                    coreMoveCoroutines.Add(StartCoroutine(onCores[i].movement.MoveTo(playerTrashTransform)));
+                }
+                lackRemaining -= payNum;
+            }
+
+            // フィールドのカードのコアが各何個か調べ、一番多く乗っているところから1個移動
+            Debug.Log("フィールドのカード:" + fieldCards.Length + "枚");
+            int onMaxCoreNum = 0;
+            int onMaxCoreIndex = 0;
+            // 一番乗っているコアの数が多いカードを特定
+            for (int i = 0; i < fieldCards.Length; i++)
+            {
+                CoreController[] onCores = fieldCards[i].GetComponentsInChildren<CoreController>();
+                Debug.Log("fieldCards[" + i + "]上のコアの数:" + onCores.Length + "個");
+                if (onCores.Length > onMaxCoreNum)
+                {
+                    onMaxCoreNum = onCores.Length;
+                    onMaxCoreIndex = i;
+                }
+            }
+            CoreController[] moveCores = fieldCards[onMaxCoreIndex].GetComponentsInChildren<CoreController>();
+            coreMoveCoroutines.Add(StartCoroutine(moveCores[0].movement.MoveTo(card.transform, new Vector2(0f, -40f))));
+
         }
 
         return coreMoveCoroutines;
@@ -223,6 +282,41 @@ public class GameManager : MonoBehaviour
             yield return coreMoveCoroutine;
         }
         CheckIfCoreZero();
+
+        yield return new WaitForEndOfFrame();
+
+        // コアの配置とLv・BPを更新
+        // 別のメソッドで定義する？
+        // コア動かしたカードだけ変更すればいいんだけど
+        // ※ MoveTo()は開始直後にコアの親をCanvas直下へ退避させるため、
+        //   ここでonCoresを取得し直すと空になってしまう。1回取得した配列を使い回すこと。
+        CardController[] fieldCards = GetPlayerFieldCards();
+        for (int i = 0; i < fieldCards.Length; i++)
+        {
+            CoreController[] onCores = fieldCards[i].GetComponentsInChildren<CoreController>();
+            // 維持コア0で消滅、filedCards再整列後に呼びたい
+            for (int j = 0; j < onCores.Length; j++)
+            {
+                Vector2 offset = CoreMovement.GetRadialOffset(j, onCores.Length);
+                // coreMoveCoroutines.Add(StartCoroutine(onCores[j].movement.MoveTo(card.transform, offset)));
+                StartCoroutine(onCores[j].movement.MoveTo(fieldCards[i].transform, offset));
+            }
+
+            Debug.Log(onCores.Length + "個");
+            if (onCores.Length >= fieldCards[i].model.coreLv1)
+            {
+                fieldCards[i].model.at = fieldCards[i].model.bpLv1; // コアが減ってたらLv1だもんね。
+                if (onCores.Length >= fieldCards[i].model.coreLv2)
+                {
+                    fieldCards[i].model.at = fieldCards[i].model.bpLv2;
+                    if (onCores.Length >= fieldCards[i].model.coreLv3)
+                    {
+                        fieldCards[i].model.at = fieldCards[i].model.bpLv3;
+                    }
+                }
+            }
+            Debug.Log(fieldCards[i].model.name +" BP:" + fieldCards[i].model.at);
+        }
     }
 
 
