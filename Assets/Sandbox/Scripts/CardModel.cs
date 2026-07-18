@@ -12,6 +12,7 @@ public class CardModel
     public int cost;    // カードのコスト
     public int coreNum; // カード上に乗っているコアの数
     public int currentLv; // 現在のレベル
+    public int currentBp; // 現在のBP
     public int reductionSymbols; // 軽減シンボルの数
     public int symbols; // シンボルの数
     public Sprite icon; // カードの絵柄
@@ -41,7 +42,6 @@ public class CardModel
         at = cardEntity.at; 
         cost = cardEntity.cost;
         coreNum = cardEntity.coreNum;
-        currentLv = cardEntity.currentLv;
         reductionSymbols = cardEntity.reductionSymbols;
         symbols = cardEntity.symbols;
         icon = cardEntity.icon;
@@ -93,21 +93,52 @@ public class CardModel
         }
     }
 
+    // BPを比較するメソッド
+    void CompareBp(int attackerBp, string attackerName) // 引数string attackerNameはただのデバッグ用
+    {
+        // FixBp();
+        if (currentBp <= attackerBp)
+        {
+            Debug.Log($"{name}(BP:{currentBp}) <= {attackerName}(BP:{attackerBp}) → {name}破壊");
+            isAlive = false;
+        }
+        else
+        {
+            Debug.Log($"{name}(BP:{currentBp}) > {attackerName}(BP:{attackerBp}) → {name}生存");
+            isAlive = true;
+        }
+    }
+
     // カードの攻撃処理
     public void Attack(CardController card)
     {
-        card.model.Damage(GetBp());
+        // FixBp();
+        // card.model.Damage(GetBp());
+        // Debug.Log(card.model.name);
+        card.model.CompareBp(currentBp, name); // 攻撃側のBPと名前を渡す 引数nameはただのデバッグ用
         // card.model.Damage(at); // 攻撃力分のダメージを相手のカードに与える
     }
 
+    // BPを更新するメソッド
+    public void FixBp()
+    {
+        if (currentLv == 3) currentBp = bpLv3;
+        else if (currentLv == 2) currentBp = bpLv2;
+        else currentBp = bpLv1;
+    }
+    
     // BP取得
     public int GetBp()
     {
-        return bpLv2;
-    } 
+        if (currentLv == 3) return bpLv3;
+        else if (currentLv == 2) return bpLv2;
+        else return bpLv1;
+    }
 
     public int GetHp()
     {
-        return bpLv2;
+        if (currentLv == 3) return bpLv3;
+        else if (currentLv == 2) return bpLv2;
+        else return bpLv1;
     }
 }

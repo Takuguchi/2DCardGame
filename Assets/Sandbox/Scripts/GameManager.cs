@@ -102,6 +102,8 @@ public class GameManager : MonoBehaviour
                 CoreController core = reserveCoreList[reserveCoreList.Length - 1 - i];
                 core.StartCoroutine(core.movement.MoveTo(enemyTrashTransform));
             }
+
+            ArrangeCoresAndFixLv(GetEnemyFieldCards());
         }
         uiManager.ShowManaCost(player.manaCost, enemy.manaCost); // マナコストの表示を変更するメソッドを呼び出す
     }
@@ -349,13 +351,12 @@ public class GameManager : MonoBehaviour
 
         yield return new WaitForEndOfFrame();
 
-        ArrangeCoresAndFixLv();
+        ArrangeCoresAndFixLv(GetPlayerFieldCards());
     }
 
     // コアの配置とLv・BPを更新するメソッド
-    public void ArrangeCoresAndFixLv()
+    public void ArrangeCoresAndFixLv(CardController[] fieldCards)
     {
-        CardController[] fieldCards = GetPlayerFieldCards();
         for (int i = 0; i < fieldCards.Length; i++)
         {
             CoreController[] onCores = fieldCards[i].GetComponentsInChildren<CoreController>();
@@ -383,6 +384,7 @@ public class GameManager : MonoBehaviour
                     }
                 }
             }
+            fieldCards[i].model.FixBp();
             Debug.Log(fieldCards[i].model.name + " Lv:" + fieldCards[i].model.currentLv + " BP:" + fieldCards[i].model.at);
         }
         
@@ -699,16 +701,18 @@ public class GameManager : MonoBehaviour
     public void CardsBattle(CardController attacker, CardController defender)
     {
         Debug.Log("CardsBattle");
-        Debug.Log("attacker HP:" + attacker.model.hp);
-        Debug.Log("defender HP:" + defender.model.hp);
-        Debug.Log("attacker:" + attacker.model.name + " BP:" + attacker.model.GetBp());
-        Debug.Log("defender:" + defender.model.name + " BP:" + defender.model.GetBp());
+        // Debug.Log("attacker HP:" + attacker.model.hp);
+        // Debug.Log("defender HP:" + defender.model.hp);
+        attacker.model.FixBp();
+        defender.model.FixBp();
+        Debug.Log("attacker:" + attacker.model.name + " Lv" + attacker.model.currentLv + " BP:" + attacker.model.currentBp);
+        Debug.Log("defender:" + defender.model.name + " Lv" + defender.model.currentLv + " BP:" + defender.model.currentBp);
 
         attacker.Attack(defender); // attackerの攻撃力分のダメージをdefenderに与える
         defender.Attack(attacker); // defenderの攻撃力分のダメージをattackerに与える
         
-        Debug.Log("attacker HP:" + attacker.model.hp);
-        Debug.Log("defender HP:" + defender.model.hp);
+        // Debug.Log("attacker HP:" + attacker.model.hp);
+        // Debug.Log("defender HP:" + defender.model.hp);
         attacker.CheckAlive(); // attackerのカードの見た目を更新する
         defender.CheckAlive(); // defenderのカードの見た目を更新する
     }
