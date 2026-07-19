@@ -776,7 +776,7 @@ public class GameManager : MonoBehaviour
             // playerLifeCoreList[playerLifeCoreList.Length - 1].StartCoroutine(playerLifeCoreList[playerLifeCoreList.Length - 1].movement.MoveTo(playerReserveTransform)); // コアをリザーブへ移動
             for (int i = 0; i < attacker.model.symbols; i++)
             {
-                Destroy(playerLifeCoreList[playerLifeCoreList.Length - 1].gameObject); // 破壊
+                Destroy(playerLifeCoreList[playerLifeCoreList.Length - 1 - i].gameObject); // 破壊
             }
             CreateCore(playerReserveTransform, attacker.model.symbols); // 生成
         }
