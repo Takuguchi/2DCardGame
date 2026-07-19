@@ -1012,7 +1012,7 @@ MonoBehaviour:
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
-  m_ChildAlignment: 4
+  m_ChildAlignment: 3
   m_Spacing: -70.8
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
@@ -2139,7 +2139,7 @@ MonoBehaviour:
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
-  m_ChildAlignment: 4
+  m_ChildAlignment: 3
   m_Spacing: -70.8
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
@@ -2928,14 +2928,14 @@ RectTransform:
   - {fileID: 1687053642}
   - {fileID: 132229941}
   - {fileID: 862042951}
+  - {fileID: 701360166}
+  - {fileID: 386863020}
+  - {fileID: 933675142}
+  - {fileID: 1447455157}
   - {fileID: 85752552}
   - {fileID: 1633490392}
   - {fileID: 1407237830}
   - {fileID: 1480319886}
-  - {fileID: 933675142}
-  - {fileID: 1447455157}
-  - {fileID: 386863020}
-  - {fileID: 701360166}
   - {fileID: 1259011196}
   - {fileID: 1558740580}
   - {fileID: 1696876694}

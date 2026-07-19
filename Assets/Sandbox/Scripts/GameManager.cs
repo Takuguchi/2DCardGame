@@ -759,7 +759,12 @@ public class GameManager : MonoBehaviour
             // enemy.IncreaseManaCost(); // ライフで受けたコアをリザーブに移動
             enemy.manaCost++; // リザーブを1増やす
             enemy.defaultManaCost++; // コアの総数も1増やす
-            enemyLifeCoreList[enemyLifeCoreList.Length - 1].StartCoroutine(enemyLifeCoreList[enemyLifeCoreList.Length - 1].movement.MoveTo(enemyReserveTransform)); // コアをリザーブへ移動            
+            // enemyLifeCoreList[enemyLifeCoreList.Length - 1].StartCoroutine(enemyLifeCoreList[enemyLifeCoreList.Length - 1].movement.MoveTo(enemyReserveTransform)); // コアをリザーブへ移動            
+            for (int i = 0; i < attacker.model.symbols; i++)
+            {
+                Destroy(enemyLifeCoreList[enemyLifeCoreList.Length - 1 - i].gameObject); // 破壊    
+            }
+            CreateCore(enemyReserveTransform, attacker.model.symbols); // 生成
         }
         // attackerが敵のカードだった場合
         else
@@ -768,7 +773,12 @@ public class GameManager : MonoBehaviour
             // player.IncreaseManaCost(); // ライフで受けたコアをリザーブに移動
             player.manaCost++; // リザーブを1増やす
             player.defaultManaCost++; // コアの総数も1増やす
-            playerLifeCoreList[playerLifeCoreList.Length - 1].StartCoroutine(playerLifeCoreList[playerLifeCoreList.Length - 1].movement.MoveTo(playerReserveTransform)); // コアをリザーブへ移動
+            // playerLifeCoreList[playerLifeCoreList.Length - 1].StartCoroutine(playerLifeCoreList[playerLifeCoreList.Length - 1].movement.MoveTo(playerReserveTransform)); // コアをリザーブへ移動
+            for (int i = 0; i < attacker.model.symbols; i++)
+            {
+                Destroy(playerLifeCoreList[playerLifeCoreList.Length - 1].gameObject); // 破壊
+            }
+            CreateCore(playerReserveTransform, attacker.model.symbols); // 生成
         }
         attacker.SetCanAttack(false); // 一度攻撃したらattackerを攻撃不可にする
         attacker.ChangeIsRefreshed(false);
