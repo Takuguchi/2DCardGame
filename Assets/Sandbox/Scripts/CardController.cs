@@ -61,4 +61,31 @@ public class CardController : MonoBehaviour
             Destroy(this.gameObject);    // カードを破壊する
         }
     }
+
+    // スペルカード
+    public void UseSpellTo(CardController target)
+    {
+        switch (model.spell)
+        {
+            case SPELL.DAMAGE_ENEMY_CARD:
+                // 特定の敵を攻撃する
+                Attack(target);
+                target.CheckAlive();
+                break;
+            case SPELL.DAMAGE_ENEMY_CARDS:
+                break;
+            case SPELL.DAMAGE_ENEMY_HERO:
+                break;
+            case SPELL.HEAL_FRIEND_CARD:
+                break;
+            case SPELL.HEAL_FRIEND_CARDS:
+                break;
+            case SPELL.HEAL_FRIEND_HERO:
+                break;
+            case SPELL.NONE:
+                break;
+            
+        }
+        Destroy(this.gameObject); //スペルカード使用後は削除
+    }
 }
