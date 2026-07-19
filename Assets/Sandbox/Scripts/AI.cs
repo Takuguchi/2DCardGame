@@ -83,8 +83,8 @@ public class AI : MonoBehaviour
             // attackerカードを選択
             CardController attacker = enemyCanAttackCardList[0]; // defenderカードを選択（フィールドの攻撃可能カードから選択）  
             
-            // プレイヤーのフィールドにカードが存在する場合はカード同士で戦わせる
-            if (playerFieldCardList.Length > 0)
+            // プレイヤーのフィールドに回復状態のカードが存在する場合はカード同士で戦わせる
+            if (playerFieldCardList.Length > 0 && Array.Exists(playerFieldCardList, card => card.model.isRefreshed))
             {
                 // defenderカードを選択
                 // シールドカードのみ攻撃対象にする
@@ -92,6 +92,9 @@ public class AI : MonoBehaviour
                 {
                     playerFieldCardList = Array.FindAll(playerFieldCardList, card => card.model.ability == ABILITY.SHIELD);
                 }
+
+                // 回復状態のカードのみ攻撃対象にする
+                playerFieldCardList = Array.FindAll(playerFieldCardList, card => card.model.isRefreshed);
 
                 CardController defender = playerFieldCardList[0]; // とりあえずPlayerフィールドの一番左のカードを選択
                 // attackerとdefenderを戦わせる

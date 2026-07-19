@@ -25,6 +25,10 @@ public class AttackedCard : MonoBehaviour, IDropHandler
         {
             return; // attackerとdefenderがプレイヤー同士, または敵同士のカードだった場合は何も処理しないで終わる
         }
+        if (defender.model.isRefreshed == false)
+        {
+            return; // defenderが疲労状態の場合はブロックできない
+        }
 
         // シールドカードがあれば、シールドカード以外は攻撃できない
         CardController[] enemyFieldCards = GameManager.instance.GetEnemyFieldCards();
