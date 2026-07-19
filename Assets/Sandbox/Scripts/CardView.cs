@@ -31,6 +31,10 @@ public class CardView : MonoBehaviour
         {
             shieldPanel.SetActive(false); // シールドパネルを非表示にする
         }
+        if (cardModel.spell != SPELL.NONE)
+        {
+            hpText.gameObject.SetActive(false); // スペルカードはHPを非表示にする
+        }
     }
 
     // カードのデータが変化したときに呼ばれるメソッド

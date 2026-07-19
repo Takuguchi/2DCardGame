@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviour
     void StartGame()
     {
         uiManager.HideResultPanel(); // ゲーム開始時はリザルト画面を非表示にする
-        player.Init(new List<int>() { 1, 2, 3, 3, 2 }); // プレイヤーのデッキを初期化する
+        player.Init(new List<int>() { 1, 2, 4, 3, 2 }); // プレイヤーのデッキを初期化する
         enemy.Init(new List<int>() { 3, 1, 2, 2, 3 }); // 敵のデッキを初期化する
         uiManager.ShowHeroHP(player.heroHp, enemy.heroHp); // HeroのHP表示を変更するメソッドを呼び出す
         uiManager.ShowManaCost(player.manaCost, enemy.manaCost); // マナコストの表示を変更するメソッドを呼び出す

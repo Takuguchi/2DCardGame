@@ -15,6 +15,7 @@ public class CardEntity : ScriptableObject
     public int cost;    // カードのコスト
     public Sprite icon; // カードの絵柄
     public ABILITY ability; // カードのアビリティ
+    public SPELL spell;
 }
 
 public enum ABILITY
@@ -22,4 +23,15 @@ public enum ABILITY
     NONE,   // アビリティなし
     INIT_ATTACKABLE, // 1ターン目で攻撃可能
     SHIELD  // シールド
+}
+
+public enum SPELL
+{
+    NONE,
+    DAMAGE_ENEMY_CARD,
+    DAMAGE_ENEMY_CARDS,
+    DAMAGE_ENEMY_HERO,
+    HEAL_FRIEND_CARD,
+    HEAL_FRIEND_CARDS,
+    HEAL_FRIEND_HERO
 }

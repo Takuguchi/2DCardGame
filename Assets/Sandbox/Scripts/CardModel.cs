@@ -12,6 +12,7 @@ public class CardModel
     public int cost;    // カードのコスト
     public Sprite icon; // カードの絵柄
     public ABILITY ability; // カードのアビリティ
+    public SPELL spell;
 
 
     public bool isAlive;       // カードが生きているかどうか
@@ -32,6 +33,7 @@ public class CardModel
         cost = cardEntity.cost;
         icon = cardEntity.icon;
         ability = cardEntity.ability;
+        spell = cardEntity.spell;
         isAlive = true; // カードは最初は生きている状態
         isPlayerCard = isPlayer; // 引数のisPlayerを代入
     }
