@@ -3,5 +3,5 @@
 バトスピ風2Dカードゲーム
 
 ## デモ動画
-<img width="1905" height="926" alt="2DCardGame_19" src="https://github.com/user-attachments/assets/716595a0-e231-496a-9118-ebbf378a1d2f" />
+https://github.com/user-attachments/assets/bd5c85cc-c76c-48ee-920e-066a6ec6b59d
 
