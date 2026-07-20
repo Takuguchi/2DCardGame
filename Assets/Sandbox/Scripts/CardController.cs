@@ -9,13 +9,14 @@ public class CardController : MonoBehaviour
     CardView view;  // カードの見た目（view）に関することを操作
     public CardModel model;    // カードのデータ（model）に関することを操作
     public CardMovement movement; // カードの移動（movement）に関することを操作
-
-    public Transform cardTransform; // カードのTransformを取得する変数
+    // public Transform iconTransform => view.iconTransform; // コアの移動先として使うIconのTransform
+    public Transform iconTransform;
 
     void Awake()
     {
         view = GetComponent<CardView>();  // カードの見た目（view）のデータをCardViewコンポーネントから取得
         movement = GetComponent<CardMovement>();  // カードの移動（movement）のデータをCardMovementコンポーネントから取得
+        iconTransform = view.iconImage.transform;
     }
 
 
@@ -56,7 +57,6 @@ public class CardController : MonoBehaviour
         model.isFieldCard = true; // カードをドロップしたらフィールドのカードにする
         model.isRefreshed = true;
         model.FixBp();
-        // GameManager.instance.CreateCore(cardTransform, 1);
         
         /*
         if (model.ability == ABILITY.INIT_ATTACKABLE)

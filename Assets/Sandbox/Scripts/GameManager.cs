@@ -150,8 +150,8 @@ public class GameManager : MonoBehaviour
             for (int i = 0; i < reserveCoreList.Length; i++)
             {
                 // とりあえずリザーブにある分は全部カードに乗せる
-                Vector2 offset = CoreMovement.GetRadialOffset(i, reserveCoreList.Length);
-                coreMoveCoroutines.Add(StartCoroutine(reserveCoreList[i].movement.MoveTo(card.transform, offset)));
+                // Vector2 offset = CoreMovement.GetRadialOffset(i, reserveCoreList.Length);
+                coreMoveCoroutines.Add(StartCoroutine(reserveCoreList[i].movement.MoveTo(card.iconTransform)));
             }
 
             CardController[] fieldCards = GetPlayerFieldCards();
@@ -171,8 +171,8 @@ public class GameManager : MonoBehaviour
                 }
                 for (int i = 0; i < coresToMove.Count; i++)
                 {
-                    Vector2 offset = CoreMovement.GetRadialOffset(i, coresToMove.Count);
-                    coreMoveCoroutines.Add(StartCoroutine(coresToMove[i].movement.MoveTo(card.transform, offset)));
+                    // Vector2 offset = CoreMovement.GetRadialOffset(i, coresToMove.Count);
+                    coreMoveCoroutines.Add(StartCoroutine(coresToMove[i].movement.MoveTo(card.iconTransform)));
                 }
             }
         }
@@ -228,7 +228,7 @@ public class GameManager : MonoBehaviour
                 for (int i = 0; i < coresToMove.Count; i++)
                 {
                     Vector2 offset = CoreMovement.GetRadialOffset(i, coresToMove.Count);
-                    coreMoveCoroutines.Add(StartCoroutine(coresToMove[i].movement.MoveTo(card.transform, offset)));
+                    coreMoveCoroutines.Add(StartCoroutine(coresToMove[i].movement.MoveTo(card.iconTransform, offset)));
                 }
             }
             else // それ以外のザコカードの場合
@@ -247,7 +247,7 @@ public class GameManager : MonoBehaviour
                     }
                 }
                 CoreController[] moveCores = fieldCards[onMaxCoreIndex].GetComponentsInChildren<CoreController>();
-                coreMoveCoroutines.Add(StartCoroutine(moveCores[0].movement.MoveTo(card.transform, new Vector2(0f, -40f))));
+                coreMoveCoroutines.Add(StartCoroutine(moveCores[0].movement.MoveTo(card.iconTransform)));
             }
         }
         else
@@ -311,7 +311,7 @@ public class GameManager : MonoBehaviour
                 for (int i = 0; i < coresToMove.Count; i++)
                 {
                     Vector2 offset = CoreMovement.GetRadialOffset(i, coresToMove.Count);
-                    coreMoveCoroutines.Add(StartCoroutine(coresToMove[i].movement.MoveTo(card.transform, offset)));
+                    coreMoveCoroutines.Add(StartCoroutine(coresToMove[i].movement.MoveTo(card.iconTransform, offset)));
                 }
             }
             else
@@ -331,7 +331,7 @@ public class GameManager : MonoBehaviour
                     }
                 }
                 CoreController[] moveCores = fieldCards[onMaxCoreIndex].GetComponentsInChildren<CoreController>();
-                coreMoveCoroutines.Add(StartCoroutine(moveCores[0].movement.MoveTo(card.transform, new Vector2(0f, -40f))));
+                coreMoveCoroutines.Add(StartCoroutine(moveCores[0].movement.MoveTo(card.iconTransform)));
             }
         }
 
@@ -360,12 +360,13 @@ public class GameManager : MonoBehaviour
         {
             CoreController[] onCores = fieldCards[i].GetComponentsInChildren<CoreController>();
             // 維持コア0で消滅、filedCards再整列後に呼びたい
-            for (int j = 0; j < onCores.Length; j++)
-            {
-                Vector2 offset = CoreMovement.GetRadialOffset(j, onCores.Length);
+            // GridLayoutGroup追加により、コアの整列は必要なくなったためコメントアウト
+            // for (int j = 0; j < onCores.Length; j++)
+            // {
+                // Vector2 offset = CoreMovement.GetRadialOffset(j, onCores.Length);
                 // coreMoveCoroutines.Add(StartCoroutine(onCores[j].movement.MoveTo(card.transform, offset)));
-                StartCoroutine(onCores[j].movement.MoveTo(fieldCards[i].transform, offset));
-            }
+                // StartCoroutine(onCores[j].movement.MoveTo(fieldCards[i].iconTransform));
+            // }
 
             Debug.Log(onCores.Length + "個");
             if (onCores.Length >= fieldCards[i].model.coreLv1)

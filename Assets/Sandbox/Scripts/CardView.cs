@@ -11,9 +11,11 @@ public class CardView : MonoBehaviour
     [SerializeField] Text atText;   // カードの攻撃力を表示するText
     [SerializeField] Text costText; // カードのコストを表示するText
     [SerializeField] Text coreNumText; // カード上のコアの数を表示するText
-    [SerializeField] Image iconImage; // カードの絵柄を表示するImage
+    public Image iconImage; // カードの絵柄を表示するImage
     [SerializeField] GameObject selectablePanel; // カードが選択可能かどうかを表示するパネル
     [SerializeField] GameObject shieldPanel; // カードがシールドを持っているかどうかを表示するパネル
+
+    // public Transform iconTransform => iconImage.transform; // コアの移動先として使うIconのTransform（GridLayoutGroupで自動整列）
 
     // CardModel型のデータを取得してカードの見た目に反映するメソッド
     public void Show(CardModel cardModel)
