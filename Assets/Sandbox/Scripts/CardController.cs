@@ -83,8 +83,7 @@ public class CardController : MonoBehaviour
             case SPELL.HEAL_FRIEND_HERO:
                 break;
             case SPELL.NONE:
-                break;
-            
+                return; // ドロップされたカードがスペルカードでなかった場合は処理を終了
         }
         Destroy(this.gameObject); //スペルカード使用後は削除
     }
