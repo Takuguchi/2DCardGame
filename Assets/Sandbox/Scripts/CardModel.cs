@@ -50,9 +50,21 @@ public class CardModel
         }
     }
 
+    // 自分を回復する
+    void RecoveryHP(int point)
+    {
+        hp += point;
+    }
+
     // カードの攻撃処理
     public void Attack(CardController card)
     {
         card.model.Damage(at); // 攻撃力分のダメージを相手のカードに与える
+    }
+
+    // cardを回復させる
+    public void Heal(CardController card)
+    {
+        card.model.RecoveryHP(at);
     }
 }
