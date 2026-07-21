@@ -20,7 +20,7 @@ public class AttackedHero : MonoBehaviour, IDropHandler
             return; // 何も処理しないで終わる
         }
         // 敵フィールドにシールドカードがあれば攻撃できない
-        CardController[] enemyFieldCards = GameManager.instance.GetEnemyFieldCards();
+        CardController[] enemyFieldCards = GameManager.instance.GetEnemyFieldCards(attacker.model.isPlayerCard);
         if (Array.Exists(enemyFieldCards, card => card.model.ability == ABILITY.SHIELD))
         {
             return; // 何も処理しないで終わる

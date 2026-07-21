@@ -164,10 +164,17 @@ public class GameManager : MonoBehaviour
         ChangeTurn(); // カウントが0になったらターンを切り替える
     }
 
-    // 敵のフィールドのカードを取得するメソッド
-    public CardController[] GetEnemyFieldCards()
+    // 相手のフィールドのカード(プレイヤー→敵AI, 敵AI→プレイヤー)を取得するメソッド
+    public CardController[] GetEnemyFieldCards(bool isPlayer)
     {
-        return enemyFieldTransform.GetComponentsInChildren<CardController>();
+        if (isPlayer)
+        {
+            return enemyFieldTransform.GetComponentsInChildren<CardController>();
+        }
+        else
+        {
+            return playerFieldTransform.GetComponentsInChildren<CardController>();    
+        } 
     }
 
     // ターンエンドボタンを押したときに呼ばれるメソッド
