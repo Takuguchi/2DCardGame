@@ -10,10 +10,13 @@ public class CardController : MonoBehaviour
     public CardModel model;    // カードのデータ（model）に関することを操作
     public CardMovement movement; // カードの移動（movement）に関することを操作
 
+    GameManager gameManager;
+
     void Awake()
     {
         view = GetComponent<CardView>();  // カードの見た目（view）のデータをCardViewコンポーネントから取得
         movement = GetComponent<CardMovement>();  // カードの移動（movement）のデータをCardMovementコンポーネントから取得
+        gameManager = GameManager.instance;
     }
 
 
@@ -41,7 +44,7 @@ public class CardController : MonoBehaviour
     // フィールドにカードを出したときに呼ばれるメソッド
     public void OnField(bool isPlayer)
     {
-        GameManager.instance.ReduceManaCost(model.cost, isPlayer); // カードをドロップしたらPlayerのManaコストを減らす
+        gameManager.ReduceManaCost(model.cost, isPlayer); // カードをドロップしたらPlayerのManaコストを減らす
         model.isFieldCard = true; // カードをドロップしたらフィールドのカードにする
         if (model.ability == ABILITY.INIT_ATTACKABLE)
         {
@@ -74,7 +77,7 @@ public class CardController : MonoBehaviour
                 break;
             case SPELL.DAMAGE_ENEMY_CARDS:
                 // 相手フィールドの全てのカードに攻撃する
-                CardController[] enemyCards = GameManager.instance.GetEnemyFieldCards(this.model.isPlayerCard);
+                CardController[] enemyCards = gameManager.GetEnemyFieldCards(this.model.isPlayerCard);
                 foreach (CardController enemyCard in enemyCards)
                 {
                     Attack(enemyCard);
@@ -85,6 +88,8 @@ public class CardController : MonoBehaviour
                 }
                 break;
             case SPELL.DAMAGE_ENEMY_HERO:
+                // 相手のヒーローを攻撃する
+                gameManager.AttackToHero(this);
                 break;
             case SPELL.HEAL_FRIEND_CARD:
                 break;

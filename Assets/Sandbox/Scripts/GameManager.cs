@@ -245,10 +245,10 @@ public class GameManager : MonoBehaviour
     }
 
     // Heroに攻撃するメソッド
-    public void AttackToHero(CardController attacker, bool isPlayerCard)
+    public void AttackToHero(CardController attacker)
     {
         // attackerがプレイヤーのカードだった場合
-        if (isPlayerCard)
+        if (attacker.model.isPlayerCard)
         {
             enemy.heroHp -= attacker.model.at; // 敵のHeroのHPを攻撃力分下げる
         }
