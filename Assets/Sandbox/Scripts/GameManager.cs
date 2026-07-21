@@ -177,6 +177,19 @@ public class GameManager : MonoBehaviour
         } 
     }
 
+    // 自分のフィールドのカード(プレイヤー→プレイヤー, 敵AI→敵AI)を取得するメソッド
+    public CardController[] GetFriendFieldCards(bool isPlayer)
+    {
+        if (isPlayer)
+        {
+            return playerFieldTransform.GetComponentsInChildren<CardController>();
+        }
+        else
+        {
+            return enemyFieldTransform.GetComponentsInChildren<CardController>();    
+        } 
+    }
+
     // ターンエンドボタンを押したときに呼ばれるメソッド
     public void OnClickTurnEndButton()
     {

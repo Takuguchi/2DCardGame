@@ -109,6 +109,12 @@ public class CardController : MonoBehaviour
                 Heal(target);
                 break;
             case SPELL.HEAL_FRIEND_CARDS:
+                // 自分のフィールドの全てのカードを回復させる
+                CardController[] friendCards = gameManager.GetFriendFieldCards(this.model.isPlayerCard);
+                foreach(CardController friendCard in friendCards)
+                {
+                    Heal(friendCard);
+                }
                 break;
             case SPELL.HEAL_FRIEND_HERO:
                 break;
