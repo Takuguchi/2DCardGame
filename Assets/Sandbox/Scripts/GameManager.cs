@@ -274,6 +274,22 @@ public class GameManager : MonoBehaviour
         uiManager.ShowHeroHP(player.heroHp, enemy.heroHp); // HeroのHP表示を変更
     }
 
+    // Heroを回復させるメソッド
+    public void HealTohero(CardController healer)
+    {
+        // healerがプレイヤーのカードだった場合
+        if (healer.model.isPlayerCard)
+        {
+            player.heroHp += healer.model.at; // プレイヤーのHeroのHPを攻撃力分回復させる
+        }
+        // healerが敵のカードだった場合
+        else
+        {
+            enemy.heroHp += healer.model.at; // 敵のHeroのHPを攻撃力分回復させる
+        }
+        uiManager.ShowHeroHP(player.heroHp, enemy.heroHp); // HeroのHP表示を変更
+    }
+
     // HeroのHPが0以下になったかどうかを判定→リザルト画面を表示
     public void CheckHeroHP()
     {

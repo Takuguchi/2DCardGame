@@ -117,6 +117,8 @@ public class CardController : MonoBehaviour
                 }
                 break;
             case SPELL.HEAL_FRIEND_HERO:
+                // 自分のヒーローを回復させる
+                gameManager.HealTohero(this);
                 break;
             case SPELL.NONE:
                 return; // ドロップされたカードがスペルカードでなかった場合は処理を終了
