@@ -26,20 +26,33 @@ public class AI : MonoBehaviour
         CardController[] handCardList = gameManager.enemyHandTransform.GetComponentsInChildren<CardController>();
         
         // コスト以下のカードがあれば、カードをフィールドに出し続ける
-        while (Array.Exists(handCardList, card => card.model.cost <= gameManager.enemy.manaCost))
+        // 条件：モンスターカードならコストのみ
+        // 条件：スペルカードならコストと、使用可能かどうか（CanUseSpell）
+        while (Array.Exists(handCardList, card => 
+            (card.model.cost <= gameManager.enemy.manaCost)
+            && (!card.IsSpell || (card.IsSpell && card.CanUseSpell())) ))
         {
-            // Manaコスト以下のカードリストを取得
-            CardController[] selectableHandCardList = Array.FindAll(handCardList, card => card.model.cost <= gameManager.enemy.manaCost);
-            
-            // 場に出すカードを選択
-            CardController enemyCard = selectableHandCardList[0]; // とりあえずカードリストの一番最初のカードを選択
-            // カードを移動
-            StartCoroutine(enemyCard.movement.MoveToField(gameManager.enemyFieldTransform)); // カードの移動を行うCardMovementクラスのSetCardTransform()メソッドに、カードの移動先のTransformを渡す
-            enemyCard.OnField(); // CardControllerクラスのOnField()メソッドを呼び出す
-
-            // 手札のリストを更新
-            handCardList = gameManager.enemyHandTransform.GetComponentsInChildren<CardController>();
+            // 召喚/使用可能なカードリストを取得
+            CardController[] selectableHandCardList = Array.FindAll(handCardList, card => 
+                (card.model.cost <= gameManager.enemy.manaCost)
+                && (!card.IsSpell || (card.IsSpell && card.CanUseSpell())) );
+            // 召喚/使用するカードを選択
+            CardController selectCard = selectableHandCardList[0]; // とりあえずカードリストの一番最初のカードを選択
+            // スペルカードなら使用する
+            if (selectCard.IsSpell)
+            {
+                CastSpellOf(selectCard);
+            }
+            // モンスターカードなら
+            else
+            {
+                // カードを移動
+                StartCoroutine(selectCard.movement.MoveToField(gameManager.enemyFieldTransform)); // カードの移動を行うCardMovementクラスのSetCardTransform()メソッドに、カードの移動先のTransformを渡す
+                selectCard.OnField(); // CardControllerクラスのOnField()メソッドを呼び出す                
+            }
             yield return new WaitForSeconds(1);
+            // 1秒待ってから手札のリストを更新
+            handCardList = gameManager.enemyHandTransform.GetComponentsInChildren<CardController>();
         }
 
         yield return new WaitForSeconds(1);
@@ -93,4 +106,18 @@ public class AI : MonoBehaviour
         gameManager.ChangeTurn(); // 敵のターンが終了したら、プレイヤーのターンに切り替える
     }
 
+    // スペルカードを発動させるメソッド
+    void CastSpellOf(CardController card)
+    {
+        CardController target = null;
+        if (card.model.spell == SPELL.DAMAGE_ENEMY_CARD)
+        {
+            target = gameManager.GetEnemyFieldCards(card.model.isPlayerCard)[0];
+        }
+        if (card.model.spell == SPELL.HEAL_FRIEND_CARD)
+        {
+            target = gameManager.GetFriendFieldCards(card.model.isPlayerCard)[0];
+        }
+        card.UseSpellTo(target);
+    }
 }

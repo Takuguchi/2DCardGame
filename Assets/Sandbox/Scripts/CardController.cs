@@ -12,6 +12,12 @@ public class CardController : MonoBehaviour
 
     GameManager gameManager;
 
+    // スペルカードだったらtrueを返す
+    public bool IsSpell
+    {
+        get { return model.spell != SPELL.NONE; }
+    }
+
     void Awake()
     {
         view = GetComponent<CardView>();  // カードの見た目（view）のデータをCardViewコンポーネントから取得
@@ -124,5 +130,29 @@ public class CardController : MonoBehaviour
                 return; // ドロップされたカードがスペルカードでなかった場合は処理を終了
         }
         Destroy(this.gameObject); //スペルカード使用後は削除
+    }
+
+    // スペルカードが使用可能かどうか判定するメソッド
+    public bool CanUseSpell()
+    {
+        switch (model.spell)
+        {
+            case SPELL.DAMAGE_ENEMY_CARD:
+            case SPELL.DAMAGE_ENEMY_CARDS:
+                // 相手のフィールドにカードがあれば使用可能
+                CardController[] enemyCards = gameManager.GetEnemyFieldCards(this.model.isPlayerCard);
+                return enemyCards.Length > 0;
+            case SPELL.DAMAGE_ENEMY_HERO:
+            case SPELL.HEAL_FRIEND_HERO:
+                return true;
+            case SPELL.HEAL_FRIEND_CARD:
+            case SPELL.HEAL_FRIEND_CARDS:
+                // 自分のフィールドにカードがあれば使用可能
+                CardController[] friendCards = gameManager.GetFriendFieldCards(this.model.isPlayerCard);
+                return friendCards.Length > 0;
+            case SPELL.NONE:
+                return false; // スペルカードでなかった場合は使用不可
+        }
+        return false;
     }
 }
