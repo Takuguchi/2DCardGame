@@ -55,9 +55,9 @@ public class CardController : MonoBehaviour
     }
 
     // フィールドにカードを出したときに呼ばれるメソッド
-    public void OnField(bool isPlayer)
+    public void OnField()
     {
-        gameManager.ReduceManaCost(model.cost, isPlayer); // カードをドロップしたらPlayerのManaコストを減らす
+        gameManager.ReduceManaCost(model.cost, model.isPlayerCard); // カードをドロップしたらPlayerのManaコストを減らす
         model.isFieldCard = true; // カードをドロップしたらフィールドのカードにする
         if (model.ability == ABILITY.INIT_ATTACKABLE)
         {

@@ -34,7 +34,7 @@ public class DropPlace : MonoBehaviour, IDropHandler
             {
                 return; // Manaコストを減らす必要はないため、処理を終了する
             }
-            card.OnField(true); // CardControllerクラスのOnField()メソッドを呼び出す
+            card.OnField(); // CardControllerクラスのOnField()メソッドを呼び出す
         }
     }
 }
