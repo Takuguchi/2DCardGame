@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
 
     public bool isPlayerTurn; // プレイヤーのターンかどうかを判定する変数
     public Transform playerHero; // プレイヤーのHeroのTransform
+    public Transform enemyHero;  // 敵のHeroのTransform
 
     int timeCount; // 時間をカウントする変数
 
