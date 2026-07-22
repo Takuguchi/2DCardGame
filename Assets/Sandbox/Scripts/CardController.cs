@@ -133,6 +133,7 @@ public class CardController : MonoBehaviour
             case SPELL.NONE:
                 return; // ドロップされたカードがスペルカードでなかった場合は処理を終了
         }
+        gameManager.ReduceManaCost(model.cost, model.isPlayerCard);
         Destroy(this.gameObject); //スペルカード使用後は削除
     }
 
