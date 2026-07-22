@@ -17,7 +17,10 @@ public class SpellDropManager : MonoBehaviour, IDropHandler
         {
             return; // 何も処理しないで終わる
         }
-        spellCard.UseSpellTo(target);
+        if (spellCard.CanUseSpell())
+        {
+            spellCard.UseSpellTo(target);
+        }
     }
 
 }

@@ -27,6 +27,12 @@ public class DropPlace : MonoBehaviour, IDropHandler
             {
                return; // ドラッグ不可なら処理を終了する
             }
+            
+            if (card.IsSpell)
+            {
+                return; // スペルカードなら処理を終了(ドロップしない）
+            }
+
             card.movement.defaultParent = this.transform; // ドロップされたカードの親をフィールドにする
             
             // ドロップしたカードがフィールドのカードだった場合
