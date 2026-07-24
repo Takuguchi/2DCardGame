@@ -165,6 +165,7 @@ public class AI : MonoBehaviour
             {
                 StartCoroutine(attacker.movement.MoveToTarget(gameManager.playerHero)); // カードの移動を行うCardMovementクラスのMoveToTarget()メソッドに、カードの移動先のTransformを渡す
                 yield return new WaitForSeconds(0.25f); // 敵がHeroに攻撃するのでisPlayerCardはfalseにする
+                gameManager.AttackToHero(attacker);
                 yield return new WaitForSeconds(0.25f); // カードが戻る時間待ってから、HeroのHPが0以下になったかどうかを判定する
                 gameManager.CheckHeroHP(); // HeroのHPが0以下になったかどうかを判定→リザルト画面表示
             }
