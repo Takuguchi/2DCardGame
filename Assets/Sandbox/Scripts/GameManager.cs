@@ -26,6 +26,10 @@ public class GameManager : MonoBehaviour
     public bool isPlayerTurn; // プレイヤーのターンかどうかを判定する変数
     public Transform playerHero; // プレイヤーのHeroのTransform
 
+    public bool isWaitingForDefenderSelection; // 敵の攻撃時、プレイヤーの防御カード選択待ちかどうかを判定する変数
+    public CardController selectedDefenderCard; // プレイヤーが防御カードとして選択したカード
+    public bool heroWasClicked; // 敵の攻撃時、プレイヤーがHeroをクリックしたかどうか
+
     int timeCount; // 時間をカウントする変数
 
     // シングルトン化（GameManagerにどこからでもアクセスできるようにする）
@@ -703,6 +707,30 @@ public class GameManager : MonoBehaviour
         }
     }
 
+
+    // 敵の攻撃時、プレイヤーが防御カードとしてクリックしたカードを選択するメソッド
+    public void SelectDefenderCard(CardController card)
+    {
+        if (!isWaitingForDefenderSelection) return; // 防御カード選択待ちでなければ何もしない
+        if (!card.model.isPlayerCard || !card.model.isRefreshed) return; // プレイヤーの回復状態のカード以外は選択できない
+
+        // シールドカードがあれば、シールドカード以外は選択できない
+        CardController[] playerFieldCards = GetPlayerFieldCards();
+        if (Array.Exists(playerFieldCards, c => c.model.ability == ABILITY.SHIELD) && card.model.ability != ABILITY.SHIELD)
+        {
+            return;
+        }
+
+        selectedDefenderCard = card; // 選択されたカードを防御カードとして記録
+    }
+
+    // 敵の攻撃時、プレイヤーがHeroをクリックしたときに呼ばれるメソッド
+    public void SelectHeroAsTarget()
+    {
+        if (!isWaitingForDefenderSelection) return; // 防御カード選択待ちでなければ何もしない
+
+        heroWasClicked = true; // Heroがクリックされたことを記録
+    }
 
     public void CardsBattle(CardController attacker, CardController defender)
     {

@@ -5,8 +5,19 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 // 攻撃される側のカードのクラス
-public class AttackedCard : MonoBehaviour, IDropHandler
+public class AttackedCard : MonoBehaviour, IDropHandler, IPointerClickHandler
 {
+
+    // 敵の攻撃時、プレイヤーが防御カードとしてこのカードをクリックしたときに呼ばれる
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        CardController defender = GetComponent<CardController>(); // 自分自身のCardControllerを取得
+        if (defender == null)
+        {
+            return;
+        }
+        GameManager.instance.SelectDefenderCard(defender);
+    }
 
     public void OnDrop(PointerEventData eventData)
     {

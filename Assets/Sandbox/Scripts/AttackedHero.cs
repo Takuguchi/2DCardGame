@@ -5,8 +5,14 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 // 攻撃される側のカードのクラス
-public class AttackedHero : MonoBehaviour, IDropHandler
+public class AttackedHero : MonoBehaviour, IDropHandler, IPointerClickHandler
 {
+
+    // 敵の攻撃時、プレイヤーがHeroをクリックしたときに呼ばれる
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        GameManager.instance.SelectHeroAsTarget();
+    }
 
     public void OnDrop(PointerEventData eventData)
     {

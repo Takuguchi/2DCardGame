@@ -70,6 +70,7 @@ public class AI : MonoBehaviour
         yield return new WaitForSeconds(1);
 
         /* 攻撃 */
+        /*
         // フィールドのカードリストを取得
         CardController[] fieldCardList = gameManager.enemyFieldTransform.GetComponentsInChildren<CardController>();
         // 攻撃可能カードがあれば攻撃を繰り返す
@@ -113,8 +114,70 @@ public class AI : MonoBehaviour
             fieldCardList = gameManager.enemyFieldTransform.GetComponentsInChildren<CardController>(); // フィールドのカードリストを更新
             yield return new WaitForSeconds(1);
         }
+        */
 
-        
+        /* 攻撃(バトスピ用) */
+        // フィールドのカードリストを取得
+        CardController[] fieldCardList = gameManager.enemyFieldTransform.GetComponentsInChildren<CardController>();
+        // 攻撃可能カードがあれば攻撃を繰り返す
+        while (Array.Exists(fieldCardList, card => card.model.canAttack))
+        {
+            // 攻撃可能カードを取得
+            CardController[] enemyCanAttackCardList = Array.FindAll(fieldCardList, card => card.model.canAttack); // 検索：Array.FindAll
+
+            // attackerカードを選択
+            CardController attacker = enemyCanAttackCardList[0]; // defenderカードを選択（フィールドの攻撃可能カードから選択）
+
+            // まずアタック(疲労)
+            StartCoroutine(attacker.movement.TapCard(false));
+
+            // タイマー起動(5秒) プレイヤーがフィールド上の回復状態のカードかHeroをクリックするのを待つ
+            gameManager.selectedDefenderCard = null;
+            gameManager.heroWasClicked = false;
+            gameManager.isWaitingForDefenderSelection = true;
+
+            float attackTimer = 5f;
+            while (attackTimer > 0f && gameManager.selectedDefenderCard == null && !gameManager.heroWasClicked)
+            {
+                attackTimer -= Time.deltaTime;
+                yield return null;
+            }
+            gameManager.isWaitingForDefenderSelection = false;
+
+            CardController defender = gameManager.selectedDefenderCard;
+            gameManager.selectedDefenderCard = null;
+            bool heroWasClicked = gameManager.heroWasClicked;
+            gameManager.heroWasClicked = false;
+
+            // 5秒以内にプレイヤーがフィールド上のいずれかの回復状態のカードをクリックしたらそのカードとバトル
+            if (defender != null)
+            {
+                StartCoroutine(defender.movement.TapCard(false)); // defenderを疲労させる
+
+                // attackerとdefenderを戦わせる
+                StartCoroutine(attacker.movement.MoveToTarget(defender.transform)); // カードの移動を行うCardMovementクラスのMoveToTarget()メソッドに、カードの移動先のTransformを渡す
+                yield return new WaitForSeconds(0.51f);
+                gameManager.CardsBattle(attacker, defender);
+            }
+            else if (heroWasClicked) // 5秒以内にプレイヤーがヒーローをクリックしたらライフを減らす
+            {
+                StartCoroutine(attacker.movement.MoveToTarget(gameManager.playerHero)); // カードの移動を行うCardMovementクラスのMoveToTarget()メソッドに、カードの移動先のTransformを渡す
+                yield return new WaitForSeconds(0.25f);
+                gameManager.AttackToHero(attacker, false); // 敵がHeroに攻撃するのでisPlayerCardはfalseにする
+                yield return new WaitForSeconds(0.25f); // カードが戻る時間待ってから、HeroのHPが0以下になったかどうかを判定する
+                gameManager.CheckHeroHP(); // HeroのHPが0以下になったかどうかを判定→リザルト画面表示
+            }
+            else // プレイヤーが5秒何もせずに経過したらライフを減らす
+            {
+                StartCoroutine(attacker.movement.MoveToTarget(gameManager.playerHero)); // カードの移動を行うCardMovementクラスのMoveToTarget()メソッドに、カードの移動先のTransformを渡す
+                yield return new WaitForSeconds(0.25f);
+                gameManager.AttackToHero(attacker, false); // 敵がHeroに攻撃するのでisPlayerCardはfalseにする
+                yield return new WaitForSeconds(0.25f); // カードが戻る時間待ってから、HeroのHPが0以下になったかどうかを判定する
+                gameManager.CheckHeroHP(); // HeroのHPが0以下になったかどうかを判定→リザルト画面表示
+            }
+            fieldCardList = gameManager.enemyFieldTransform.GetComponentsInChildren<CardController>(); // フィールドのカードリストを更新
+            yield return new WaitForSeconds(1);
+        }
 
         yield return new WaitForSeconds(1); // 1秒待機してからターン切替
 
