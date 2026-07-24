@@ -136,10 +136,11 @@ public class AI : MonoBehaviour
             gameManager.heroWasClicked = false;
             gameManager.isWaitingForDefenderSelection = true;
 
-            float attackTimer = 5f;
-            while (attackTimer > 0f && gameManager.selectedDefenderCard == null && !gameManager.heroWasClicked)
+            // float attackTimer = 5f;
+            // while (attackTimer > 0f && gameManager.selectedDefenderCard == null && !gameManager.heroWasClicked)
+            while (gameManager.selectedDefenderCard == null && !gameManager.heroWasClicked)
             {
-                attackTimer -= Time.deltaTime;
+                // attackTimer -= Time.deltaTime;
                 yield return null;
             }
             gameManager.isWaitingForDefenderSelection = false;

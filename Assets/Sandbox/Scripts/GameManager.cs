@@ -553,7 +553,7 @@ public class GameManager : MonoBehaviour
     void TurnCalc()
     {
         StopAllCoroutines(); // 安全のためにコルーチン開始前に他を止めておく
-        StartCoroutine(CountDown()); // カウントダウンを開始
+        // StartCoroutine(CountDown()); // カウントダウンを開始
         if (isPlayerTurn)
         {
             // プレイヤーのターンの処理
