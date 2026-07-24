@@ -45,6 +45,11 @@ public class CardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
         {
             isDraggable = true; // ドラッグ可能
         }
+        else if (GameManager.instance.step == GameManager.STEP.ATTACK
+                 && card.model.cardType == CARDTYPE.MAGIC)
+        {
+            isDraggable = true; // ドラッグ可能
+        }
         else
         {
             isDraggable = false; // カードのコストがPlayerのManaコスト"以上"ならドラッグ不可(維持コアが1個以上必要なため)

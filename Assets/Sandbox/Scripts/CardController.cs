@@ -81,4 +81,32 @@ public class CardController : MonoBehaviour
             GameManager.instance.OnDestroyed(model.isPlayerCard, cores); // 破壊されたカード上のコアをリザーブに移動
         }
     }
+
+
+
+    // マジックカード
+    public void UseMagicTo(CardController target)
+    {
+        switch (model.magic)
+        {
+            case MAGIC.DESTROY_ENEMY_CARD:
+                // 特定の敵を攻撃する
+                if (target == null) return;
+                if (target.model.isPlayerCard == model.isPlayerCard) return;
+                Attack(target);
+                target.CheckAlive();
+                break;
+            case MAGIC.REFRESH_FRIEND_CARDS:
+                // 自分のスピリットすべてを回復させる
+                CardController[] playerCards = gameManager.GetPlayerFieldCards();
+                foreach (CardController playerCard in playerCards)
+                {
+                    playerCard.ChangeIsRefreshed(true);
+                }
+                break;
+            case MAGIC.NONE:
+                return;
+        }
+        Destroy(this.gameObject); //スペルカード使用後は削除(本当はトラッシュに移動してから非表示にしたい)
+    }
 }

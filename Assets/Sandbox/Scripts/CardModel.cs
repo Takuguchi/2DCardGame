@@ -120,7 +120,14 @@ public class CardModel
         // FixBp();
         // card.model.Damage(GetBp());
         // Debug.Log(card.model.name);
-        card.model.CompareBp(currentBp, name); // 攻撃側のBPと名前を渡す 引数nameはただのデバッグ用
+        if (card.model.cardType == CARDTYPE.SPIRIT && this.cardType == CARDTYPE.SPIRIT)
+        {
+            card.model.CompareBp(currentBp, name); // 攻撃側のBPと名前を渡す 引数nameはただのデバッグ用            
+        }
+        if (card.model.cardType == CARDTYPE.SPIRIT && this.cardType == CARDTYPE.MAGIC && this.magic == MAGIC.DESTROY_ENEMY_CARD)
+        {
+            card.model.Damage(this.at); // at以下のスピリットを破壊する
+        }
         // card.model.Damage(at); // 攻撃力分のダメージを相手のカードに与える
     }
 

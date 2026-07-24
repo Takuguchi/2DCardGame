@@ -34,6 +34,21 @@ public class GameManager : MonoBehaviour
 
     // シングルトン化（GameManagerにどこからでもアクセスできるようにする）
     public static GameManager instance;
+
+    public STEP step;
+
+    public enum STEP
+    {
+        NONE,
+        START,
+        CORE,
+        DRAW,
+        REFRESH,
+        MAIN,
+        ATTACK,
+        END
+    }
+
     private void Awake()
     {
         if (instance == null)

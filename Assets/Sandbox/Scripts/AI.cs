@@ -117,6 +117,7 @@ public class AI : MonoBehaviour
         */
 
         /* 攻撃(バトスピ用) */
+        gameManager.step = GameManager.STEP.ATTACK;
         // フィールドのカードリストを取得
         CardController[] fieldCardList = gameManager.enemyFieldTransform.GetComponentsInChildren<CardController>();
         // 攻撃可能カードがあれば攻撃を繰り返す
@@ -138,7 +139,7 @@ public class AI : MonoBehaviour
 
             // float attackTimer = 5f;
             // while (attackTimer > 0f && gameManager.selectedDefenderCard == null && !gameManager.heroWasClicked)
-            while (gameManager.selectedDefenderCard == null && !gameManager.heroWasClicked)
+            while (gameManager.selectedDefenderCard == null && !gameManager.heroWasClicked && attacker.model.isAlive == true)
             {
                 // attackTimer -= Time.deltaTime;
                 yield return null;
@@ -163,22 +164,27 @@ public class AI : MonoBehaviour
             else if (heroWasClicked) // 5秒以内にプレイヤーがヒーローをクリックしたらライフを減らす
             {
                 StartCoroutine(attacker.movement.MoveToTarget(gameManager.playerHero)); // カードの移動を行うCardMovementクラスのMoveToTarget()メソッドに、カードの移動先のTransformを渡す
-                yield return new WaitForSeconds(0.25f);
-                gameManager.AttackToHero(attacker, false); // 敵がHeroに攻撃するのでisPlayerCardはfalseにする
+                yield return new WaitForSeconds(0.25f); // 敵がHeroに攻撃するのでisPlayerCardはfalseにする
                 yield return new WaitForSeconds(0.25f); // カードが戻る時間待ってから、HeroのHPが0以下になったかどうかを判定する
                 gameManager.CheckHeroHP(); // HeroのHPが0以下になったかどうかを判定→リザルト画面表示
+            }
+            else if (attacker.model.isAlive == false) // フラッシュ効果でフィールドを離れたら
+            {
+                yield return null;
             }
             else // プレイヤーが5秒何もせずに経過したらライフを減らす
             {
                 StartCoroutine(attacker.movement.MoveToTarget(gameManager.playerHero)); // カードの移動を行うCardMovementクラスのMoveToTarget()メソッドに、カードの移動先のTransformを渡す
                 yield return new WaitForSeconds(0.25f);
-                gameManager.AttackToHero(attacker, false); // 敵がHeroに攻撃するのでisPlayerCardはfalseにする
+                gameManager.AttackToHero(attacker);
                 yield return new WaitForSeconds(0.25f); // カードが戻る時間待ってから、HeroのHPが0以下になったかどうかを判定する
                 gameManager.CheckHeroHP(); // HeroのHPが0以下になったかどうかを判定→リザルト画面表示
             }
             fieldCardList = gameManager.enemyFieldTransform.GetComponentsInChildren<CardController>(); // フィールドのカードリストを更新
             yield return new WaitForSeconds(1);
         }
+
+        gameManager.step = GameManager.STEP.END;
 
         yield return new WaitForSeconds(1); // 1秒待機してからターン切替
 
