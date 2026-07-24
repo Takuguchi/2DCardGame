@@ -16,7 +16,9 @@ public class CardModel
     public int reductionSymbols; // 軽減シンボルの数
     public int symbols; // シンボルの数
     public Sprite icon; // カードの絵柄
+    public CARDTYPE cardType;
     public ABILITY ability; // カードのアビリティ
+    public MAGIC magic;
 
     public int coreLv1; // レベル1の所要コア
     public int bpLv1;   // レベル1のBP
@@ -46,7 +48,9 @@ public class CardModel
         reductionSymbols = cardEntity.reductionSymbols;
         symbols = cardEntity.symbols;
         icon = cardEntity.icon;
+        cardType = cardEntity.cardType;
         ability = cardEntity.ability;
+        magic = cardEntity.magic;
         isAlive = true; // カードは最初は生きている状態
         isPlayerCard = isPlayer; // 引数のisPlayerを代入
         

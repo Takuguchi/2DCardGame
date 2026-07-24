@@ -10,21 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0058304999a35334999acd26135d03d3, type: 3}
-  m_Name: Card4
+  m_Name: Card8
   m_EditorClassIdentifier: 
-  name: "\u30AC\u30C9\u30D5\u30A1\u30F3\u30C8"
-  hp: 3
-  at: 1
-  cost: 2
+  name: "\u30B5\u30B8\u30C3\u30BF\u30D5\u30EC\u30A4\u30E0"
+  hp: 2
+  at: 5000
+  cost: 5
   coreNum: 0
   reductionSymbols: 2
-  symbols: 1
-  icon: {fileID: 21300000, guid: 2915067725fcb6443809d2216fcea508, type: 3}
-  cardType: 1
+  symbols: 0
+  icon: {fileID: 21300000, guid: 737d6e85b14dc2f429a4ce7f00c151a1, type: 3}
+  cardType: 4
   ability: 0
-  coreLv1: 1
-  bpLv1: 2000
-  coreLv2: 3
-  bpLv2: 3000
+  magic: 1
+  coreLv1: 0
+  bpLv1: 0
+  coreLv2: 0
+  bpLv2: 0
   coreLv3: 0
   bpLv3: 0

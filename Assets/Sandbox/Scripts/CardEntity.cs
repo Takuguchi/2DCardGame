@@ -17,7 +17,9 @@ public class CardEntity : ScriptableObject
     public int reductionSymbols; // 軽減シンボルの数
     public int symbols; // シンボルの数
     public Sprite icon; // カードの絵柄
+    public CARDTYPE cardType;
     public ABILITY ability; // カードのアビリティ
+    public MAGIC magic;
 
     public int coreLv1; // レベル1の所要コア
     public int bpLv1;   // レベル1のBP
@@ -27,9 +29,25 @@ public class CardEntity : ScriptableObject
     public int bpLv3;   // レベル3のBP
 }
 
+public enum CARDTYPE
+{
+    NONE,
+    SPIRIT,
+    BRAVE,
+    NEXUS,
+    MAGIC
+}
+
 public enum ABILITY
 {
     NONE,   // アビリティなし
     INIT_ATTACKABLE, // 1ターン目で攻撃可能
     SHIELD  // シールド
+}
+
+public enum MAGIC
+{
+    NONE,
+    DESTROY_ENEMY_CARD,
+    REFRESH_FRIEND_CARDS
 }
