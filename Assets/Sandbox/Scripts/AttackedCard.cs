@@ -55,7 +55,12 @@ public class AttackedCard : MonoBehaviour, IDropHandler, IPointerClickHandler
             GameManager.instance.CardsBattle(attacker, defender);
         }
 
-
+        if (GameManager.instance.step == GameManager.STEP.MAIN)
+        {
+            // メインステップからアタックステップへの切替
+            GameManager.instance.step = GameManager.STEP.ATTACK;
+            Debug.Log("メインステップからアタックステップへの切替");
+        }
     }
 
 }

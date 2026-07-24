@@ -569,6 +569,8 @@ public class GameManager : MonoBehaviour
     {
         StopAllCoroutines(); // 安全のためにコルーチン開始前に他を止めておく
         // StartCoroutine(CountDown()); // カウントダウンを開始
+        step = STEP.MAIN;
+        Debug.Log("メインステップ！");
         if (isPlayerTurn)
         {
             // プレイヤーのターンの処理

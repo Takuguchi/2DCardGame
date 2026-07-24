@@ -40,7 +40,12 @@ public class AttackedHero : MonoBehaviour, IDropHandler, IPointerClickHandler
             GameManager.instance.CheckHeroHP(); // HeroのHPが0になったかどうかを確認する
         }
 
-
+        if (GameManager.instance.step == GameManager.STEP.MAIN)
+        {
+            // メインステップからアタックステップへの切替
+            GameManager.instance.step = GameManager.STEP.ATTACK;
+            Debug.Log("メインステップからアタックステップへの切替");
+        }
     }
 
 }

@@ -17,6 +17,7 @@ public class MagicDropManager : MonoBehaviour, IDropHandler
         {
             return; // 何も処理しないで終わる
         }
+        if (GameManager.instance.step != GameManager.STEP.ATTACK) return;
         magicCard.UseMagicTo(target);
     }
 

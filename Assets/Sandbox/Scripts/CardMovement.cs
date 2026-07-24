@@ -34,9 +34,11 @@ public class CardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
 
 
         // フィールドのカードじゃない場合＝手札のカードの場合
-        if (card.model.isPlayerCard 
+        if (card.model.isPlayerCard
             && GameManager.instance.isPlayerTurn
+            && GameManager.instance.step == GameManager.STEP.MAIN
             && !card.model.isFieldCard
+            && card.model.cardType == CARDTYPE.SPIRIT
             && GameManager.instance.CalcNetCost(card) < reserveCoreList.Length + filedCoreNum)
         {
             isDraggable = true; // カードのNet(正味)コストがPlayerのManaコスト+フィールドのコアの総数"未満"ならドラッグ可能(維持コアが1個以上必要なため)
@@ -45,8 +47,10 @@ public class CardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
         {
             isDraggable = true; // ドラッグ可能
         }
-        else if (GameManager.instance.step == GameManager.STEP.ATTACK
-                 && card.model.cardType == CARDTYPE.MAGIC)
+        else if (card.model.isPlayerCard
+                 && GameManager.instance.step == GameManager.STEP.ATTACK
+                 && card.model.cardType == CARDTYPE.MAGIC
+                 && GameManager.instance.CalcNetCost(card) <= reserveCoreList.Length + filedCoreNum)
         {
             isDraggable = true; // ドラッグ可能
         }
