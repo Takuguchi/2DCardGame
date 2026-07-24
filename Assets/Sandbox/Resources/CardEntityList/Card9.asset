@@ -22,7 +22,7 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 26e24f3f21ac5e44685ff5f332d84ed2, type: 3}
   cardType: 4
   ability: 0
-  magic: 4
+  magic: 2
   coreLv1: 0
   bpLv1: 0
   coreLv2: 0
