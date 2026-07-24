@@ -71,7 +71,7 @@ public class GameManager : MonoBehaviour
         CreateCore(playerLifeTransform, 5);
         CreateCore(enemyLifeTransform, 5);
         uiManager.HideResultPanel(); // ゲーム開始時はリザルト画面を非表示にする
-        player.Init(new List<int>() { 0, 1, 2, 3, 7, 3, 1 }); // プレイヤーのデッキを初期化する
+        player.Init(new List<int>() { 9, 0, 1, 2, 3, 7, 3, 1 }); // プレイヤーのデッキを初期化する
         enemy.Init(new List<int>() { 4, 5, 5, 6, 4 }); // 敵のデッキを初期化する
         uiManager.ShowHeroHP(player.heroHp, enemy.heroHp); // HeroのHP表示を変更するメソッドを呼び出す
         uiManager.ShowManaCost(player.manaCost, enemy.manaCost); // マナコストの表示を変更するメソッドを呼び出す
@@ -96,10 +96,10 @@ public class GameManager : MonoBehaviour
     }
 
     // バトスピ用（オーバーロード）
-    public void ReduceManaCost(int cost, bool isPlayerCard, CardController card)
+    public void ReduceManaCost(CardController card)
     {
         int netCost = CalcNetCost(card);
-        if (isPlayerCard)
+        if (card.model.isPlayerCard)
         {
             player.manaCost -= netCost;
             player.manaCost--; // 維持コア1個分のマナコストを消費する
@@ -792,12 +792,12 @@ public class GameManager : MonoBehaviour
     }
 
     // Heroに攻撃するメソッド
-    public void AttackToHero(CardController attacker, bool isPlayerCard)
+    public void AttackToHero(CardController attacker)
     {
         CoreController[] playerLifeCoreList = playerLifeTransform.GetComponentsInChildren<CoreController>();
         CoreController[] enemyLifeCoreList = enemyLifeTransform.GetComponentsInChildren<CoreController>();
         // attackerがプレイヤーのカードだった場合
-        if (isPlayerCard)
+        if (attacker.model.isPlayerCard)
         {
             enemy.heroHp -= attacker.model.symbols; // 敵のHeroのライフをシンボル分下げる
             // enemy.IncreaseManaCost(); // ライフで受けたコアをリザーブに移動

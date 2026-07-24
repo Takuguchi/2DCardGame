@@ -11,12 +11,14 @@ public class CardController : MonoBehaviour
     public CardMovement movement; // カードの移動（movement）に関することを操作
     // public Transform iconTransform => view.iconTransform; // コアの移動先として使うIconのTransform
     public Transform iconTransform;
+    GameManager gameManager;
 
     void Awake()
     {
         view = GetComponent<CardView>();  // カードの見た目（view）のデータをCardViewコンポーネントから取得
         movement = GetComponent<CardMovement>();  // カードの移動（movement）のデータをCardMovementコンポーネントから取得
         iconTransform = view.iconImage.transform;
+        gameManager = GameManager.instance;
     }
 
 
@@ -49,10 +51,10 @@ public class CardController : MonoBehaviour
     }
 
     // フィールドにカードを出したときに呼ばれるメソッド
-    public void OnField(bool isPlayer, Transform cardTransform)
+    public void OnField()
     {
-        // GameManager.instance.ReduceManaCost(model.cost, isPlayer); // カードをドロップしたらPlayerのManaコストを減らす
-        GameManager.instance.ReduceManaCost(model.cost, isPlayer, this); //バトスピ用
+        // gameManager.ReduceManaCost(model.cost, isPlayer); // カードをドロップしたらPlayerのManaコストを減らす
+        gameManager.ReduceManaCost(this); //バトスピ用
         view.Refresh(model); // coreNumが増加したはずなのでカードの見た目を更新する
         model.isFieldCard = true; // カードをドロップしたらフィールドのカードにする
         model.isRefreshed = true;
@@ -78,11 +80,9 @@ public class CardController : MonoBehaviour
         {
             CoreController[] cores = GetComponentsInChildren<CoreController>(); // 破壊されるカードに乗っているコアを取得
             Destroy(this.gameObject);    // カードを破壊する
-            GameManager.instance.OnDestroyed(model.isPlayerCard, cores); // 破壊されたカード上のコアをリザーブに移動
+            gameManager.OnDestroyed(model.isPlayerCard, cores); // 破壊されたカード上のコアをリザーブに移動
         }
     }
-
-
 
     // マジックカード
     public void UseMagicTo(CardController target)
