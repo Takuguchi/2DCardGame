@@ -71,7 +71,7 @@ public class GameManager : MonoBehaviour
         CreateCore(playerLifeTransform, 5);
         CreateCore(enemyLifeTransform, 5);
         uiManager.HideResultPanel(); // ゲーム開始時はリザルト画面を非表示にする
-        player.Init(new List<int>() { 9, 0, 1, 2, 3, 7, 3, 1 }); // プレイヤーのデッキを初期化する
+        player.Init(new List<int>() { 9, 0, 8, 2, 1, 3, 7, 3, 1 }); // プレイヤーのデッキを初期化する
         enemy.Init(new List<int>() { 4, 5, 5, 6, 4 }); // 敵のデッキを初期化する
         uiManager.ShowHeroHP(player.heroHp, enemy.heroHp); // HeroのHP表示を変更するメソッドを呼び出す
         uiManager.ShowManaCost(player.manaCost, enemy.manaCost); // マナコストの表示を変更するメソッドを呼び出す
@@ -157,43 +157,46 @@ public class GameManager : MonoBehaviour
 
             Debug.Log("reserveCoreList.Length:" +  reserveCoreList.Length);
             
-            // 維持コア1個乗せる
-            CoreController core = reserveCoreList[reserveCoreList.Length - 1];
-            // coreMoveCoroutines.Add(StartCoroutine(core.movement.MoveTo(card.transform)));
-            // Vector2 offset = CoreMovement.GetRadialOffset(0, 1);
-            // coreMoveCoroutines.Add(StartCoroutine(core.movement.MoveTo(card.transform, offset))); // ちょい下にずらす
-            
-            // coreMoveCoroutines.Add(StartCoroutine(core.movement.MoveTo(card.transform, new Vector2(0f, -40f)))); // ちょい下にずらす
-
-            // 維持コアリザーブのコア全部乗せてみる
-            for (int i = 0; i < reserveCoreList.Length; i++)
+            if (card.model.cardType == CARDTYPE.SPIRIT)
             {
-                // とりあえずリザーブにある分は全部カードに乗せる
-                // Vector2 offset = CoreMovement.GetRadialOffset(i, reserveCoreList.Length);
-                coreMoveCoroutines.Add(StartCoroutine(reserveCoreList[i].movement.MoveTo(card.iconTransform)));
-            }
+                // 維持コア1個乗せる
+                CoreController core = reserveCoreList[reserveCoreList.Length - 1];
+                // coreMoveCoroutines.Add(StartCoroutine(core.movement.MoveTo(card.transform)));
+                // Vector2 offset = CoreMovement.GetRadialOffset(0, 1);
+                // coreMoveCoroutines.Add(StartCoroutine(core.movement.MoveTo(card.transform, offset))); // ちょい下にずらす
+                
+                // coreMoveCoroutines.Add(StartCoroutine(core.movement.MoveTo(card.transform, new Vector2(0f, -40f)))); // ちょい下にずらす
 
-            CardController[] fieldCards = GetPlayerFieldCards();
-
-            // (7コスト以上のカードを召喚する場合は、なるべくLv2に上げる)
-            if (card.model.cost > 6)
-            {
-                // 周りを全て消滅させる
-                List<CoreController> coresToMove = new List<CoreController>();
-                for (int i = 0; i < fieldCards.Length; i++)
+                // 維持コアリザーブのコア全部乗せてみる
+                for (int i = 0; i < reserveCoreList.Length; i++)
                 {
-                    CoreController[] onCores = fieldCards[i].GetComponentsInChildren<CoreController>();
-                    for (int j = 0; j < onCores.Length; j++)
+                    // とりあえずリザーブにある分は全部カードに乗せる
+                    // Vector2 offset = CoreMovement.GetRadialOffset(i, reserveCoreList.Length);
+                    coreMoveCoroutines.Add(StartCoroutine(reserveCoreList[i].movement.MoveTo(card.iconTransform)));
+                }
+
+                CardController[] fieldCards = GetFriendFieldCards(card.model.isPlayerCard);
+
+                // (7コスト以上のカードを召喚する場合は、なるべくLv2に上げる)
+                if (card.model.cost > 6)
+                {
+                    // 周りを全て消滅させる
+                    List<CoreController> coresToMove = new List<CoreController>();
+                    for (int i = 0; i < fieldCards.Length; i++)
                     {
-                        coresToMove.Add(onCores[j]);
+                        CoreController[] onCores = fieldCards[i].GetComponentsInChildren<CoreController>();
+                        for (int j = 0; j < onCores.Length; j++)
+                        {
+                            coresToMove.Add(onCores[j]);
+                        }
                     }
-                }
-                for (int i = 0; i < coresToMove.Count; i++)
-                {
-                    // Vector2 offset = CoreMovement.GetRadialOffset(i, coresToMove.Count);
-                    coreMoveCoroutines.Add(StartCoroutine(coresToMove[i].movement.MoveTo(card.iconTransform)));
-                }
-            }
+                    for (int i = 0; i < coresToMove.Count; i++)
+                    {
+                        // Vector2 offset = CoreMovement.GetRadialOffset(i, coresToMove.Count);
+                        coreMoveCoroutines.Add(StartCoroutine(coresToMove[i].movement.MoveTo(card.iconTransform)));
+                    }
+                }                
+            } 
         }
         else if (netCost == reserveCoreList.Length)
         {
@@ -208,65 +211,68 @@ public class GameManager : MonoBehaviour
                 coreMoveCoroutines.Add(costCore.StartCoroutine(costCore.movement.MoveTo(playerTrashTransform)));
             }
 
-            CardController[] fieldCards = GetPlayerFieldCards();
+            CardController[] fieldCards = GetFriendFieldCards(card.model.isPlayerCard);;
 
-            /*
-            // フィールドの一番左のカードのコアを維持コアとして使用
-            CoreController core = fieldCards[0].GetComponentInChildren<CoreController>();
-            coreMoveCoroutines.Add(StartCoroutine(core.movement.MoveTo(card.transform, new Vector2(0f, -40f))));
-            */
-
-            // フィールドのカードのコアが各1個の場合は、やむなくフィールドの一番左のカードのコアに乗っているコア全て(仮)を維持コアとして使用
-            // CoreController[] cores = fieldCards[0].GetComponentsInChildren<CoreController>();
-            // coreMoveCoroutines.Add(StartCoroutine(cores[0].movement.MoveTo(card.transform, new Vector2(0f, -40f))));
-            // Debug.Log("1個移動, cores.Length:" + cores.Length);
-
-            /*
-            for (int i = 0; i < cores.Length - 1; i++)
+            if (card.model.cardType == CARDTYPE.SPIRIT)
             {
-                Vector2 offset = CoreMovement.GetRadialOffset(i, cores.Length - 1);
-                coreMoveCoroutines.Add(StartCoroutine(cores[i].movement.MoveTo(card.transform, offset)));
-                Debug.Log("cores[" + i + "]移動");
-            }
-            */
+                /*
+                // フィールドの一番左のカードのコアを維持コアとして使用
+                CoreController core = fieldCards[0].GetComponentInChildren<CoreController>();
+                coreMoveCoroutines.Add(StartCoroutine(core.movement.MoveTo(card.transform, new Vector2(0f, -40f))));
+                */
 
-            Debug.Log("フィールドのカード:" + fieldCards.Length + "枚");
-            // (7コスト以上のカードを召喚する場合は、フィールドのコアを全て乗せる)
-            if (card.model.cost > 6)
-            {
-                // 周りを全て消滅させる
-                List<CoreController> coresToMove = new List<CoreController>();
-                for (int i = 0; i < fieldCards.Length; i++)
+                // フィールドのカードのコアが各1個の場合は、やむなくフィールドの一番左のカードのコアに乗っているコア全て(仮)を維持コアとして使用
+                // CoreController[] cores = fieldCards[0].GetComponentsInChildren<CoreController>();
+                // coreMoveCoroutines.Add(StartCoroutine(cores[0].movement.MoveTo(card.transform, new Vector2(0f, -40f))));
+                // Debug.Log("1個移動, cores.Length:" + cores.Length);
+
+                /*
+                for (int i = 0; i < cores.Length - 1; i++)
                 {
-                    CoreController[] onCores = fieldCards[i].GetComponentsInChildren<CoreController>();
-                    for (int j = 0; j < onCores.Length; j++)
+                    Vector2 offset = CoreMovement.GetRadialOffset(i, cores.Length - 1);
+                    coreMoveCoroutines.Add(StartCoroutine(cores[i].movement.MoveTo(card.transform, offset)));
+                    Debug.Log("cores[" + i + "]移動");
+                }
+                */
+
+                Debug.Log("フィールドのカード:" + fieldCards.Length + "枚");
+                // (7コスト以上のカードを召喚する場合は、フィールドのコアを全て乗せる)
+                if (card.model.cost > 6)
+                {
+                    // 周りを全て消滅させる
+                    List<CoreController> coresToMove = new List<CoreController>();
+                    for (int i = 0; i < fieldCards.Length; i++)
                     {
-                        coresToMove.Add(onCores[j]);
+                        CoreController[] onCores = fieldCards[i].GetComponentsInChildren<CoreController>();
+                        for (int j = 0; j < onCores.Length; j++)
+                        {
+                            coresToMove.Add(onCores[j]);
+                        }
+                    }
+                    for (int i = 0; i < coresToMove.Count; i++)
+                    {
+                        Vector2 offset = CoreMovement.GetRadialOffset(i, coresToMove.Count);
+                        coreMoveCoroutines.Add(StartCoroutine(coresToMove[i].movement.MoveTo(card.iconTransform, offset)));
                     }
                 }
-                for (int i = 0; i < coresToMove.Count; i++)
+                else // それ以外のザコカードの場合
                 {
-                    Vector2 offset = CoreMovement.GetRadialOffset(i, coresToMove.Count);
-                    coreMoveCoroutines.Add(StartCoroutine(coresToMove[i].movement.MoveTo(card.iconTransform, offset)));
-                }
-            }
-            else // それ以外のザコカードの場合
-            {
-                int onMaxCoreNum = 1;
-                int onMaxCoreIndex = 0;
-                // 一番乗っているコアの数が多いカードを特定
-                for (int i = 0; i < fieldCards.Length; i++)
-                {
-                    CoreController[] onCores = fieldCards[i].GetComponentsInChildren<CoreController>();
-                    Debug.Log("fieldCards[" + i + "]上のコアの数:" + onCores.Length + "個");
-                    if (onCores.Length > onMaxCoreNum)
+                    int onMaxCoreNum = 1;
+                    int onMaxCoreIndex = 0;
+                    // 一番乗っているコアの数が多いカードを特定
+                    for (int i = 0; i < fieldCards.Length; i++)
                     {
-                        onMaxCoreNum = onCores.Length;
-                        onMaxCoreIndex = i;
+                        CoreController[] onCores = fieldCards[i].GetComponentsInChildren<CoreController>();
+                        Debug.Log("fieldCards[" + i + "]上のコアの数:" + onCores.Length + "個");
+                        if (onCores.Length > onMaxCoreNum)
+                        {
+                            onMaxCoreNum = onCores.Length;
+                            onMaxCoreIndex = i;
+                        }
                     }
-                }
-                CoreController[] moveCores = fieldCards[onMaxCoreIndex].GetComponentsInChildren<CoreController>();
-                coreMoveCoroutines.Add(StartCoroutine(moveCores[0].movement.MoveTo(card.iconTransform)));
+                    CoreController[] moveCores = fieldCards[onMaxCoreIndex].GetComponentsInChildren<CoreController>();
+                    coreMoveCoroutines.Add(StartCoroutine(moveCores[0].movement.MoveTo(card.iconTransform)));
+                }                
             }
         }
         else
@@ -282,7 +288,7 @@ public class GameManager : MonoBehaviour
             // 不足コスト
             int lackCoreNum = netCost - reserveCoreList.Length;
             Debug.Log("不足コスト：" + lackCoreNum);
-            CardController[] fieldCards = GetPlayerFieldCards();
+            CardController[] fieldCards = GetFriendFieldCards(card.model.isPlayerCard);;
             
             /*
             // コアをいくつフィールドから支払うか
@@ -314,43 +320,46 @@ public class GameManager : MonoBehaviour
 
             Debug.Log("フィールドのカード:" + fieldCards.Length + "枚");
 
-            // (7コスト以上のカードを召喚する場合は、フィールドのコアを全て乗せる)
-            if (card.model.cost > 6)
+            if (card.model.cardType == CARDTYPE.SPIRIT)
             {
-                // 周りを全て消滅させる
-                List<CoreController> coresToMove = new List<CoreController>();
-                for (int i = 0; i < fieldCards.Length; i++)
+                // (7コスト以上のカードを召喚する場合は、フィールドのコアを全て乗せる)
+                if (card.model.cost > 6)
                 {
-                    CoreController[] onCores = fieldCards[i].GetComponentsInChildren<CoreController>();
-                    for (int j = 0; j < onCores.Length; j++)
+                    // 周りを全て消滅させる
+                    List<CoreController> coresToMove = new List<CoreController>();
+                    for (int i = 0; i < fieldCards.Length; i++)
                     {
-                        coresToMove.Add(onCores[j]);
+                        CoreController[] onCores = fieldCards[i].GetComponentsInChildren<CoreController>();
+                        for (int j = 0; j < onCores.Length; j++)
+                        {
+                            coresToMove.Add(onCores[j]);
+                        }
+                    }
+                    for (int i = 0; i < coresToMove.Count; i++)
+                    {
+                        Vector2 offset = CoreMovement.GetRadialOffset(i, coresToMove.Count);
+                        coreMoveCoroutines.Add(StartCoroutine(coresToMove[i].movement.MoveTo(card.iconTransform, offset)));
                     }
                 }
-                for (int i = 0; i < coresToMove.Count; i++)
+                else
                 {
-                    Vector2 offset = CoreMovement.GetRadialOffset(i, coresToMove.Count);
-                    coreMoveCoroutines.Add(StartCoroutine(coresToMove[i].movement.MoveTo(card.iconTransform, offset)));
-                }
-            }
-            else
-            {
-                // フィールドのカードのコアが各何個か調べ、一番多く乗っているところから1個移動
-                int onMaxCoreNum = 0;
-                int onMaxCoreIndex = 0;
-                // 一番乗っているコアの数が多いカードを特定
-                for (int i = 0; i < fieldCards.Length; i++)
-                {
-                    CoreController[] onCores = fieldCards[i].GetComponentsInChildren<CoreController>();
-                    Debug.Log("fieldCards[" + i + "]上のコアの数:" + onCores.Length + "個");
-                    if (onCores.Length > onMaxCoreNum)
+                    // フィールドのカードのコアが各何個か調べ、一番多く乗っているところから1個移動
+                    int onMaxCoreNum = 0;
+                    int onMaxCoreIndex = 0;
+                    // 一番乗っているコアの数が多いカードを特定
+                    for (int i = 0; i < fieldCards.Length; i++)
                     {
-                        onMaxCoreNum = onCores.Length;
-                        onMaxCoreIndex = i;
+                        CoreController[] onCores = fieldCards[i].GetComponentsInChildren<CoreController>();
+                        Debug.Log("fieldCards[" + i + "]上のコアの数:" + onCores.Length + "個");
+                        if (onCores.Length > onMaxCoreNum)
+                        {
+                            onMaxCoreNum = onCores.Length;
+                            onMaxCoreIndex = i;
+                        }
                     }
-                }
-                CoreController[] moveCores = fieldCards[onMaxCoreIndex].GetComponentsInChildren<CoreController>();
-                coreMoveCoroutines.Add(StartCoroutine(moveCores[0].movement.MoveTo(card.iconTransform)));
+                    CoreController[] moveCores = fieldCards[onMaxCoreIndex].GetComponentsInChildren<CoreController>();
+                    coreMoveCoroutines.Add(StartCoroutine(moveCores[0].movement.MoveTo(card.iconTransform)));
+                }                
             }
         }
 
@@ -363,13 +372,13 @@ public class GameManager : MonoBehaviour
         List<Coroutine> coreMoveCoroutines = MoveCores(card);
         foreach (Coroutine coreMoveCoroutine in coreMoveCoroutines)
         {
-            yield return coreMoveCoroutine;
+            yield return coreMoveCoroutine; // MoveCores()が開始したコア移動コルーチンが全て終わるのを待つ
         }
-        CheckIfCoreZero();
-
+        CheckIfCoreZero(card); // コアが0個のカードをチェック
+        
         yield return new WaitForEndOfFrame();
 
-        ArrangeCoresAndFixLv(GetPlayerFieldCards());
+        ArrangeCoresAndFixLv(GetFriendFieldCards(card.model.isPlayerCard));
     }
 
     // コアの配置とLv・BPを更新するメソッド
@@ -415,7 +424,7 @@ public class GameManager : MonoBehaviour
         int netCost = card.model.cost;
         int fieldSymbols = 0;
 
-        if (isPlayerTurn)
+        if (card.model.isPlayerCard)
         {
             // フィールドの総シンボルを計算(パターン1：symbolsを合算)
             CardController[] playerFieldCardList = playerFieldTransform.GetComponentsInChildren<CardController>();
@@ -450,15 +459,15 @@ public class GameManager : MonoBehaviour
         return netCost;
     }
 
-    public void CheckIfCoreZero()
+    public void CheckIfCoreZero(CardController card)
     {
-        CardController[] playerFieldCards = GetPlayerFieldCards();
-        for (int i = 0; i < playerFieldCards.Length - 1; i++)
+        CardController[] friendFieldCards = GetFriendFieldCards(card.model.isPlayerCard);
+        for (int i = 0; i < friendFieldCards.Length; i++)
         {
-            CoreController[] cores = playerFieldCards[i].GetComponentsInChildren<CoreController>(); // カードに乗っているコアを取得
+            CoreController[] cores = friendFieldCards[i].GetComponentsInChildren<CoreController>(); // カードに乗っているコアを取得
             if (cores.Length == 0)
             {
-                Destroy(playerFieldCards[i].gameObject);
+                Destroy(friendFieldCards[i].gameObject);
             }
         }
     }
@@ -599,13 +608,20 @@ public class GameManager : MonoBehaviour
         ChangeTurn(); // カウントが0になったらターンを切り替える
     }
 
-    // プレイヤーのフィールドのカードを取得するメソッド
-    public CardController[] GetPlayerFieldCards()
+    // 自分のフィールドのカード(プレイヤー→プレイヤー, 敵AI→敵AI)を取得するメソッド
+    public CardController[] GetFriendFieldCards(bool isPlayer)
     {
-        return playerFieldTransform.GetComponentsInChildren<CardController>();
+        if (isPlayer)
+        {
+            return playerFieldTransform.GetComponentsInChildren<CardController>();
+        }
+        else
+        {
+            return enemyFieldTransform.GetComponentsInChildren<CardController>();
+        }
     }
     
-    // 敵のフィールドのカードを取得するメソッド
+    // 相手のフィールドのカード(プレイヤー→敵AI, 敵AI→プレイヤー)を取得するメソッド
     public CardController[] GetEnemyFieldCards()
     {
         return enemyFieldTransform.GetComponentsInChildren<CardController>();
@@ -732,7 +748,7 @@ public class GameManager : MonoBehaviour
         if (!card.model.isPlayerCard || !card.model.isRefreshed) return; // プレイヤーの回復状態のカード以外は選択できない
 
         // シールドカードがあれば、シールドカード以外は選択できない
-        CardController[] playerFieldCards = GetPlayerFieldCards();
+        CardController[] playerFieldCards = GetFriendFieldCards(card.model.isPlayerCard);
         if (Array.Exists(playerFieldCards, c => c.model.ability == ABILITY.SHIELD) && card.model.ability != ABILITY.SHIELD)
         {
             return;

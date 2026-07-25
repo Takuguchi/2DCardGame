@@ -21,7 +21,7 @@ public class CardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
 
         // フィールドのコアの総数を取得
         int filedCoreNum = 0;
-        CardController[] playerFieldCards = GameManager.instance.GetPlayerFieldCards();
+        CardController[] playerFieldCards = GameManager.instance.GetFriendFieldCards(card.model.isPlayerCard);
         for (int i = 0; i < playerFieldCards.Length; i++)
         {
             CoreController[] cores = playerFieldCards[i].GetComponentsInChildren<CoreController>(); // カードに乗っているコアを取得

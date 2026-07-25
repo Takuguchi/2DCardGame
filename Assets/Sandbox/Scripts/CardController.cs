@@ -87,6 +87,8 @@ public class CardController : MonoBehaviour
     // マジックカード
     public void UseMagicTo(CardController target)
     {
+        gameManager.ReduceManaCost(this); // コストの支払い
+
         switch (model.magic)
         {
             case MAGIC.DESTROY_ENEMY_CARD:
@@ -98,7 +100,7 @@ public class CardController : MonoBehaviour
                 break;
             case MAGIC.REFRESH_FRIEND_CARDS:
                 // 自分のスピリットすべてを回復させる
-                CardController[] playerCards = gameManager.GetPlayerFieldCards();
+                CardController[] playerCards = gameManager.GetFriendFieldCards(this.model.isPlayerCard);
                 foreach (CardController playerCard in playerCards)
                 {
                     playerCard.ChangeIsRefreshed(true);
