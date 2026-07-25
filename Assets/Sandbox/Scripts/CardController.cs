@@ -96,7 +96,6 @@ public class CardController : MonoBehaviour
         {
             case MAGIC.DESTROY_ENEMY_CARD:
                 // 相手のフィールドにカードがあれば使用可能
-                
                 if (target == null) return false;
                 if (target.model.isPlayerCard == model.isPlayerCard) return false;
                 return opponentFieldCards.Length > 0;
@@ -107,6 +106,8 @@ public class CardController : MonoBehaviour
             case MAGIC.DRAW:
                 return gameManager.step == GameManager.STEP.MAIN;
             case MAGIC.DESTROY_ALL_CARDS:
+                if (target.model.isPlayerCard && !target.model.isFieldCard) return false; // 自分の手札のカードに誤ってドロップして使用されないように
+                if (!target.model.isPlayerCard && !target.model.isFieldCard) return false; // 相手の手札のカードにも同様
                 return friendFieldCards.Length > 0 || opponentFieldCards.Length > 0;
             case MAGIC.NONE:
                 return false; // マジックカードでなかった場合は使用不可
