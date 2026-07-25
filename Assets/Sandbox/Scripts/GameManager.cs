@@ -73,10 +73,7 @@ public class GameManager : MonoBehaviour
         uiManager.ShowManaCost(player.manaCost, enemy.manaCost); // マナコストの表示を変更するメソッドを呼び出す
         turnCount = 1;
         SettingInitHand();
-        CreateCore(playerReserveTransform, 4); // プレイヤーのコアを生成する
-        CreateCore(enemyReserveTransform, 4); // 敵のコアを生成する
-        CreateCore(playerLifeTransform, 5);
-        CreateCore(enemyLifeTransform, 5);
+        SettingInitCore();
         isPlayerTurn = true; // プレイヤーのターンから開始する
         TurnCalc(); // ターン処理を行うメソッドを呼び出す
     }
@@ -171,12 +168,21 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // リザーブにコアを生成するメソッド
-    public void CreateCore(Transform reserve, int coreCount)
+    // ゲーム開始時にリザーブとライフのコアを初期化するメソッド
+    void SettingInitCore()
     {
-        for (int i = 0; i < coreCount; i++)
+        CreateCore(playerReserveTransform, 4);
+        CreateCore(enemyReserveTransform, 4);
+        CreateCore(playerLifeTransform, 5);
+        CreateCore(enemyLifeTransform, 5);        
+    }
+    
+    // 任意の位置に任意の数のコアを生成するメソッド
+    public void CreateCore(Transform place, int coreNum)
+    {
+        for (int i = 0; i < coreNum; i++)
         {
-            CoreController core = Instantiate(corePrefab, reserve, false);        
+            CoreController core = Instantiate(corePrefab, place, false);
         }
     }
 
