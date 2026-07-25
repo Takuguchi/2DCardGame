@@ -2455,9 +2455,11 @@ MonoBehaviour:
   corePrefab: {fileID: -1587533959833757984, guid: c7816bd785ad4b543ad71097898c3e16, type: 3}
   isPlayerTurn: 0
   playerHero: {fileID: 933675142}
+  enemyHero: {fileID: 386863020}
   isWaitingForDefenderSelection: 0
   selectedDefenderCard: {fileID: 0}
   heroWasClicked: 0
+  whileAttack: 0
   turnCount: 0
   step: 0
 --- !u!4 &1463810790

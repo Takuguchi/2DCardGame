@@ -7,7 +7,7 @@ using DG.Tweening;
 
 // カードのPrefabにアタッチ
 // カード側の動きを制御するクラス
-public class CardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
+public class CardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerClickHandler
 {
     public Transform defaultParent; // カードの親の位置を保存する変数
 
@@ -77,6 +77,25 @@ public class CardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
 
         // ドロップ先の判定をするため、カードのRaycastを無効にする
         GetComponent<CanvasGroup>().blocksRaycasts = false; 
+    }
+
+    // プレイヤーのアタックステップ中、プレイヤーがフィールド上のスピリットをクリックしたときに呼ばれる
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        CardController attacker = GetComponent<CardController>();
+        if (attacker == null) return;
+        Debug.Log("クリックされました");
+        if (attacker.model.isPlayerCard
+                 && GameManager.instance.isPlayerTurn
+                 && GameManager.instance.step == GameManager.STEP.ATTACK
+                 && attacker.model.isFieldCard
+                 && attacker.model.isRefreshed
+                 && attacker.model.canAttack) // フィールドのカードで、アタックステップで、かつ回復状態で、かつ攻撃可能なら
+        {
+            attacker.ChangeIsRefreshed(false);
+            GameManager.instance.isDuringAttack = true;
+            StartCoroutine(GameManager.instance.enemyAI.PlayerTurn(attacker));
+        }
     }
     
     // カードをドラッグしている最中に呼び出されるメソッド

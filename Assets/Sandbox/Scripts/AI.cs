@@ -194,4 +194,49 @@ public class AI : MonoBehaviour
         gameManager.StepCalc(gameManager.isPlayerTurn, GameManager.STEP.END);
     }
 
+    public IEnumerator PlayerTurn(CardController attacker)
+    {
+        yield return new WaitForSeconds(1); // 考えてる風の1秒待機
+
+        CardController[] fieldCardList = gameManager.enemyFieldTransform.GetComponentsInChildren<CardController>();
+
+        if (gameManager.isDuringAttack)
+        {
+            // ブロックするかライフで受けるか選択
+            
+            // ブロック可能カードを取得
+            CardController[] enemyCanBlockCardList = Array.FindAll(fieldCardList, card => card.model.isRefreshed);
+
+            // フィールドに回復状態のスピリットがいればブロック
+            if (enemyCanBlockCardList.Length > 0)
+            {
+                // blockerカードを選択
+                CardController blocker = enemyCanBlockCardList[0]; // blockerカードを選択（フィールドのブロック可能カードから選択）
+
+                // まずブロック(疲労)
+                blocker.ChangeIsRefreshed(false);
+
+                // バトル
+                StartCoroutine(attacker.movement.MoveToTarget(blocker.transform)); // カードの移動を行うCardMovementクラスのMoveToTarget()メソッドに、カードの移動先のTransformを渡す
+                yield return new WaitForSeconds(0.51f);
+                gameManager.CardsBattle(attacker, blocker); 
+            }
+
+            // フィールドに回復状態のスピリットがいなければライフで受ける
+            if (enemyCanBlockCardList.Length == 0)
+            {
+                StartCoroutine(attacker.movement.MoveToTarget(gameManager.enemyHero)); // カードの移動を行うCardMovementクラスのMoveToTarget()メソッドに、カードの移動先のTransformを渡す
+                yield return new WaitForSeconds(0.25f); // 敵がHeroに攻撃するのでisPlayerCardはfalseにする
+                gameManager.AttackToHero(attacker);
+                yield return new WaitForSeconds(0.25f); // カードが戻る時間待ってから、HeroのHPが0以下になったかどうかを判定する
+                gameManager.CheckHeroHP();
+            }
+
+            // 破壊されたかもしれないのでフィールドのカードを更新
+            fieldCardList = gameManager.enemyFieldTransform.GetComponentsInChildren<CardController>();
+            GameManager.instance.isDuringAttack = false;
+        }
+        
+        yield return new WaitForEndOfFrame();
+    }
 }

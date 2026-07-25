@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour
 {
     public GamePlayerManager player; 
     public GamePlayerManager enemy;
-    [SerializeField] AI enemyAI; // 敵のAIを取得;
+    public AI enemyAI; // 敵のAIを取得;
     [SerializeField] UIManager uiManager; // UIManagerを取得
     public Transform playerHandTransform, // プレイヤーの手札のTransformを取得
                                playerFieldTransform, // プレイヤーのフィールドのTransformを取得
@@ -25,10 +25,13 @@ public class GameManager : MonoBehaviour
 
     public bool isPlayerTurn; // プレイヤーのターンかどうかを判定する変数
     public Transform playerHero; // プレイヤーのHeroのTransform
+    public Transform enemyHero; // 敵のHeroのTransform
 
     public bool isWaitingForDefenderSelection; // 敵の攻撃時、プレイヤーの防御カード選択待ちかどうかを判定する変数
     public CardController selectedDefenderCard; // プレイヤーが防御カードとして選択したカード
     public bool heroWasClicked; // 敵の攻撃時、プレイヤーがHeroをクリックしたかどうか
+
+    public bool isDuringAttack; // スピリットがアタック中かどうか
 
     public int turnCount = 0;
 
