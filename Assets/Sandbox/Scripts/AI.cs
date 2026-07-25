@@ -36,10 +36,10 @@ public class AI : MonoBehaviour
         CoreController[] reserveCoreList = gameManager.enemyReserveTransform.GetComponentsInChildren<CoreController>();
         
         // コスト以下のカードがあれば、カードをフィールドに出し続ける
-        while (Array.Exists(handCardList, card => gameManager.CalcNetCost(card) < gameManager.enemy.manaCost))
+        while (Array.Exists(handCardList, card => gameManager.CalcNetCost(card) < reserveCoreList.Length))
         {
-            // Net(正味)コストがManaコスト未満のカードリストを取得
-            CardController[] selectableHandCardList = Array.FindAll(handCardList, card => gameManager.CalcNetCost(card) < gameManager.enemy.manaCost);
+            // Net(正味)コストがリザーブのコアの総数未満のカードリストを取得
+            CardController[] selectableHandCardList = Array.FindAll(handCardList, card => gameManager.CalcNetCost(card) < reserveCoreList.Length);
 
             // 場に出すカードを選択
             CardController enemyCard = selectableHandCardList[0]; // とりあえずカードリストの一番最初のカードを選択
