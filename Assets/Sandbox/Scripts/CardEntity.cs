@@ -50,5 +50,6 @@ public enum MAGIC
     NONE,
     DESTROY_ENEMY_CARD,
     REFRESH_FRIEND_CARDS,
-    DRAW
+    DRAW,
+    DESTROY_ALL_CARDS
 }

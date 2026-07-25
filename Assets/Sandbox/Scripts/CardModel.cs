@@ -124,7 +124,9 @@ public class CardModel
         {
             card.model.CompareBp(currentBp, name); // 攻撃側のBPと名前を渡す 引数nameはただのデバッグ用            
         }
-        if (card.model.cardType == CARDTYPE.SPIRIT && this.cardType == CARDTYPE.MAGIC && this.magic == MAGIC.DESTROY_ENEMY_CARD)
+        if (card.model.cardType == CARDTYPE.SPIRIT
+            && this.cardType == CARDTYPE.MAGIC
+            && (this.magic == MAGIC.DESTROY_ENEMY_CARD || this.magic == MAGIC.DESTROY_ALL_CARDS))
         {
             card.model.Damage(this.at); // at以下のスピリットを破壊する
         }

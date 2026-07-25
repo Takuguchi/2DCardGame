@@ -87,20 +87,25 @@ public class CardController : MonoBehaviour
     // マジックカードが使用可能かどうか判定するメソッド
     public bool CanUseMagic(CardController target)
     {
+        CardController[] friendFieldCards = gameManager.GetFriendFieldCards(this.model.isPlayerCard);
+        CardController[] opponentFieldCards = gameManager.GetOpponentFieldCards(this.model.isPlayerCard);
+
         switch (model.magic)
         {
             case MAGIC.DESTROY_ENEMY_CARD:
                 // 相手のフィールドにカードがあれば使用可能
-                CardController[] enemyCards = gameManager.GetOpponentFieldCards(this.model.isPlayerCard);
+                
                 if (target == null) return false;
                 if (target.model.isPlayerCard == model.isPlayerCard) return false;
-                return enemyCards.Length > 0;
+                return opponentFieldCards.Length > 0;
             case MAGIC.REFRESH_FRIEND_CARDS:
                 // 自分のフィールドにカードがあれば使用可能
                 CardController[] friendCards = gameManager.GetFriendFieldCards(this.model.isPlayerCard);
                 return friendCards.Length > 0;
             case MAGIC.DRAW:
                 return gameManager.step == GameManager.STEP.MAIN;
+            case MAGIC.DESTROY_ALL_CARDS:
+                return friendFieldCards.Length > 0 || opponentFieldCards.Length > 0;
             case MAGIC.NONE:
                 return false; // マジックカードでなかった場合は使用不可
         }
@@ -114,6 +119,9 @@ public class CardController : MonoBehaviour
 
         Debug.Log(this.model.name + "を使用！");
 
+        CardController[] friendFieldCards = gameManager.GetFriendFieldCards(this.model.isPlayerCard);
+        CardController[] opponentFieldCards = gameManager.GetOpponentFieldCards(this.model.isPlayerCard);
+
         switch (model.magic)
         {
             case MAGIC.DESTROY_ENEMY_CARD:
@@ -123,10 +131,9 @@ public class CardController : MonoBehaviour
                 break;
             case MAGIC.REFRESH_FRIEND_CARDS:
                 // 自分のスピリットすべてを回復させる
-                CardController[] playerCards = gameManager.GetFriendFieldCards(this.model.isPlayerCard);
-                foreach (CardController playerCard in playerCards)
+                foreach (CardController friendFieldCard in friendFieldCards)
                 {
-                    playerCard.ChangeIsRefreshed(true);
+                    friendFieldCard.ChangeIsRefreshed(true);
                 }
                 break;
             case MAGIC.DRAW:
@@ -134,6 +141,19 @@ public class CardController : MonoBehaviour
                 {
                     if (this.model.isPlayerCard) gameManager.GiveCardToHand(gameManager.player.deck, gameManager.playerHandTransform);
                     else gameManager.GiveCardToHand(gameManager.enemy.deck, gameManager.enemyHandTransform);
+                }
+                break;
+            case MAGIC.DESTROY_ALL_CARDS:
+                // at以下のスピリットすべてを破壊する
+                foreach (CardController opponentFieldCard in opponentFieldCards)
+                {
+                    Attack(opponentFieldCard);
+                    opponentFieldCard.CheckAlive();
+                }
+                foreach (CardController friendFieldCard in friendFieldCards)
+                {
+                    Attack(friendFieldCard);
+                    friendFieldCard.CheckAlive();
                 }
                 break;
             case MAGIC.NONE:
