@@ -30,11 +30,6 @@ public class GameManager : MonoBehaviour
     public CardController selectedDefenderCard; // プレイヤーが防御カードとして選択したカード
     public bool heroWasClicked; // 敵の攻撃時、プレイヤーがHeroをクリックしたかどうか
 
-    int timeCount; // 時間をカウントする変数
-
-    // シングルトン化（GameManagerにどこからでもアクセスできるようにする）
-    public static GameManager instance;
-
     public STEP step;
 
     public enum STEP
@@ -49,6 +44,10 @@ public class GameManager : MonoBehaviour
         END
     }
 
+    int timeCount; // 時間をカウントする変数
+
+    // シングルトン化（GameManagerにどこからでもアクセスできるようにする）
+    public static GameManager instance;
     private void Awake()
     {
         if (instance == null)
@@ -57,7 +56,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
     void Start()
     {
         StartGame(); // ゲーム開始時にStartGame()メソッドを呼び出す
@@ -65,21 +63,333 @@ public class GameManager : MonoBehaviour
 
     // ゲーム開始時に呼ばれるメソッド
     void StartGame()
-    {   
-        CreateCore(playerReserveTransform, 4); // プレイヤーのコアを生成する
-        CreateCore(enemyReserveTransform, 4); // 敵のコアを生成する
-        CreateCore(playerLifeTransform, 5);
-        CreateCore(enemyLifeTransform, 5);
+    {
         uiManager.HideResultPanel(); // ゲーム開始時はリザルト画面を非表示にする
         player.Init(new List<int>() { 9, 0, 8, 2, 1, 3, 7, 3, 1 }); // プレイヤーのデッキを初期化する
         enemy.Init(new List<int>() { 4, 5, 5, 6, 4 }); // 敵のデッキを初期化する
         uiManager.ShowHeroHP(player.heroHp, enemy.heroHp); // HeroのHP表示を変更するメソッドを呼び出す
         uiManager.ShowManaCost(player.manaCost, enemy.manaCost); // マナコストの表示を変更するメソッドを呼び出す
         SettingInitHand();
+        CreateCore(playerReserveTransform, 4); // プレイヤーのコアを生成する
+        CreateCore(enemyReserveTransform, 4); // 敵のコアを生成する
+        CreateCore(playerLifeTransform, 5);
+        CreateCore(enemyLifeTransform, 5);
         isPlayerTurn = true; // プレイヤーのターンから開始する
         TurnCalc(); // ターン処理を行うメソッドを呼び出す
     }
 
+    // ゲームをリスタートするメソッド
+    public void Restart()
+    {
+        // HandとFieldのカードを削除
+        foreach (Transform card in playerHandTransform)
+        {
+            Destroy(card.gameObject);
+        }
+        foreach (Transform card in playerFieldTransform)
+        {
+            Destroy(card.gameObject);
+        }
+        foreach (Transform card in enemyHandTransform)
+        {
+            Destroy(card.gameObject);
+        }
+        foreach (Transform card in enemyFieldTransform)
+        {
+            Destroy(card.gameObject);
+        }
+        foreach (Transform core in playerReserveTransform)
+        {
+            Destroy(core.gameObject);
+        }
+        foreach (Transform core in enemyReserveTransform)
+        {
+            Destroy(core.gameObject);
+        }
+        foreach (Transform core in playerTrashTransform)
+        {
+            Destroy(core.gameObject);
+        }
+        foreach (Transform core in enemyTrashTransform)
+        {
+            Destroy(core.gameObject);
+        }
+        foreach (Transform core in playerLifeTransform)
+        {
+            Destroy(core.gameObject);
+        }
+        foreach (Transform core in enemyLifeTransform)
+        {
+            Destroy(core.gameObject);
+        }
+
+        // デッキを生成
+        player.deck = new List<int>() { 0, 1, 2, 3, 3, 1 }; // プレイヤーのデッキのカードIDを格納するリスト
+        enemy.deck  = new List<int>() { 4, 5, 6, 6, 4 };  // 敵のデッキのカードIDを格納するリスト
+
+        StartGame(); // ゲーム開始時に呼ばれるメソッドを呼び出す
+    }
+
+    // ゲーム開始時に手札を初期化するメソッド
+    void SettingInitHand()
+    {
+        // カードをそれぞれに3枚配る
+        for (int i = 0; i < 4; i++)
+        {
+            GiveCardToHand(player.deck, playerHandTransform); // プレイヤーの手札にカードを生成
+            GiveCardToHand(enemy.deck, enemyHandTransform);  // 敵の手札にカードを生成
+        }
+    }
+
+    // デッキからカードを手札に配るメソッド
+    void GiveCardToHand(List<int> deck, Transform hand)
+    {
+        if (deck.Count == 0) // デッキにカードがない場合
+        {
+            return; // 何も処理しないで終わる
+        }
+        int cardID = deck[0]; // デッキの一番上のカードIDを取得
+        deck.RemoveAt(0); // デッキの一番上のカードIDをデッキから削除
+        CreateCard(cardID, hand); // カードを生成するメソッドにカードIDと手札のTransformを渡す
+    }
+
+    // カードを生成するメソッド
+    void CreateCard(int cardID, Transform hand)
+    {
+        // カードのPrefabをCardController型としてインスタンス(生成)・親要素に任意のTransformを指定
+        CardController card = Instantiate(cardPrefab, hand, false);
+        if (hand.name == "PlayerHand")
+        {
+            card.Init(cardID, true);    // CardControllerクラスのInit()メソッドを呼び出す(isPlayerはtrueで渡す)        
+        }
+        else
+        {
+            card.Init(cardID, false);    // CardControllerクラスのInit()メソッドを呼び出す(isPlayerはfalseで渡す)
+        }
+    }
+
+    // リザーブにコアを生成するメソッド
+    public void CreateCore(Transform reserve, int coreCount)
+    {
+        for (int i = 0; i < coreCount; i++)
+        {
+            CoreController core = Instantiate(corePrefab, reserve, false);        
+        }
+    }
+
+    // ターン処理を行うメソッド
+    void TurnCalc()
+    {
+        StopAllCoroutines(); // 安全のためにコルーチン開始前に他を止めておく
+        // StartCoroutine(CountDown()); // カウントダウンを開始
+        step = STEP.MAIN;
+        Debug.Log("メインステップ！");
+        if (isPlayerTurn)
+        {
+            // プレイヤーのターンの処理
+            PlayerTurn();
+        }
+        else
+        {
+            // 敵のターンの処理
+            StartCoroutine(enemyAI.EnemyTurn());
+        }
+    }
+
+    // カウントダウンを表示するメソッド(コルーチンを使用)
+    IEnumerator CountDown()
+    {
+        timeCount = 20; // カウントダウンの初期値を8にする
+        uiManager.UpdateTime(timeCount); // カウントダウンのTextを更新する
+
+        // カウントが0秒になるまではコルーチンを回す
+        while (timeCount > 0)
+        {
+            yield return new WaitForSeconds(1); // 1秒待機
+            timeCount--; // カウント(秒数)を1減らす
+            uiManager.UpdateTime(timeCount); // カウントダウンのTextを更新する
+        }
+        ChangeTurn(); // カウントが0になったらターンを切り替える
+    }
+
+    // 自分のフィールドのカード(プレイヤー→プレイヤー, 敵AI→敵AI)を取得するメソッド
+    public CardController[] GetFriendFieldCards(bool isPlayer)
+    {
+        if (isPlayer)
+        {
+            return playerFieldTransform.GetComponentsInChildren<CardController>();
+        }
+        else
+        {
+            return enemyFieldTransform.GetComponentsInChildren<CardController>();
+        }
+    }
+    
+    // 相手のフィールドのカード(プレイヤー→敵AI, 敵AI→プレイヤー)を取得するメソッド
+    public CardController[] GetOpponentFieldCards(bool isPlayer)
+    {
+        if (isPlayer)
+        {
+            return enemyFieldTransform.GetComponentsInChildren<CardController>();
+        }
+        else
+        {
+            return playerFieldTransform.GetComponentsInChildren<CardController>();
+        }
+    }
+
+    // ターンエンドボタンを押したときに呼ばれるメソッド
+    public void OnClickTurnEndButton()
+    {
+        if (isPlayerTurn) // プレイヤーのターンのときだけターンを切り替える
+        {
+            ChangeTurn(); 
+        }
+    }
+
+    /*
+    // ターンを切り替えるメソッド
+    public void ChangeTurn()
+    {
+        isPlayerTurn = !isPlayerTurn; // ターンを切り替える
+
+        CardController[] playerFieldCardList = playerFieldTransform.GetComponentsInChildren<CardController>();
+        SettingCanAttackView(playerFieldCardList, false); // フィールドのカードの攻撃可能オーラを消す
+        CardController[] enemyFieldCardList = enemyFieldTransform.GetComponentsInChildren<CardController>();
+        SettingCanAttackView(enemyFieldCardList, false); // フィールドのカードの攻撃可能オーラを消す
+
+        if (isPlayerTurn)
+        {
+            // player.IncreaseManaCost(); // プレイヤーのターンになったらマナコストを1増やす
+            player.IncreaseManaCost(playerFieldCardList.Length); // 今は各カードに乗せるコアは1つずつなのでリストの長さを引数に渡す
+            CreateCore(playerReserveTransform, 1); // プレイヤーのコアを1つ生成する
+            GiveCardToHand(player.deck, playerHandTransform); // プレイヤーの手札にカードを1枚生成（ドロー）
+        }
+        else
+        {
+            // enemy.IncreaseManaCost(); // 敵のターンになったらマナコストを1増やす
+            enemy.IncreaseManaCost(enemyFieldCardList.Length);
+            CreateCore(enemyReserveTransform, 1); // 敵のコアを1つ生成する
+            GiveCardToHand(enemy.deck, enemyHandTransform);  // 敵の手札にカードを1枚生成（ドロー）
+        }
+        uiManager.ShowManaCost(player.manaCost, enemy.manaCost); // マナコストの表示を更新する
+        TurnCalc(); // ターン処理を行うメソッドを呼び出す
+    }
+    */
+
+    // ターンを切り替えるメソッド
+    public void ChangeTurn()
+    {
+        isPlayerTurn = !isPlayerTurn; // ターンを切り替える
+
+        CardController[] playerFieldCardList = playerFieldTransform.GetComponentsInChildren<CardController>();
+        SettingCanAttackView(playerFieldCardList, false); // フィールドのカードの攻撃可能オーラを消す
+        CardController[] enemyFieldCardList = enemyFieldTransform.GetComponentsInChildren<CardController>();
+        SettingCanAttackView(enemyFieldCardList, false); // フィールドのカードの攻撃可能オーラを消す
+
+        CoreController[] playerFieldCoreList = playerFieldTransform.GetComponentsInChildren<CoreController>();
+        CoreController[] playerReserveCoreList = playerReserveTransform.GetComponentsInChildren<CoreController>();
+        CoreController[] playerTrashCoreList = playerTrashTransform.GetComponentsInChildren<CoreController>();
+        CoreController[] enemyFieldCoreList = enemyFieldTransform.GetComponentsInChildren<CoreController>();
+        CoreController[] enemyReserveCoreList = enemyReserveTransform.GetComponentsInChildren<CoreController>();
+        CoreController[] enemyTrashCoreList = enemyTrashTransform.GetComponentsInChildren<CoreController>();
+
+        Debug.Log("playerFieldCoreList.Length:" + playerFieldCoreList.Length);
+        if (isPlayerTurn)
+        {
+            // player.IncreaseManaCost(); // プレイヤーのターンになったらマナコストを1増やす
+            player.IncreaseManaCost(playerFieldCoreList.Length);
+            CreateCore(playerReserveTransform, 1); // プレイヤーのコアを1つ生成する
+            GiveCardToHand(player.deck, playerHandTransform); // プレイヤーの手札にカードを1枚生成（ドロー）
+            
+            // トラッシュのコアを全てリザーブに移動
+            foreach (CoreController core in playerTrashCoreList)
+            {
+                // GameManagerではなくcore自身にコルーチンを紐付ける（直後のTurnCalc()内のStopAllCoroutines()で移動が中断されないようにするため）
+                core.StartCoroutine(core.movement.MoveTo(playerReserveTransform)); // コアをリザーブへ移動
+            }
+        }
+        else
+        {
+            // enemy.IncreaseManaCost(); // 敵のターンになったらマナコストを1増やす
+            enemy.IncreaseManaCost(enemyFieldCoreList.Length);
+            CreateCore(enemyReserveTransform, 1); // 敵のコアを1つ生成する
+            GiveCardToHand(enemy.deck, enemyHandTransform);  // 敵の手札にカードを1枚生成（ドロー）
+
+            // トラッシュのコアを全てリザーブに移動
+            foreach (CoreController core in enemyTrashCoreList)
+            {
+                core.StartCoroutine(core.movement.MoveTo(enemyReserveTransform)); // コアをリザーブへ移動
+            }
+        }
+        uiManager.ShowManaCost(player.manaCost, enemy.manaCost); // マナコストの表示を更新する
+        TurnCalc(); // ターン処理を行うメソッドを呼び出す
+    }
+
+    // 攻撃可能オーラを付けたり消したりするメソッド
+    public void SettingCanAttackView(CardController[] fieldCardList, bool canAttack)
+    {
+        foreach (CardController card in fieldCardList)
+        {
+            card.SetCanAttack(canAttack);    // cardを攻撃可能にするかどうか
+        }
+    }
+
+    // プレイヤーのターンの処理を行うメソッド
+    void PlayerTurn()
+    {
+        Debug.Log("Playerのターン");
+        // フィールドのカードを攻撃可能にする
+        CardController[] playerFieldCardList = playerFieldTransform.GetComponentsInChildren<CardController>();
+        SettingCanAttackView(playerFieldCardList, true); // フィールドのカードに攻撃可能オーラを付ける
+
+        //フィールドのカードを全て回復状態にする
+        foreach (CardController playerFieldCard in playerFieldCardList)
+        {
+            playerFieldCard.ChangeIsRefreshed(true);
+        }
+    }
+
+    // 軽減シンボルを加味した正味コストを計算するメソッド
+    public int CalcNetCost(CardController card)
+    {
+        int netCost = card.model.cost;
+        int fieldSymbols = 0;
+
+        if (card.model.isPlayerCard)
+        {
+            // フィールドの総シンボルを計算(パターン1：symbolsを合算)
+            CardController[] playerFieldCardList = playerFieldTransform.GetComponentsInChildren<CardController>();
+
+            foreach (CardController cards in playerFieldCardList)
+            {
+                if (cards == card) continue; // 召喚中のカード自身のシンボルはカウントしない
+                fieldSymbols += cards.model.symbols;
+            }
+        }
+        else
+        {
+            CardController[] enemyFieldCardList = enemyFieldTransform.GetComponentsInChildren<CardController>();
+
+            foreach (CardController cards in enemyFieldCardList)
+            {
+                if (cards == card) continue; // 召喚中のカード自身のシンボルはカウントしない
+                fieldSymbols += cards.model.symbols;
+            }
+        }
+        Debug.Log("フィールドのシンボルの数:" + fieldSymbols);
+        
+        if (fieldSymbols > card.model.reductionSymbols)
+        {
+            fieldSymbols = card.model.reductionSymbols;
+        }
+
+        netCost -= fieldSymbols;
+
+        Debug.Log(card.model.cost + "コスト" + fieldSymbols + "軽減" + netCost + "コスト");
+
+        return netCost;
+    }
 
     // マナコストを消費するメソッド
     public void ReduceManaCost(int cost, bool isPlayerCard)
@@ -124,6 +434,21 @@ public class GameManager : MonoBehaviour
             // Lv・BPの再計算は、維持コアがカードの子になった後にAI側で呼び出す
         }
         uiManager.ShowManaCost(player.manaCost, enemy.manaCost); // マナコストの表示を変更するメソッドを呼び出す
+    }
+    
+    // MoveCores()が開始したコア移動コルーチンが全て終わってから、コアが0個のカードをチェックするコルーチン
+    private IEnumerator MoveCoresAndCheckCoreZero(CardController card)
+    {
+        List<Coroutine> coreMoveCoroutines = MoveCores(card);
+        foreach (Coroutine coreMoveCoroutine in coreMoveCoroutines)
+        {
+            yield return coreMoveCoroutine; // MoveCores()が開始したコア移動コルーチンが全て終わるのを待つ
+        }
+        CheckIfCoreZero(card); // コアが0個のカードをチェック
+        
+        yield return new WaitForEndOfFrame();
+
+        ArrangeCoresAndFixLv(GetFriendFieldCards(card.model.isPlayerCard));
     }
 
     // コスト支払い時のコアの移動処理
@@ -366,19 +691,17 @@ public class GameManager : MonoBehaviour
         return coreMoveCoroutines;
     }
 
-    // MoveCores()が開始したコア移動コルーチンが全て終わってから、コアが0個のカードをチェックするコルーチン
-    private IEnumerator MoveCoresAndCheckCoreZero(CardController card)
+    public void CheckIfCoreZero(CardController card)
     {
-        List<Coroutine> coreMoveCoroutines = MoveCores(card);
-        foreach (Coroutine coreMoveCoroutine in coreMoveCoroutines)
+        CardController[] friendFieldCards = GetFriendFieldCards(card.model.isPlayerCard);
+        for (int i = 0; i < friendFieldCards.Length; i++)
         {
-            yield return coreMoveCoroutine; // MoveCores()が開始したコア移動コルーチンが全て終わるのを待つ
+            CoreController[] cores = friendFieldCards[i].GetComponentsInChildren<CoreController>(); // カードに乗っているコアを取得
+            if (cores.Length == 0)
+            {
+                Destroy(friendFieldCards[i].gameObject);
+            }
         }
-        CheckIfCoreZero(card); // コアが0個のカードをチェック
-        
-        yield return new WaitForEndOfFrame();
-
-        ArrangeCoresAndFixLv(GetFriendFieldCards(card.model.isPlayerCard));
     }
 
     // コアの配置とLv・BPを更新するメソッド
@@ -417,336 +740,6 @@ public class GameManager : MonoBehaviour
         }
         
     }
-
-    // 軽減シンボルを加味した正味コストを計算するメソッド
-    public int CalcNetCost(CardController card)
-    {
-        int netCost = card.model.cost;
-        int fieldSymbols = 0;
-
-        if (card.model.isPlayerCard)
-        {
-            // フィールドの総シンボルを計算(パターン1：symbolsを合算)
-            CardController[] playerFieldCardList = playerFieldTransform.GetComponentsInChildren<CardController>();
-
-            foreach (CardController cards in playerFieldCardList)
-            {
-                if (cards == card) continue; // 召喚中のカード自身のシンボルはカウントしない
-                fieldSymbols += cards.model.symbols;
-            }
-        }
-        else
-        {
-            CardController[] enemyFieldCardList = enemyFieldTransform.GetComponentsInChildren<CardController>();
-
-            foreach (CardController cards in enemyFieldCardList)
-            {
-                if (cards == card) continue; // 召喚中のカード自身のシンボルはカウントしない
-                fieldSymbols += cards.model.symbols;
-            }
-        }
-        Debug.Log("フィールドのシンボルの数:" + fieldSymbols);
-        
-        if (fieldSymbols > card.model.reductionSymbols)
-        {
-            fieldSymbols = card.model.reductionSymbols;
-        }
-
-        netCost -= fieldSymbols;
-
-        Debug.Log(card.model.cost + "コスト" + fieldSymbols + "軽減" + netCost + "コスト");
-
-        return netCost;
-    }
-
-    public void CheckIfCoreZero(CardController card)
-    {
-        CardController[] friendFieldCards = GetFriendFieldCards(card.model.isPlayerCard);
-        for (int i = 0; i < friendFieldCards.Length; i++)
-        {
-            CoreController[] cores = friendFieldCards[i].GetComponentsInChildren<CoreController>(); // カードに乗っているコアを取得
-            if (cores.Length == 0)
-            {
-                Destroy(friendFieldCards[i].gameObject);
-            }
-        }
-    }
-
-    // ゲームをリスタートするメソッド
-    public void Restart()
-    {
-        // HandとFieldのカードを削除
-        foreach (Transform card in playerHandTransform)
-        {
-            Destroy(card.gameObject);
-        }
-        foreach (Transform card in playerFieldTransform)
-        {
-            Destroy(card.gameObject);
-        }
-        foreach (Transform card in enemyHandTransform)
-        {
-            Destroy(card.gameObject);
-        }
-        foreach (Transform card in enemyFieldTransform)
-        {
-            Destroy(card.gameObject);
-        }
-        foreach (Transform core in playerReserveTransform)
-        {
-            Destroy(core.gameObject);
-        }
-        foreach (Transform core in enemyReserveTransform)
-        {
-            Destroy(core.gameObject);
-        }
-        foreach (Transform core in playerTrashTransform)
-        {
-            Destroy(core.gameObject);
-        }
-        foreach (Transform core in enemyTrashTransform)
-        {
-            Destroy(core.gameObject);
-        }
-        foreach (Transform core in playerLifeTransform)
-        {
-            Destroy(core.gameObject);
-        }
-        foreach (Transform core in enemyLifeTransform)
-        {
-            Destroy(core.gameObject);
-        }
-
-        // デッキを生成
-        player.deck = new List<int>() { 0, 1, 2, 3, 3, 1 }; // プレイヤーのデッキのカードIDを格納するリスト
-        enemy.deck  = new List<int>() { 4, 5, 6, 6, 4 };  // 敵のデッキのカードIDを格納するリスト
-
-        StartGame(); // ゲーム開始時に呼ばれるメソッドを呼び出す
-    }
-
-    // ゲーム開始時に手札を初期化するメソッド
-    void SettingInitHand()
-    {
-        // カードをそれぞれに3枚配る
-        for (int i = 0; i < 4; i++)
-        {
-            GiveCardToHand(player.deck, playerHandTransform); // プレイヤーの手札にカードを生成
-            GiveCardToHand(enemy.deck, enemyHandTransform);  // 敵の手札にカードを生成
-        }
-    }
-
-    // デッキからカードを手札に配るメソッド
-    void GiveCardToHand(List<int> deck, Transform hand)
-    {
-        if (deck.Count == 0) // デッキにカードがない場合
-        {
-            return; // 何も処理しないで終わる
-        }
-        int cardID = deck[0]; // デッキの一番上のカードIDを取得
-        deck.RemoveAt(0); // デッキの一番上のカードIDをデッキから削除
-        CreateCard(cardID, hand); // カードを生成するメソッドにカードIDと手札のTransformを渡す
-    }
-
-
-    // カードを生成するメソッド
-    void CreateCard(int cardID, Transform hand)
-    {
-        // カードのPrefabをCardController型としてインスタンス(生成)・親要素に任意のTransformを指定
-        CardController card = Instantiate(cardPrefab, hand, false);
-        if (hand.name == "PlayerHand")
-        {
-            card.Init(cardID, true);    // CardControllerクラスのInit()メソッドを呼び出す(isPlayerはtrueで渡す)        
-        }
-        else
-        {
-            card.Init(cardID, false);    // CardControllerクラスのInit()メソッドを呼び出す(isPlayerはfalseで渡す)
-        }
-    }
-
-    // リザーブにコアを生成するメソッド
-    public void CreateCore(Transform reserve, int coreCount)
-    {
-        for (int i = 0; i < coreCount; i++)
-        {
-            CoreController core = Instantiate(corePrefab, reserve, false);        
-        }
-    }
-
-
-    // ターン処理を行うメソッド
-    void TurnCalc()
-    {
-        StopAllCoroutines(); // 安全のためにコルーチン開始前に他を止めておく
-        // StartCoroutine(CountDown()); // カウントダウンを開始
-        step = STEP.MAIN;
-        Debug.Log("メインステップ！");
-        if (isPlayerTurn)
-        {
-            // プレイヤーのターンの処理
-            PlayerTurn();
-        }
-        else
-        {
-            // 敵のターンの処理
-            StartCoroutine(enemyAI.EnemyTurn());
-        }
-    }
-
-    // カウントダウンを表示するメソッド(コルーチンを使用)
-    IEnumerator CountDown()
-    {
-        timeCount = 20; // カウントダウンの初期値を8にする
-        uiManager.UpdateTime(timeCount); // カウントダウンのTextを更新する
-
-        // カウントが0秒になるまではコルーチンを回す
-        while (timeCount > 0)
-        {
-            yield return new WaitForSeconds(1); // 1秒待機
-            timeCount--; // カウント(秒数)を1減らす
-            uiManager.UpdateTime(timeCount); // カウントダウンのTextを更新する
-        }
-        ChangeTurn(); // カウントが0になったらターンを切り替える
-    }
-
-    // 自分のフィールドのカード(プレイヤー→プレイヤー, 敵AI→敵AI)を取得するメソッド
-    public CardController[] GetFriendFieldCards(bool isPlayer)
-    {
-        if (isPlayer)
-        {
-            return playerFieldTransform.GetComponentsInChildren<CardController>();
-        }
-        else
-        {
-            return enemyFieldTransform.GetComponentsInChildren<CardController>();
-        }
-    }
-    
-    // 相手のフィールドのカード(プレイヤー→敵AI, 敵AI→プレイヤー)を取得するメソッド
-    public CardController[] GetOpponentFieldCards(bool isPlayer)
-    {
-        if (isPlayer)
-        {
-            return enemyFieldTransform.GetComponentsInChildren<CardController>();
-        }
-        else
-        {
-            return playerFieldTransform.GetComponentsInChildren<CardController>();
-        }
-    }
-
-    // ターンエンドボタンを押したときに呼ばれるメソッド
-    public void OnClickTurnEndButton()
-    {
-        if (isPlayerTurn) // プレイヤーのターンのときだけターンを切り替える
-        {
-            ChangeTurn(); 
-        }
-    }
-
-    /*
-    // ターンを切り替えるメソッド
-    public void ChangeTurn()
-    {
-        isPlayerTurn = !isPlayerTurn; // ターンを切り替える
-
-        CardController[] playerFieldCardList = playerFieldTransform.GetComponentsInChildren<CardController>();
-        SettingCanAttackView(playerFieldCardList, false); // フィールドのカードの攻撃可能オーラを消す
-        CardController[] enemyFieldCardList = enemyFieldTransform.GetComponentsInChildren<CardController>();
-        SettingCanAttackView(enemyFieldCardList, false); // フィールドのカードの攻撃可能オーラを消す
-
-        if (isPlayerTurn)
-        {
-            // player.IncreaseManaCost(); // プレイヤーのターンになったらマナコストを1増やす
-            player.IncreaseManaCost(playerFieldCardList.Length); // 今は各カードに乗せるコアは1つずつなのでリストの長さを引数に渡す
-            CreateCore(playerReserveTransform, 1); // プレイヤーのコアを1つ生成する
-            GiveCardToHand(player.deck, playerHandTransform); // プレイヤーの手札にカードを1枚生成（ドロー）
-        }
-        else
-        {
-            // enemy.IncreaseManaCost(); // 敵のターンになったらマナコストを1増やす
-            enemy.IncreaseManaCost(enemyFieldCardList.Length);
-            CreateCore(enemyReserveTransform, 1); // 敵のコアを1つ生成する
-            GiveCardToHand(enemy.deck, enemyHandTransform);  // 敵の手札にカードを1枚生成（ドロー）
-        }
-        uiManager.ShowManaCost(player.manaCost, enemy.manaCost); // マナコストの表示を更新する
-        TurnCalc(); // ターン処理を行うメソッドを呼び出す
-    }
-    */
-
-    // ターンを切り替えるメソッド
-    public void ChangeTurn()
-    {
-        isPlayerTurn = !isPlayerTurn; // ターンを切り替える
-
-        CardController[] playerFieldCardList = playerFieldTransform.GetComponentsInChildren<CardController>();
-        SettingCanAttackView(playerFieldCardList, false); // フィールドのカードの攻撃可能オーラを消す
-        CardController[] enemyFieldCardList = enemyFieldTransform.GetComponentsInChildren<CardController>();
-        SettingCanAttackView(enemyFieldCardList, false); // フィールドのカードの攻撃可能オーラを消す
-
-        CoreController[] playerFieldCoreList = playerFieldTransform.GetComponentsInChildren<CoreController>();
-        CoreController[] playerReserveCoreList = playerReserveTransform.GetComponentsInChildren<CoreController>();
-        CoreController[] playerTrashCoreList = playerTrashTransform.GetComponentsInChildren<CoreController>();
-        CoreController[] enemyFieldCoreList = enemyFieldTransform.GetComponentsInChildren<CoreController>();
-        CoreController[] enemyReserveCoreList = enemyReserveTransform.GetComponentsInChildren<CoreController>();
-        CoreController[] enemyTrashCoreList = enemyTrashTransform.GetComponentsInChildren<CoreController>();
-
-        Debug.Log("playerFieldCoreList.Length:" + playerFieldCoreList.Length);
-        if (isPlayerTurn)
-        {
-            // player.IncreaseManaCost(); // プレイヤーのターンになったらマナコストを1増やす
-            player.IncreaseManaCost(playerFieldCoreList.Length);
-            CreateCore(playerReserveTransform, 1); // プレイヤーのコアを1つ生成する
-            GiveCardToHand(player.deck, playerHandTransform); // プレイヤーの手札にカードを1枚生成（ドロー）
-            
-            // トラッシュのコアを全てリザーブに移動
-            foreach (CoreController core in playerTrashCoreList)
-            {
-                // GameManagerではなくcore自身にコルーチンを紐付ける（直後のTurnCalc()内のStopAllCoroutines()で移動が中断されないようにするため）
-                core.StartCoroutine(core.movement.MoveTo(playerReserveTransform)); // コアをリザーブへ移動
-            }
-        }
-        else
-        {
-            // enemy.IncreaseManaCost(); // 敵のターンになったらマナコストを1増やす
-            enemy.IncreaseManaCost(enemyFieldCoreList.Length);
-            CreateCore(enemyReserveTransform, 1); // 敵のコアを1つ生成する
-            GiveCardToHand(enemy.deck, enemyHandTransform);  // 敵の手札にカードを1枚生成（ドロー）
-
-            // トラッシュのコアを全てリザーブに移動
-            foreach (CoreController core in enemyTrashCoreList)
-            {
-                core.StartCoroutine(core.movement.MoveTo(enemyReserveTransform)); // コアをリザーブへ移動
-            }
-        }
-        uiManager.ShowManaCost(player.manaCost, enemy.manaCost); // マナコストの表示を更新する
-        TurnCalc(); // ターン処理を行うメソッドを呼び出す
-    }
-
-
-    // 攻撃可能オーラを付けたり消したりするメソッド
-    public void SettingCanAttackView(CardController[] fieldCardList, bool canAttack)
-    {
-        foreach (CardController card in fieldCardList)
-        {
-            card.SetCanAttack(canAttack);    // cardを攻撃可能にするかどうか
-        }
-    }
-
-    // プレイヤーのターンの処理を行うメソッド
-    void PlayerTurn()
-    {
-        Debug.Log("Playerのターン");
-        // フィールドのカードを攻撃可能にする
-        CardController[] playerFieldCardList = playerFieldTransform.GetComponentsInChildren<CardController>();
-        SettingCanAttackView(playerFieldCardList, true); // フィールドのカードに攻撃可能オーラを付ける
-
-        //フィールドのカードを全て回復状態にする
-        foreach (CardController playerFieldCard in playerFieldCardList)
-        {
-            playerFieldCard.ChangeIsRefreshed(true);
-        }
-    }
-
 
     // 敵の攻撃時、プレイヤーが防御カードとしてクリックしたカードを選択するメソッド
     public void SelectDefenderCard(CardController card)
@@ -861,7 +854,6 @@ public class GameManager : MonoBehaviour
         if (player.heroHp <= 0 || enemy.heroHp <= 0) // HeroのHPが0以下になったら
         {
             ShowResultPanel(player.heroHp);
-            
         }
     }
 
