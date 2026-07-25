@@ -42,7 +42,9 @@ public enum ABILITY
 {
     NONE,   // アビリティなし
     INIT_ATTACKABLE, // 1ターン目で攻撃可能
-    SHIELD  // シールド
+    SHIELD,  // シールド
+    GAIN_BP_ATTACK,
+    GAIN_BP_BLOCK
 }
 
 public enum MAGIC

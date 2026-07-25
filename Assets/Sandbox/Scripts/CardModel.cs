@@ -122,6 +122,14 @@ public class CardModel
         // Debug.Log(card.model.name);
         if (card.model.cardType == CARDTYPE.SPIRIT && this.cardType == CARDTYPE.SPIRIT)
         {
+            if (this.ability == ABILITY.GAIN_BP_ATTACK && GameManager.instance.isPlayerTurn == this.isPlayerCard)
+            {
+                currentBp += 2000;
+            }
+            if (card.model.ability == ABILITY.GAIN_BP_BLOCK && GameManager.instance.isPlayerTurn != card.model.isPlayerCard)
+            {
+                card.model.currentBp += 3000;
+            }
             card.model.CompareBp(currentBp, name); // 攻撃側のBPと名前を渡す 引数nameはただのデバッグ用            
         }
         if (card.model.cardType == CARDTYPE.SPIRIT
