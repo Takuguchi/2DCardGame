@@ -14,7 +14,7 @@ public class AI : MonoBehaviour
     // 敵のターンの処理を行うメソッド
     public IEnumerator EnemyTurn()
     {
-        Debug.Log("Enemyのターン");
+        /*
         // フィールドのカードを攻撃可能にする
         CardController[] enemyFieldCardList = gameManager.enemyFieldTransform.GetComponentsInChildren<CardController>();
         gameManager.SettingCanAttackView(enemyFieldCardList, true); // フィールドのカードに攻撃可能オーラを付ける
@@ -24,6 +24,7 @@ public class AI : MonoBehaviour
         {
             enemyFieldCard.ChangeIsRefreshed(true);
         }
+        */
 
         yield return new WaitForSeconds(1); // カードをフィールドに出す前に1秒置く
 
@@ -185,11 +186,12 @@ public class AI : MonoBehaviour
             yield return new WaitForSeconds(1);
         }
 
-        gameManager.step = GameManager.STEP.END;
+        // gameManager.step = GameManager.STEP.END;
 
         yield return new WaitForSeconds(1); // 1秒待機してからターン切替
 
-        gameManager.ChangeTurn(); // 敵のターンが終了したら、プレイヤーのターンに切り替える
+        // gameManager.ChangeTurn(); // 敵のターンが終了したら、プレイヤーのターンに切り替える
+        gameManager.StepCalc(gameManager.isPlayerTurn, GameManager.STEP.END);
     }
 
 }
