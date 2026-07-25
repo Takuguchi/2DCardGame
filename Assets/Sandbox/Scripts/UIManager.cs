@@ -15,6 +15,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] Text enemyManaCostText; // 敵のマナコストを表示するTextを取得   
 
     [SerializeField] Text timeCountText; // カウントダウンのTextを取得
+    public Text buttonText; // ターンエンドボタンのTextを取得
     
     // リザルト画面を非表示にするメソッド
     public void HideResultPanel()
@@ -57,5 +58,17 @@ public class UIManager : MonoBehaviour
             resultText.text = "WIN"; // WINと表示する
         }        
 
+    }
+
+    public void ChangeButtonText()
+    {
+        if (GameManager.instance.step == GameManager.STEP.MAIN)
+        {
+            buttonText.text = "AttackStep";
+        }
+        if (GameManager.instance.step == GameManager.STEP.ATTACK)
+        {
+            buttonText.text = "TurnEnd";
+        }
     }
 }

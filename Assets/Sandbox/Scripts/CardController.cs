@@ -48,6 +48,8 @@ public class CardController : MonoBehaviour
     {
         model.isRefreshed = isRefreshed;
         StartCoroutine(movement.TapCard(isRefreshed));
+        if (model.isRefreshed) SetCanAttack(true);
+        else SetCanAttack(false);
     }
 
     // フィールドにカードを出したときに呼ばれるメソッド

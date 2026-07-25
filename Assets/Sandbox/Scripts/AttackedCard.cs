@@ -32,6 +32,10 @@ public class AttackedCard : MonoBehaviour, IDropHandler, IPointerClickHandler
         {
             return; // 何も処理しないで終わる
         }
+        if (!attacker.movement.isDraggable)
+        {
+            return; // ドラッグ不可なら処理を終了する
+        }
         if (attacker.model.isPlayerCard == defender.model.isPlayerCard)
         {
             return; // attackerとdefenderがプレイヤー同士, または敵同士のカードだった場合は何も処理しないで終わる
@@ -53,13 +57,6 @@ public class AttackedCard : MonoBehaviour, IDropHandler, IPointerClickHandler
         {
             // attackerとdefenderを戦わせる
             GameManager.instance.CardsBattle(attacker, defender);
-        }
-
-        if (GameManager.instance.step == GameManager.STEP.MAIN)
-        {
-            // メインステップからアタックステップへの切替
-            GameManager.instance.step = GameManager.STEP.ATTACK;
-            Debug.Log("メインステップからアタックステップへの切替");
         }
     }
 

@@ -43,7 +43,12 @@ public class CardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
         {
             isDraggable = true; // カードのNet(正味)コストがPlayerのManaコスト+フィールドのコアの総数"未満"ならドラッグ可能(維持コアが1個以上必要なため)
         }
-        else if (card.model.isPlayerCard && GameManager.instance.isPlayerTurn && card.model.isFieldCard && card.model.canAttack) // フィールドのカードで、かつ攻撃可能なら
+        else if (card.model.isPlayerCard
+                 && GameManager.instance.isPlayerTurn
+                 && GameManager.instance.step == GameManager.STEP.ATTACK
+                 && card.model.isFieldCard
+                 && card.model.isRefreshed
+                 && card.model.canAttack) // フィールドのカードで、アタックステップで、かつ回復状態で、かつ攻撃可能なら
         {
             isDraggable = true; // ドラッグ可能
         }

@@ -25,6 +25,10 @@ public class AttackedHero : MonoBehaviour, IDropHandler, IPointerClickHandler
         {
             return; // 何も処理しないで終わる
         }
+        if (!attacker.movement.isDraggable)
+        {
+            return; // ドラッグ不可なら処理を終了する
+        }
         // 敵フィールドにシールドカードがあれば攻撃できない
         CardController[] enemyFieldCards = GameManager.instance.GetOpponentFieldCards(attacker.model.isPlayerCard);
         if (Array.Exists(enemyFieldCards, card => card.model.ability == ABILITY.SHIELD))
@@ -38,13 +42,6 @@ public class AttackedHero : MonoBehaviour, IDropHandler, IPointerClickHandler
             // attackerがHeroに攻撃する
             GameManager.instance.AttackToHero(attacker);
             GameManager.instance.CheckHeroHP(); // HeroのHPが0になったかどうかを確認する
-        }
-
-        if (GameManager.instance.step == GameManager.STEP.MAIN)
-        {
-            // メインステップからアタックステップへの切替
-            GameManager.instance.step = GameManager.STEP.ATTACK;
-            Debug.Log("メインステップからアタックステップへの切替");
         }
     }
 

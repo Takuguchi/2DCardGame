@@ -266,6 +266,12 @@ public class GameManager : MonoBehaviour
             case STEP.MAIN:
                 Debug.Log("メインステップ！");
                 this.step = STEP.MAIN;
+                uiManager.ChangeButtonText();
+                break;
+            case STEP.ATTACK:
+                Debug.Log("アタックステップ！");
+                this.step = STEP.ATTACK;
+                uiManager.ChangeButtonText();
                 break;
             case STEP.END:
                 Debug.Log("ターンエンド");
@@ -323,7 +329,14 @@ public class GameManager : MonoBehaviour
     {
         if (isPlayerTurn) // プレイヤーのターンのときだけターンを切り替える
         {
-            StepCalc(isPlayerTurn, STEP.END);
+            if (uiManager.buttonText.text == "TurnEnd")
+            {
+                StepCalc(isPlayerTurn, STEP.END);
+            }
+            if (uiManager.buttonText.text == "AttackStep")
+            {
+                StepCalc(isPlayerTurn, STEP.ATTACK);
+            }
             // ChangeTurn();
         }
     }
@@ -936,7 +949,7 @@ public class GameManager : MonoBehaviour
             }
             CreateCore(playerReserveTransform, attacker.model.symbols); // 生成
         }
-        attacker.SetCanAttack(false); // 一度攻撃したらattackerを攻撃不可にする
+        // attacker.SetCanAttack(false); // 一度攻撃したらattackerを攻撃不可にする
         attacker.ChangeIsRefreshed(false);
         uiManager.ShowHeroHP(player.heroHp, enemy.heroHp); // HeroのHP表示を変更
         uiManager.ShowManaCost(player.manaCost, enemy.manaCost); // マナコストの表示を更新する
