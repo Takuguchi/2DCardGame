@@ -66,7 +66,7 @@ public class CardController : MonoBehaviour
             SetCanAttack(true); // カードのアビリティがINIT_ATTACKABLEなら、攻撃可能にする
         }
         */
-        SetCanAttack(true); // バトスピは召喚したターンでも攻撃できるので。
+        if (gameManager.turnCount != 1) SetCanAttack(true); // 1ターン目はアタックできない
     }
     
     // Aliveがfalseになっていたら破壊するメソッド
