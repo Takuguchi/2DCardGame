@@ -21,7 +21,7 @@ public class CardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
 
         // フィールドのコアの総数を取得
         int filedCoreNum = 0;
-        CardController[] playerFieldCards = GameManager.instance.GetFriendFieldCards(card.model.isPlayerCard);
+        CardController[] playerFieldCards = GameManager.instance.playerFieldTransform.GetComponentsInChildren<CardController>();
         for (int i = 0; i < playerFieldCards.Length; i++)
         {
             CoreController[] cores = playerFieldCards[i].GetComponentsInChildren<CoreController>(); // カードに乗っているコアを取得
@@ -48,7 +48,7 @@ public class CardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
             isDraggable = true; // ドラッグ可能
         }
         else if (card.model.isPlayerCard
-                 && GameManager.instance.step == GameManager.STEP.ATTACK
+                 // && GameManager.instance.step == GameManager.STEP.ATTACK
                  && card.model.cardType == CARDTYPE.MAGIC
                  && GameManager.instance.CalcNetCost(card) <= reserveCoreList.Length + filedCoreNum)
         {
