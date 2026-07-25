@@ -622,9 +622,16 @@ public class GameManager : MonoBehaviour
     }
     
     // 相手のフィールドのカード(プレイヤー→敵AI, 敵AI→プレイヤー)を取得するメソッド
-    public CardController[] GetEnemyFieldCards()
+    public CardController[] GetOpponentFieldCards(bool isPlayer)
     {
-        return enemyFieldTransform.GetComponentsInChildren<CardController>();
+        if (isPlayer)
+        {
+            return enemyFieldTransform.GetComponentsInChildren<CardController>();
+        }
+        else
+        {
+            return playerFieldTransform.GetComponentsInChildren<CardController>();
+        }
     }
 
     // ターンエンドボタンを押したときに呼ばれるメソッド

@@ -54,7 +54,7 @@ public class AI : MonoBehaviour
             enemyCard.OnField();
 
             yield return coreMoveCoroutine; // コアがenemyCardの子になる（MoveTo完了）まで待ってからLv/BPを確定させる
-            gameManager.ArrangeCoresAndFixLv(gameManager.GetEnemyFieldCards());
+            gameManager.ArrangeCoresAndFixLv(gameManager.GetFriendFieldCards(enemyCard.model.isPlayerCard));
 
             Debug.Log($"{enemyCard.model.name}をLv{enemyCard.model.currentLv}で召喚！");
 
