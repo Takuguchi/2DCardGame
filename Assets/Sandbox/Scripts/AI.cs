@@ -215,10 +215,39 @@ public class AI : MonoBehaviour
     {
         yield return new WaitForSeconds(1); // 考えてる風の1秒待機
 
+        CardController[] handCardList = gameManager.enemyHandTransform.GetComponentsInChildren<CardController>();
         CardController[] fieldCardList = gameManager.enemyFieldTransform.GetComponentsInChildren<CardController>();
+        CoreController[] reserveCoreList = gameManager.enemyReserveTransform.GetComponentsInChildren<CoreController>();
 
         if (gameManager.isDuringAttack)
         {
+            // フラッシュタイミング
+            while (Array.Exists(handCardList, card =>
+                   card.model.cardType == CARDTYPE.MAGIC && gameManager.CalcNetCost(card) <= reserveCoreList.Length && card.CanUseMagic() ))
+            {
+                CardController[] selectableHandCardList = Array.FindAll(handCardList, card =>
+                    card.model.cardType == CARDTYPE.MAGIC && gameManager.CalcNetCost(card) <= reserveCoreList.Length && card.CanUseMagic() );
+
+                // フラッシュタイミングで使用できるカードを選択
+                CardController magicCard = selectableHandCardList[0]; // とりあえずカードリストの一番最初のカードを選択
+
+                if (magicCard.model.cardType == CARDTYPE.MAGIC)
+                {
+                    StartCoroutine(CastMagicOf(magicCard));
+                    yield return new WaitForSeconds(0.51f); // カードが移動する時間待つ
+                }
+                
+                gameManager.ArrangeCoresAndFixLv(gameManager.GetFriendFieldCards(magicCard.model.isPlayerCard));
+
+                // 手札のリストを更新
+                handCardList = gameManager.enemyHandTransform.GetComponentsInChildren<CardController>();
+
+                // リザーブのコアのリストを更新
+                reserveCoreList = gameManager.enemyReserveTransform.GetComponentsInChildren<CoreController>();
+
+                yield return new WaitForSeconds(1);
+            }
+
             // ブロックするかライフで受けるか選択
             
             // ブロック可能カードを取得
@@ -232,6 +261,33 @@ public class AI : MonoBehaviour
 
                 // まずブロック(疲労)
                 blocker.ChangeIsRefreshed(false);
+
+                // フラッシュタイミング
+                while (Array.Exists(handCardList, card =>
+                    card.model.cardType == CARDTYPE.MAGIC && gameManager.CalcNetCost(card) <= reserveCoreList.Length && card.CanUseMagic() ))
+                {
+                    CardController[] selectableHandCardList = Array.FindAll(handCardList, card =>
+                        card.model.cardType == CARDTYPE.MAGIC && gameManager.CalcNetCost(card) <= reserveCoreList.Length && card.CanUseMagic() );
+
+                    // フラッシュタイミングで使用できるカードを選択
+                    CardController magicCard = selectableHandCardList[0]; // とりあえずカードリストの一番最初のカードを選択
+
+                    if (magicCard.model.cardType == CARDTYPE.MAGIC)
+                    {
+                        StartCoroutine(CastMagicOf(magicCard));
+                        yield return new WaitForSeconds(0.51f); // カードが移動する時間待つ
+                    }
+                    
+                    gameManager.ArrangeCoresAndFixLv(gameManager.GetFriendFieldCards(magicCard.model.isPlayerCard));
+
+                    // 手札のリストを更新
+                    handCardList = gameManager.enemyHandTransform.GetComponentsInChildren<CardController>();
+
+                    // リザーブのコアのリストを更新
+                    reserveCoreList = gameManager.enemyReserveTransform.GetComponentsInChildren<CoreController>();
+
+                    yield return new WaitForSeconds(1);
+                }
 
                 // バトル
                 StartCoroutine(attacker.movement.MoveToTarget(blocker.transform)); // カードの移動を行うCardMovementクラスのMoveToTarget()メソッドに、カードの移動先のTransformを渡す
