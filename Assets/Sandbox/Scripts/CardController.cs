@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -87,7 +88,7 @@ public class CardController : MonoBehaviour
     }
 
     // マジックカードが使用可能かどうか判定するメソッド
-    public bool CanUseMagic(CardController target)
+    public bool CanUseMagic()
     {
         CardController[] friendFieldCards = gameManager.GetFriendFieldCards(this.model.isPlayerCard);
         CardController[] opponentFieldCards = gameManager.GetOpponentFieldCards(this.model.isPlayerCard);
@@ -96,18 +97,15 @@ public class CardController : MonoBehaviour
         {
             case MAGIC.DESTROY_ENEMY_CARD:
                 // 相手のフィールドにカードがあれば使用可能
-                if (target == null) return false;
-                if (target.model.isPlayerCard == model.isPlayerCard) return false;
                 return opponentFieldCards.Length > 0;
             case MAGIC.REFRESH_FRIEND_CARDS:
-                // 自分のフィールドにカードがあれば使用可能
-                CardController[] friendCards = gameManager.GetFriendFieldCards(this.model.isPlayerCard);
-                return friendCards.Length > 0;
+                if (model.isPlayerCard == gameManager.isPlayerTurn || gameManager.step != GameManager.STEP.ATTACK) return false;
+                // 自分のフィールドに疲労状態のカードがあれば使用可能
+                CardController[] exhaustedCards = Array.FindAll(friendFieldCards, card => !card.model.isRefreshed);
+                return exhaustedCards.Length > 0;
             case MAGIC.DRAW:
                 return gameManager.step == GameManager.STEP.MAIN;
             case MAGIC.DESTROY_ALL_CARDS:
-                if (target.model.isPlayerCard && !target.model.isFieldCard) return false; // 自分の手札のカードに誤ってドロップして使用されないように
-                if (!target.model.isPlayerCard && !target.model.isFieldCard) return false; // 相手の手札のカードにも同様
                 return friendFieldCards.Length > 0 || opponentFieldCards.Length > 0;
             case MAGIC.NONE:
                 return false; // マジックカードでなかった場合は使用不可
@@ -118,8 +116,6 @@ public class CardController : MonoBehaviour
     // マジックカード
     public void UseMagicTo(CardController target)
     {
-        gameManager.ReduceManaCost(this); // コストの支払い
-
         Debug.Log(this.model.name + "を使用！");
 
         CardController[] friendFieldCards = gameManager.GetFriendFieldCards(this.model.isPlayerCard);
@@ -129,6 +125,8 @@ public class CardController : MonoBehaviour
         {
             case MAGIC.DESTROY_ENEMY_CARD:
                 // 特定の敵を攻撃する
+                if (target == null) return;
+                if (target.model.isPlayerCard == model.isPlayerCard) return;
                 Attack(target);
                 target.CheckAlive();
                 break;
@@ -148,6 +146,8 @@ public class CardController : MonoBehaviour
                 break;
             case MAGIC.DESTROY_ALL_CARDS:
                 // at以下のスピリットすべてを破壊する
+                if (target.model.isPlayerCard && !target.model.isFieldCard) return; // 自分の手札のカードに誤ってドロップして使用されないように
+                if (!target.model.isPlayerCard && !target.model.isFieldCard) return; // 相手の手札のカードにも同様
                 foreach (CardController opponentFieldCard in opponentFieldCards)
                 {
                     Attack(opponentFieldCard);
@@ -162,6 +162,7 @@ public class CardController : MonoBehaviour
             case MAGIC.NONE:
                 return;
         }
+        gameManager.ReduceManaCost(this); // コストの支払い
         Destroy(this.gameObject); //スペルカード使用後は削除(本当はトラッシュに移動してから非表示にしたい)
     }
 }

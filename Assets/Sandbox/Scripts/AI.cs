@@ -28,6 +28,8 @@ public class AI : MonoBehaviour
 
         yield return new WaitForSeconds(1); // カードをフィールドに出す前に1秒置く
 
+        gameManager.StepCalc(gameManager.isPlayerTurn, GameManager.STEP.MAIN);
+
         /* 場にカードを出す */
         // 手札のカードリストを取得
         CardController[] handCardList = gameManager.enemyHandTransform.GetComponentsInChildren<CardController>();
@@ -36,25 +38,39 @@ public class AI : MonoBehaviour
         CoreController[] reserveCoreList = gameManager.enemyReserveTransform.GetComponentsInChildren<CoreController>();
         
         // コスト以下のカードがあれば、カードをフィールドに出し続ける
-        while (Array.Exists(handCardList, card => gameManager.CalcNetCost(card) < reserveCoreList.Length))
+        // while (Array.Exists(handCardList, card => gameManager.CalcNetCost(card) < reserveCoreList.Length))
+        // 条件：モンスターカードならコストのみ
+        // 条件：マジックカードならコストと、使用可能かどうか（CanUseMagic）
+        while (Array.Exists(handCardList, card => 
+               (card.model.cardType == CARDTYPE.SPIRIT && gameManager.CalcNetCost(card) < reserveCoreList.Length)
+               || (card.model.cardType == CARDTYPE.MAGIC && gameManager.CalcNetCost(card) <= reserveCoreList.Length && card.CanUseMagic()) ))
         {
             // Net(正味)コストがリザーブのコアの総数未満のカードリストを取得
-            CardController[] selectableHandCardList = Array.FindAll(handCardList, card => gameManager.CalcNetCost(card) < reserveCoreList.Length);
+            CardController[] selectableHandCardList = Array.FindAll(handCardList, card => 
+               (card.model.cardType == CARDTYPE.SPIRIT && gameManager.CalcNetCost(card) < reserveCoreList.Length)
+               || (card.model.cardType == CARDTYPE.MAGIC && gameManager.CalcNetCost(card) <= reserveCoreList.Length && card.CanUseMagic()) );
 
             // 場に出すカードを選択
             CardController enemyCard = selectableHandCardList[0]; // とりあえずカードリストの一番最初のカードを選択
 
-            // カードに乗せるコアを選択
-            CoreController core = reserveCoreList[reserveCoreList.Length - 1]; // とりあえずリザーブのコアリストの一番最後のコアを選択
-
-            // カードを移動
-            StartCoroutine(enemyCard.movement.MoveToField(gameManager.enemyFieldTransform)); // カードの移動を行うCardMovementクラスのSetCardTransform()メソッドに、カードの移動先のTransformを渡す
-            yield return new WaitForSeconds(0.51f); // カードが移動する時間待つ
-            // 維持コアの移動と召喚コストの支払いアニメーションを同時に開始する
-            Coroutine coreMoveCoroutine = StartCoroutine(core.movement.MoveTo(enemyCard.iconTransform)); // コアの移動を行うCoreMovementクラスのMoveTo()メソッドに、コアの移動先のTransformを渡す
-            enemyCard.OnField();
-
-            yield return coreMoveCoroutine; // コアがenemyCardの子になる（MoveTo完了）まで待ってからLv/BPを確定させる
+            if (enemyCard.model.cardType == CARDTYPE.MAGIC)
+            {
+                StartCoroutine(CastMagicOf(enemyCard));
+                yield return new WaitForSeconds(0.51f); // カードが移動する時間待つ
+            }
+            
+            if (enemyCard.model.cardType == CARDTYPE.SPIRIT)
+            {
+                // カードを移動
+                StartCoroutine(enemyCard.movement.MoveToField(gameManager.enemyFieldTransform));
+                yield return new WaitForSeconds(0.51f); // カードが移動する時間待つ
+                // カードに乗せるコアを選択
+                CoreController core = reserveCoreList[reserveCoreList.Length - 1]; // とりあえずリザーブのコアリストの一番最後のコアを選択
+                // 維持コアの移動と召喚コストの支払いアニメーションを同時に開始する
+                Coroutine coreMoveCoroutine = StartCoroutine(core.movement.MoveTo(enemyCard.iconTransform));
+                enemyCard.OnField();
+                yield return coreMoveCoroutine; // コアがenemyCardの子になる（MoveTo完了）まで待ってからLv/BPを確定させる    
+            }
             gameManager.ArrangeCoresAndFixLv(gameManager.GetFriendFieldCards(enemyCard.model.isPlayerCard));
 
             Debug.Log($"{enemyCard.model.name}をLv{enemyCard.model.currentLv}で召喚！");
@@ -118,11 +134,12 @@ public class AI : MonoBehaviour
         */
 
         /* 攻撃(バトスピ用) */
-        gameManager.step = GameManager.STEP.ATTACK;
+        gameManager.StepCalc(gameManager.isPlayerTurn, GameManager.STEP.ATTACK);
         // フィールドのカードリストを取得
         CardController[] fieldCardList = gameManager.enemyFieldTransform.GetComponentsInChildren<CardController>();
         // 攻撃可能カードがあれば攻撃を繰り返す
-        while (Array.Exists(fieldCardList, card => card.model.canAttack))
+        //while (Array.Exists(fieldCardList, card => card.model.canAttack))
+        if (Array.Exists(fieldCardList, card => card.model.canAttack)) // いったんアタックしてくるスピリットは1体にする
         {
             // 攻撃可能カードを取得
             CardController[] enemyCanAttackCardList = Array.FindAll(fieldCardList, card => card.model.canAttack); // 検索：Array.FindAll
@@ -238,5 +255,31 @@ public class AI : MonoBehaviour
         }
         
         yield return new WaitForEndOfFrame();
+    }
+
+    // マジックカードを発動させるメソッド
+    IEnumerator CastMagicOf(CardController card)
+    {
+        CardController target = null;
+        Transform movePosition = null;
+        switch (card.model.magic)
+        {
+            case MAGIC.DESTROY_ENEMY_CARD:
+                target = gameManager.GetOpponentFieldCards(card.model.isPlayerCard)[0];
+                movePosition = target.transform;
+                break;
+            case MAGIC.REFRESH_FRIEND_CARDS:
+                movePosition = gameManager.enemyFieldTransform;
+                break;
+            case MAGIC.DRAW:
+                movePosition = gameManager.enemyFieldTransform;
+                break;
+            case MAGIC.DESTROY_ALL_CARDS:
+                movePosition = gameManager.enemyFieldTransform;
+                break;
+        }
+        StartCoroutine(card.movement.MoveToField(movePosition)); // カードの移動
+        yield return new WaitForSeconds(0.25f);
+        card.UseMagicTo(target);
     }
 }

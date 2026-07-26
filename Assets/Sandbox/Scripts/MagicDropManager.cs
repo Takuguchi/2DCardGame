@@ -22,7 +22,7 @@ public class MagicDropManager : MonoBehaviour, IDropHandler
             return; // ドラッグ不可なら処理を終了する
         }
         // if (GameManager.instance.step != GameManager.STEP.ATTACK) return;
-        if (magicCard.CanUseMagic(target))
+        if (magicCard.CanUseMagic())
         {
             magicCard.UseMagicTo(target);
         }
