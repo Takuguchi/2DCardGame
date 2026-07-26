@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: "\u30B5\u30B6\u30F3\u30AF\u30ED\u30B9\u30D5\u30EC\u30A4\u30E0"
   hp: 0
-  at: 4000
   cost: 7
   coreNum: 0
   reductionSymbols: 3
@@ -24,6 +23,7 @@ MonoBehaviour:
   ability: 0
   magic: 4
   magicDrawCount: 2
+  magicBp: 4000
   coreLv1: 0
   bpLv1: 0
   coreLv2: 0

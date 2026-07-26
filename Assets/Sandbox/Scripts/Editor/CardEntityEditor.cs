@@ -6,10 +6,12 @@ using UnityEngine; // GUIContentなど、UI表示用のAPIを使うため
 public class CardEntityEditor : Editor // Editorを継承してInspectorの見た目を上書きする
 {
     SerializedProperty magicDrawCountProp; // magicDrawCountフィールドへの参照を保持しておく変数
+    SerializedProperty magicBpProp; // magicBpフィールドへの参照を保持しておく変数
 
     void OnEnable() // このEditorがInspectorに表示されるたびに呼ばれる初期化処理
     {
         magicDrawCountProp = serializedObject.FindProperty("magicDrawCount"); // 対象アセットからmagicDrawCountプロパティを取得
+        magicBpProp = serializedObject.FindProperty("magicBp"); // 対象アセットからmagicBpプロパティを取得
     }
 
     public override void OnInspectorGUI() // Inspectorを描画する本体（デフォルトのDrawDefaultInspectorの代わり）
@@ -22,16 +24,27 @@ public class CardEntityEditor : Editor // Editorを継承してInspectorの見�
         {
             enterChildren = false; // 2回目以降は同じ階層の兄弟プロパティだけを辿る
 
-            // magicDrawCountはmagicの直後に条件付きで表示するので、通常の並びではスキップ
-            if (prop.name == "m_Script" || prop.name == "magicDrawCount") continue; // スクリプト参照欄と手動描画するフィールドは通常描画から除外
+            // magicDrawCount/magicBpはmagicの直後に条件付きで表示するので、通常の並びではスキップ
+            if (prop.name == "m_Script" || prop.name == "magicDrawCount" || prop.name == "magicBp") continue; // スクリプト参照欄と手動描画するフィールドは通常描画から除外
 
             EditorGUILayout.PropertyField(prop, true); // 現在のプロパティを通常通りInspectorに描画
 
-            if (prop.name == "magic" && (MAGIC)prop.enumValueIndex == MAGIC.DRAW) // 今描画したのがmagicで、値がDRAWの場合のみ
+            if (prop.name == "magic") // 今描画したのがmagicの場合のみ、値に応じた関連フィールドを続けて表示
             {
-                EditorGUI.indentLevel++; // 関連フィールドだとわかるように一段インデントする
-                EditorGUILayout.PropertyField(magicDrawCountProp, new GUIContent("ドロー枚数")); // ドロー枚数の入力欄を表示
-                EditorGUI.indentLevel--; // インデントを元に戻す
+                MAGIC magicValue = (MAGIC)prop.enumValueIndex; // 選択中のmagicの値を取得
+
+                if (magicValue == MAGIC.DRAW)
+                {
+                    EditorGUI.indentLevel++; // 関連フィールドだとわかるように一段インデントする
+                    EditorGUILayout.PropertyField(magicDrawCountProp, new GUIContent("ドロー枚数")); // ドロー枚数の入力欄を表示
+                    EditorGUI.indentLevel--; // インデントを元に戻す
+                }
+                else if (magicValue == MAGIC.DESTROY_ENEMY_CARD || magicValue == MAGIC.DESTROY_ALL_CARDS)
+                {
+                    EditorGUI.indentLevel++; // 関連フィールドだとわかるように一段インデントする
+                    EditorGUILayout.PropertyField(magicBpProp, new GUIContent("破壊対象BP")); // 破壊対象BPの入力欄を表示
+                    EditorGUI.indentLevel--; // インデントを元に戻す
+                }
             }
         }
 

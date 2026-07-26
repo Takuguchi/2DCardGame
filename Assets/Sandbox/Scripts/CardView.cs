@@ -21,8 +21,8 @@ public class CardView : MonoBehaviour
     public void Show(CardModel cardModel)
     {
         nameText.text = cardModel.name; // カードの名前を表示するTextにカードの名前を代入
-        hpText.text = cardModel.hp.ToString(); // カードのHPを表示するTextにカードのHPを代入
-        atText.text = cardModel.at.ToString(); // カードの攻撃力を表示するTextにカードの攻撃力を代入
+        // hpText.text = cardModel.hp.ToString(); // カードのHPを表示するTextにカードのHPを代入
+        // atText.text = cardModel.at.ToString(); // カードの攻撃力を表示するTextにカードの攻撃力を代入
         costText.text = cardModel.cost.ToString(); // カードのコストを表示するTextにカードのコストを代入
         iconImage.sprite = cardModel.icon; // カードの絵柄を表示するImageにカードの絵柄を代入
         // カードのアビリティがシールドなら、シールドパネルを表示する
@@ -39,8 +39,8 @@ public class CardView : MonoBehaviour
     // カードのデータが変化したときに呼ばれるメソッド
     public void Refresh(CardModel cardModel)
     {
-        hpText.text = cardModel.hp.ToString(); // カードのHPを表示するTextにカードのHPを代入
-        atText.text = cardModel.at.ToString(); // カードの攻撃力を表示するTextにカードの攻撃力を代入
+        // hpText.text = cardModel.hp.ToString(); // カードのHPを表示するTextにカードのHPを代入
+        // atText.text = cardModel.at.ToString(); // カードの攻撃力を表示するTextにカードの攻撃力を代入
         coreNumText.text = cardModel.coreNum.ToString(); // カード上のコアの数を表示するTextにカードのカード上のコアの数を代入
     }
 

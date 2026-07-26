@@ -145,9 +145,9 @@ public class CardController : MonoBehaviour
                 }
                 break;
             case MAGIC.DESTROY_ALL_CARDS:
-                // at以下のスピリットすべてを破壊する
-                if (target.model.isPlayerCard && !target.model.isFieldCard) return; // 自分の手札のカードに誤ってドロップして使用されないように
-                if (!target.model.isPlayerCard && !target.model.isFieldCard) return; // 相手の手札のカードにも同様
+                // 破壊対象BP以下のスピリットすべてを破壊する
+                if (target != null && target.model.isPlayerCard && !target.model.isFieldCard) return; // 自分の手札のカードに誤ってドロップして使用されないように
+                if (target != null && !target.model.isPlayerCard && !target.model.isFieldCard) return; // 相手の手札のカードにも同様
                 foreach (CardController opponentFieldCard in opponentFieldCards)
                 {
                     Attack(opponentFieldCard);

@@ -13,8 +13,6 @@ MonoBehaviour:
   m_Name: Card8
   m_EditorClassIdentifier: 
   name: "\u30B5\u30B8\u30C3\u30BF\u30D5\u30EC\u30A4\u30E0"
-  hp: 2
-  at: 5000
   cost: 5
   coreNum: 0
   reductionSymbols: 2
@@ -23,6 +21,8 @@ MonoBehaviour:
   cardType: 4
   ability: 0
   magic: 1
+  magicDrawCount: 2
+  magicBp: 5000
   coreLv1: 0
   bpLv1: 0
   coreLv2: 0

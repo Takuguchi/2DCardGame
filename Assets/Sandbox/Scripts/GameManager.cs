@@ -833,20 +833,20 @@ public class GameManager : MonoBehaviour
             if (onCores.Length >= fieldCards[i].model.coreLv1)
             {
                 fieldCards[i].model.currentLv = 1;
-                fieldCards[i].model.at = fieldCards[i].model.bpLv1; // コアが減ってたらLv1だもんね。
+                fieldCards[i].model.currentBp = fieldCards[i].model.bpLv1; // コアが減ってたらLv1だもんね。
                 if (onCores.Length >= fieldCards[i].model.coreLv2)
                 {
                     fieldCards[i].model.currentLv = 2;
-                    fieldCards[i].model.at = fieldCards[i].model.bpLv2;
+                    fieldCards[i].model.currentBp = fieldCards[i].model.bpLv2;
                     if (fieldCards[i].model.coreLv3 != 0 && onCores.Length >= fieldCards[i].model.coreLv3)
                     {
                         fieldCards[i].model.currentLv = 3;
-                        fieldCards[i].model.at = fieldCards[i].model.bpLv3;
+                        fieldCards[i].model.currentBp = fieldCards[i].model.bpLv3;
                     }
                 }
             }
             fieldCards[i].model.FixBp();
-            Debug.Log(fieldCards[i].model.name + " Lv:" + fieldCards[i].model.currentLv + " BP:" + fieldCards[i].model.at);
+            Debug.Log(fieldCards[i].model.name + " Lv:" + fieldCards[i].model.currentLv + " BP:" + fieldCards[i].model.currentBp);
         }
         
     }

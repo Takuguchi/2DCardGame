@@ -10,8 +10,8 @@ using UnityEngine;
 public class CardEntity : ScriptableObject
 {
     public new string name; // カードの名前
-    public int hp;      // カードのHP
-    public int at;      // カードの攻撃力
+    // public int hp;      // カードのHP
+    // public int at;      // カードの攻撃力
     public int cost;    // カードのコスト
     public int coreNum; // カード上のコアの数
     public int reductionSymbols; // 軽減シンボルの数
@@ -21,6 +21,7 @@ public class CardEntity : ScriptableObject
     public ABILITY ability; // カードのアビリティ
     public MAGIC magic;
     public int magicDrawCount = 2; // MAGIC.DRAW時のドロー枚数
+    public int magicBp; // 破壊対象BP
 
     public int coreLv1; // レベル1の所要コア
     public int bpLv1;   // レベル1のBP
