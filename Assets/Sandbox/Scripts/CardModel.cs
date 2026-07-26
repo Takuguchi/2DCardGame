@@ -10,7 +10,7 @@ public class CardModel
     // public int hp;      // カードのHP
     // public int at;      // カードの攻撃力
     public int cost;    // カードのコスト
-    public int coreNum; // カード上に乗っているコアの数
+    // public int coreNum; // カード上に乗っているコアの数
     public int currentLv; // 現在のレベル
     public int currentBp; // 現在のBP
     public int reductionSymbols; // 軽減シンボルの数
@@ -46,7 +46,7 @@ public class CardModel
         // hp = cardEntity.hp;
         // at = cardEntity.at; 
         cost = cardEntity.cost;
-        coreNum = cardEntity.coreNum;
+        // coreNum = cardEntity.coreNum;
         reductionSymbols = cardEntity.reductionSymbols;
         symbols = cardEntity.symbols;
         icon = cardEntity.icon;

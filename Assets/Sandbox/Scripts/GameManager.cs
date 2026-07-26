@@ -523,7 +523,7 @@ public class GameManager : MonoBehaviour
         {
             player.manaCost -= netCost;
             player.manaCost--; // 維持コア1個分のマナコストを消費する
-            card.model.coreNum++; // カード上のコアの数を1増やす
+            // card.model.coreNum++; // カード上のコアの数を1増やす
 
             // コアの移動コルーチンが全て終わってからコア0チェックを行う
             StartCoroutine(MoveCoresAndCheckCoreZero(card));
@@ -532,7 +532,7 @@ public class GameManager : MonoBehaviour
         {
             enemy.manaCost -= netCost;
             enemy.manaCost--; // 維持コア1個分のマナコストを消費する
-            card.model.coreNum++; // カード上のコアの数を1増やす
+            // card.model.coreNum++; // カード上のコアの数を1増やす
 
             // 支払った分（維持コアを除く）のコアをリザーブからトラッシュへ移動する
             CoreController[] reserveCoreList = enemyReserveTransform.GetComponentsInChildren<CoreController>();

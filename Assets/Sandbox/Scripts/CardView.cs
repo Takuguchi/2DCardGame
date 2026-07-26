@@ -41,7 +41,7 @@ public class CardView : MonoBehaviour
     {
         // hpText.text = cardModel.hp.ToString(); // カードのHPを表示するTextにカードのHPを代入
         // atText.text = cardModel.at.ToString(); // カードの攻撃力を表示するTextにカードの攻撃力を代入
-        coreNumText.text = cardModel.coreNum.ToString(); // カード上のコアの数を表示するTextにカードのカード上のコアの数を代入
+        // coreNumText.text = cardModel.coreNum.ToString(); // カード上のコアの数を表示するTextにカードのカード上のコアの数を代入
     }
 
     // カードが選択可能かどうかを表示するメソッド

@@ -13,7 +13,7 @@ public class CardEntity : ScriptableObject
     // public int hp;      // カードのHP
     // public int at;      // カードの攻撃力
     public int cost;    // カードのコスト
-    public int coreNum; // カード上のコアの数
+    // public int coreNum; // カード上のコアの数
     public int reductionSymbols; // 軽減シンボルの数
     public int symbols; // シンボルの数
     public Sprite icon; // カードの絵柄
