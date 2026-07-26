@@ -19,6 +19,7 @@ public class CardModel
     public CARDTYPE cardType;
     public ABILITY ability; // カードのアビリティ
     public MAGIC magic;
+    public int magicDrawCount; // MAGIC.DRAW時のドロー枚数
 
     public int coreLv1; // レベル1の所要コア
     public int bpLv1;   // レベル1のBP
@@ -51,6 +52,7 @@ public class CardModel
         cardType = cardEntity.cardType;
         ability = cardEntity.ability;
         magic = cardEntity.magic;
+        magicDrawCount = cardEntity.magicDrawCount;
         isAlive = true; // カードは最初は生きている状態
         isPlayerCard = isPlayer; // 引数のisPlayerを代入
         

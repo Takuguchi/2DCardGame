@@ -138,7 +138,7 @@ public class CardController : MonoBehaviour
                 }
                 break;
             case MAGIC.DRAW:
-                for (int i = 0; i < 2; i++)
+                for (int i = 0; i < model.magicDrawCount; i++)
                 {
                     if (this.model.isPlayerCard) gameManager.GiveCardToHand(gameManager.player.deck, gameManager.playerHandTransform);
                     else gameManager.GiveCardToHand(gameManager.enemy.deck, gameManager.enemyHandTransform);

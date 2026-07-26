@@ -23,6 +23,7 @@ MonoBehaviour:
   cardType: 4
   ability: 0
   magic: 4
+  magicDrawCount: 2
   coreLv1: 0
   bpLv1: 0
   coreLv2: 0

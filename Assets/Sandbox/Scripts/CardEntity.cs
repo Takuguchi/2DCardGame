@@ -20,6 +20,7 @@ public class CardEntity : ScriptableObject
     public CARDTYPE cardType;
     public ABILITY ability; // カードのアビリティ
     public MAGIC magic;
+    public int magicDrawCount = 2; // MAGIC.DRAW時のドロー枚数
 
     public int coreLv1; // レベル1の所要コア
     public int bpLv1;   // レベル1のBP
