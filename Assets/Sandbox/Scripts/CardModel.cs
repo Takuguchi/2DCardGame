@@ -18,6 +18,7 @@ public class CardModel
     public Sprite icon; // カードの絵柄
     public CARDTYPE cardType;
     public ABILITY ability; // カードのアビリティ
+    public int gainedBp; // 加算BP
     public MAGIC magic;
     public int magicDrawCount; // MAGIC.DRAW時のドロー枚数
     public int magicBp; // 破壊対象BP
@@ -52,6 +53,7 @@ public class CardModel
         icon = cardEntity.icon;
         cardType = cardEntity.cardType;
         ability = cardEntity.ability;
+        gainedBp = cardEntity.gainedBp;
         magic = cardEntity.magic;
         magicDrawCount = cardEntity.magicDrawCount;
         magicBp = cardEntity.magicBp;
@@ -105,11 +107,11 @@ public class CardModel
         {
             if (this.ability == ABILITY.GAIN_BP_ATTACK && GameManager.instance.isPlayerTurn == this.isPlayerCard)
             {
-                currentBp += 2000;
+                currentBp += gainedBp;
             }
             if (card.model.ability == ABILITY.GAIN_BP_BLOCK && GameManager.instance.isPlayerTurn != card.model.isPlayerCard)
             {
-                card.model.currentBp += 3000;
+                card.model.currentBp += card.model.gainedBp;
             }
             card.model.CompareBp(currentBp, name); // 攻撃側のBPと名前を渡す 引数nameはただのデバッグ用            
         }

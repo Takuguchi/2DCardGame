@@ -19,6 +19,7 @@ public class CardEntity : ScriptableObject
     public Sprite icon; // カードの絵柄
     public CARDTYPE cardType;
     public ABILITY ability; // カードのアビリティ
+    public int gainedBp; // 加算BP
     public MAGIC magic;
     public int magicDrawCount = 2; // MAGIC.DRAW時のドロー枚数
     public int magicBp; // 破壊対象BP

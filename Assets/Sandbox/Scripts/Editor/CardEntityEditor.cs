@@ -13,6 +13,7 @@ public class CardEntityEditor : Editor // Editorを継承してInspectorの見�
     SerializedProperty bpLv2Prop;   // bpLv2フィールドへの参照を保持しておく変数
     SerializedProperty coreLv3Prop; // coreLv3フィールドへの参照を保持しておく変数
     SerializedProperty bpLv3Prop;   // bpLv3フィールドへの参照を保持しておく変数
+    SerializedProperty gainedBpProp;
 
     void OnEnable() // このEditorがInspectorに表示されるたびに呼ばれる初期化処理
     {
@@ -24,6 +25,7 @@ public class CardEntityEditor : Editor // Editorを継承してInspectorの見�
         bpLv2Prop = serializedObject.FindProperty("bpLv2");     // 対象アセットからbpLv2プロパティを取得
         coreLv3Prop = serializedObject.FindProperty("coreLv3"); // 対象アセットからcoreLv3プロパティを取得
         bpLv3Prop = serializedObject.FindProperty("bpLv3");     // 対象アセットからbpLv3プロパティを取得
+        gainedBpProp = serializedObject.FindProperty("gainedBp");
     }
 
     public override void OnInspectorGUI() // Inspectorを描画する本体（デフォルトのDrawDefaultInspectorの代わり）
@@ -40,7 +42,8 @@ public class CardEntityEditor : Editor // Editorを継承してInspectorの見�
             if (prop.name == "m_Script" || prop.name == "magicDrawCount" || prop.name == "magicBp"
                 || prop.name == "coreLv1" || prop.name == "bpLv1"
                 || prop.name == "coreLv2" || prop.name == "bpLv2"
-                || prop.name == "coreLv3" || prop.name == "bpLv3") continue; // スクリプト参照欄と手動描画するフィールドは通常描画から除外
+                || prop.name == "coreLv3" || prop.name == "bpLv3"
+                || prop.name == "gainedBp") continue; // スクリプト参照欄と手動描画するフィールドは通常描画から除外
 
             EditorGUILayout.PropertyField(prop, true); // 現在のプロパティを通常通りInspectorに描画
 
@@ -72,6 +75,18 @@ public class CardEntityEditor : Editor // Editorを継承してInspectorの見�
                 EditorGUILayout.PropertyField(coreLv3Prop, new GUIContent("Lv3")); // レベル3の所要コアの入力欄を表示
                 EditorGUILayout.PropertyField(bpLv3Prop, new GUIContent(" "));   // レベル3のBPの入力欄を表示
                 EditorGUI.indentLevel--; // インデントを元に戻す
+            }
+
+            if (prop.name == "ability") // 今描画したのがabilityの場合のみ、値に応じた関連フィールドを続けて表示
+            {
+                ABILITY abilityValue = (ABILITY)prop.enumValueIndex; // 選択中のabilityの値を取得
+
+                if (abilityValue == ABILITY.GAIN_BP_ATTACK || abilityValue == ABILITY.GAIN_BP_BLOCK)
+                {
+                    EditorGUI.indentLevel++; // 関連フィールドだとわかるように一段インデントする
+                    EditorGUILayout.PropertyField(gainedBpProp, new GUIContent("BP+")); // 加算BPの入力欄を表示
+                    EditorGUI.indentLevel--; // インデントを元に戻す
+                }
             }
         }
 
