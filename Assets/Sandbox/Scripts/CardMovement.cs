@@ -79,22 +79,32 @@ public class CardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
         GetComponent<CanvasGroup>().blocksRaycasts = false; 
     }
 
-    // プレイヤーのアタックステップ中、プレイヤーがフィールド上のスピリットをクリックしたときに呼ばれる
+    // プレイヤーがフィールド上のスピリットをクリックしたときに呼ばれる
     public void OnPointerClick(PointerEventData eventData)
     {
-        CardController attacker = GetComponent<CardController>();
-        if (attacker == null) return;
+        CardController card = GetComponent<CardController>();
+        if (card == null) return;
         Debug.Log("クリックされました");
-        if (attacker.model.isPlayerCard
+
+        // メインステップ
+        if (card.model.isPlayerCard
+                 && GameManager.instance.isPlayerTurn
+                 && GameManager.instance.step == GameManager.STEP.MAIN
+                 && card.model.isFieldCard)
+        {
+            StartCoroutine(ArrangeCores(card));
+        }
+
+        if (card.model.isPlayerCard
                  && GameManager.instance.isPlayerTurn
                  && GameManager.instance.step == GameManager.STEP.ATTACK
-                 && attacker.model.isFieldCard
-                 && attacker.model.isRefreshed
-                 && attacker.model.canAttack) // フィールドのカードで、アタックステップで、かつ回復状態で、かつ攻撃可能なら
+                 && card.model.isFieldCard
+                 && card.model.isRefreshed
+                 && card.model.canAttack) // フィールドのカードで、アタックステップで、かつ回復状態で、かつ攻撃可能なら
         {
-            attacker.ChangeIsRefreshed(false);
+            card.ChangeIsRefreshed(false);
             GameManager.instance.isDuringAttack = true;
-            StartCoroutine(GameManager.instance.enemyAI.PlayerTurn(attacker));
+            StartCoroutine(GameManager.instance.enemyAI.PlayerTurn(card));
         }
     }
     
@@ -135,6 +145,34 @@ public class CardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
 
         defaultParent = field;
         transform.SetParent(defaultParent);
+    }
+
+    // カード上のコアの数を増やしたり減らしたりするメソッド
+    public IEnumerator ArrangeCores(CardController card)
+    {
+        CoreController[] onCores = card.iconTransform.GetComponentsInChildren<CoreController>();
+        CoreController[] reserveCoreList = GameManager.instance.playerReserveTransform.GetComponentsInChildren<CoreController>();
+        Debug.Log($"onCores:{onCores.Length}個");
+        Coroutine coreMoveCoroutine = null;
+        if (reserveCoreList.Length == 0)
+        {
+            int moveCoreNum = onCores.Length - card.model.coreLv1;
+            for (int i = 0; i < moveCoreNum; i++)
+            {
+                coreMoveCoroutine = StartCoroutine(onCores[i].movement.MoveTo(GameManager.instance.playerReserveTransform));
+            }
+        }
+        if(reserveCoreList.Length > 0)
+        {
+            coreMoveCoroutine = StartCoroutine(reserveCoreList[reserveCoreList.Length - 1].movement.MoveTo(card.iconTransform));
+        }
+        if (coreMoveCoroutine != null)
+        {
+            yield return coreMoveCoroutine;
+        }
+        reserveCoreList = GameManager.instance.playerReserveTransform.GetComponentsInChildren<CoreController>();
+        Debug.Log($".reserveCoreList:{reserveCoreList.Length}個");
+        GameManager.instance.ArrangeCoresAndFixLv(GameManager.instance.GetFriendFieldCards(card.model.isPlayerCard));        
     }
 
     public IEnumerator MoveToTarget(Transform target)
