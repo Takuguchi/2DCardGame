@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0058304999a35334999acd26135d03d3, type: 3}
+  m_Name: Card17
+  m_EditorClassIdentifier: 
+  name: "\u6226\u7ADC\u30A8\u30EB\u30AE\u30CB\u30A2\u30B9"
+  cost: 1
+  reductionSymbols: 2
+  symbols: 1
+  icon: {fileID: 21300000, guid: 52be3f3266b1e274bba7f162c0057d86, type: 3}
+  cardType: 1
+  ability: 0
+  gainedBp: 0
+  magic: 0
+  magicDrawCount: 2
+  magicBp: 4000
+  coreLv1: 1
+  bpLv1: 1000
+  coreLv2: 3
+  bpLv2: 3000
+  coreLv3: 0
+  bpLv3: 0
