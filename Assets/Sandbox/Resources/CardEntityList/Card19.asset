@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Card19
   m_EditorClassIdentifier: 
   name: "\u7259\u7687\u30B1\u30EB\u30D9\u30ED\u30FC\u30C9"
+  color: 6
   cost: 5
   reductionSymbols:
   - color: 6

@@ -469,7 +469,7 @@ public class GameManager : MonoBehaviour
         CardController[] fieldCards = GetFriendFieldCards(card.model.isPlayerCard);
 
         // 軽減シンボルの色ごとに、フィールドの同色シンボルの総数を上限まで軽減し合算する
-        foreach (SymbolEntry reduction in card.model.reductionSymbols)
+        foreach (Symbol reduction in card.model.reductionSymbols)
         {
             int fieldSymbolsOfColor = 0;
 

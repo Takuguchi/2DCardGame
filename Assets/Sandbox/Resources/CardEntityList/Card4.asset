@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Card4
   m_EditorClassIdentifier: 
   name: "\u30AC\u30C9\u30D5\u30A1\u30F3\u30C8"
+  color: 4
   cost: 2
   reductionSymbols:
   - color: 4

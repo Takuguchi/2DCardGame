@@ -68,7 +68,7 @@ public class CardEntityEditor : Editor // Editorを継承してInspectorの見�
             EditorGUI.PropertyField(colorRect, colorProp, GUIContent.none); // 色の選択欄を表示
             EditorGUI.PropertyField(countRect, countProp, GUIContent.none); // 数の入力欄を表示
 
-            if (GUI.Button(removeRect, "×")) // 削除ボタンが押されたらインデックスを記録
+            if (GUI.Button(removeRect, "-")) // 削除ボタンが押されたらインデックスを記録
             {
                 removeIndex = i;
             }

@@ -9,12 +9,13 @@ public class CardModel
     public string name; // カードの名前
     // public int hp;      // カードのHP
     // public int at;      // カードの攻撃力
+    public COLOR color; // カードの色
     public int cost;    // カードのコスト
     // public int coreNum; // カード上に乗っているコアの数
     public int currentLv; // 現在のレベル
     public int currentBp; // 現在のBP
-    public List<SymbolEntry> reductionSymbols; // 軽減シンボル(色と数のリスト)
-    public List<SymbolEntry> symbols; // シンボル(色と数のリスト)
+    public List<Symbol> reductionSymbols; // 軽減シンボル(色と数のリスト)
+    public List<Symbol> symbols; // シンボル(色と数のリスト)
     public Sprite icon; // カードの絵柄
     public CARDTYPE cardType;
     public ABILITY ability; // カードのアビリティ
@@ -46,10 +47,11 @@ public class CardModel
         name = cardEntity.name;
         // hp = cardEntity.hp;
         // at = cardEntity.at; 
+        color = cardEntity.color;
         cost = cardEntity.cost;
         // coreNum = cardEntity.coreNum;
-        reductionSymbols = new List<SymbolEntry>(cardEntity.reductionSymbols); // アセットのリストを複製して代入
-        symbols = new List<SymbolEntry>(cardEntity.symbols); // アセットのリストを複製して代入
+        reductionSymbols = new List<Symbol>(cardEntity.reductionSymbols); // アセットのリストを複製して代入
+        symbols = new List<Symbol>(cardEntity.symbols); // アセットのリストを複製して代入
         icon = cardEntity.icon;
         cardType = cardEntity.cardType;
         ability = cardEntity.ability;
@@ -140,12 +142,12 @@ public class CardModel
     }
 
     // 指定した色のシンボルの合計数を取得
-    public int GetSymbolCount(SYMBOLCOLOR color)
+    public int GetSymbolCount(COLOR color)
     {
         int count = 0;
-        foreach (SymbolEntry entry in symbols)
+        foreach (Symbol symbol in symbols)
         {
-            if (entry.color == color) count += entry.count;
+            if (symbol.color == color) count += symbol.count;
         }
         return count;
     }
@@ -154,9 +156,9 @@ public class CardModel
     public int GetTotalSymbols()
     {
         int total = 0;
-        foreach (SymbolEntry entry in symbols)
+        foreach (Symbol symbol in symbols)
         {
-            total += entry.count;
+            total += symbol.count;
         }
         return total;
     }

@@ -12,10 +12,11 @@ public class CardEntity : ScriptableObject
     public new string name; // カードの名前
     // public int hp;      // カードのHP
     // public int at;      // カードの攻撃力
+    public COLOR color; // カードの色
     public int cost;    // カードのコスト
     // public int coreNum; // カード上のコアの数
-    public List<SymbolEntry> reductionSymbols = new List<SymbolEntry>(); // 軽減シンボル(色と数のリスト)
-    public List<SymbolEntry> symbols = new List<SymbolEntry>(); // シンボル(色と数のリスト)
+    public List<Symbol> reductionSymbols = new List<Symbol>(); // 軽減シンボル(色と数のリスト)
+    public List<Symbol> symbols = new List<Symbol>(); // シンボル(色と数のリスト)
     public Sprite icon; // カードの絵柄
     public CARDTYPE cardType;
     public ABILITY ability; // カードのアビリティ
@@ -59,7 +60,7 @@ public enum MAGIC
     DESTROY_ALL_CARDS
 }
 
-public enum SYMBOLCOLOR
+public enum COLOR
 {
     NONE,
     RED,    // 赤
@@ -72,8 +73,8 @@ public enum SYMBOLCOLOR
 
 // シンボルの色と数のペア
 [System.Serializable]
-public struct SymbolEntry
+public struct Symbol
 {
-    public SYMBOLCOLOR color; // シンボルの色
-    public int count;         // シンボルの数
+    public COLOR color; // シンボルの色
+    public int count;   // シンボルの数
 }
