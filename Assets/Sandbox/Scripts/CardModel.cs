@@ -30,6 +30,7 @@ public class CardModel
     public int bpLv2;   // レベル2のBP
     public int coreLv3; // レベル3の所要コア
     public int bpLv3;   // レベル3のBP
+    public int bpBraved; // 合体中にプラスされるBP
 
     public bool isAlive;       // カードが生きているかどうか
     public bool canAttack;     // カードが攻撃可能かどうか
@@ -69,6 +70,7 @@ public class CardModel
         bpLv2 = cardEntity.bpLv2;
         coreLv3 = cardEntity.coreLv3;
         bpLv3 = cardEntity.bpLv3;
+        bpBraved = cardEntity.bpBraved;
     }
 
     void DestroyWithOrFewer(int bp)
@@ -105,9 +107,10 @@ public class CardModel
     // カードの攻撃処理
     public void Attack(CardController card)
     {
-        if (card.model.cardType == CARDTYPE.SPIRIT && this.cardType == CARDTYPE.SPIRIT)
+        if ((card.model.cardType == CARDTYPE.SPIRIT || card.model.cardType == CARDTYPE.BRAVE)
+            && (cardType == CARDTYPE.SPIRIT || cardType == CARDTYPE.BRAVE))
         {
-            if (this.ability == ABILITY.GAIN_BP_ATTACK && GameManager.instance.isPlayerTurn == this.isPlayerCard)
+            if (ability == ABILITY.GAIN_BP_ATTACK && GameManager.instance.isPlayerTurn == isPlayerCard)
             {
                 currentBp += gainedBp;
             }
@@ -117,9 +120,9 @@ public class CardModel
             }
             card.model.CompareBp(currentBp, name); // 攻撃側のBPと名前を渡す 引数nameはただのデバッグ用            
         }
-        if (card.model.cardType == CARDTYPE.SPIRIT
-            && this.cardType == CARDTYPE.MAGIC
-            && (this.magic == MAGIC.DESTROY_ENEMY_CARD || this.magic == MAGIC.DESTROY_ALL_CARDS))
+        if ((card.model.cardType == CARDTYPE.SPIRIT || card.model.cardType == CARDTYPE.BRAVE)
+            && cardType == CARDTYPE.MAGIC
+            && (magic == MAGIC.DESTROY_ENEMY_CARD || magic == MAGIC.DESTROY_ALL_CARDS))
         {
             card.model.DestroyWithOrFewer(this.magicBp);
         }

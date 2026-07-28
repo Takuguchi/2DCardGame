@@ -31,6 +31,7 @@ public class CardEntity : ScriptableObject
     public int bpLv2;   // レベル2のBP
     public int coreLv3; // レベル3の所要コア
     public int bpLv3;   // レベル3のBP
+    public int bpBraved; // 合体中にプラスされるBP
 }
 
 public enum CARDTYPE

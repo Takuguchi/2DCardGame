@@ -38,7 +38,7 @@ public class CardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
             && GameManager.instance.isPlayerTurn
             && GameManager.instance.step == GameManager.STEP.MAIN
             && !card.model.isFieldCard
-            && card.model.cardType == CARDTYPE.SPIRIT
+            && (card.model.cardType == CARDTYPE.SPIRIT || card.model.cardType == CARDTYPE.BRAVE)
             && GameManager.instance.CalcNetCost(card) < reserveCoreList.Length + filedCoreNum)
         {
             isDraggable = true; // カードのNet(正味)コストがPlayerのManaコスト+フィールドのコアの総数"未満"ならドラッグ可能(維持コアが1個以上必要なため)

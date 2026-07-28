@@ -13,6 +13,7 @@ public class CardEntityEditor : Editor // Editorを継承してInspectorの見�
     SerializedProperty bpLv2Prop;   // bpLv2フィールドへの参照を保持しておく変数
     SerializedProperty coreLv3Prop; // coreLv3フィールドへの参照を保持しておく変数
     SerializedProperty bpLv3Prop;   // bpLv3フィールドへの参照を保持しておく変数
+    SerializedProperty bpBravedProp;   // bpBravedフィールドへの参照を保持しておく変数
     SerializedProperty gainedBpProp;
     SerializedProperty symbolsProp;          // symbolsフィールド(リスト)への参照を保持しておく変数
     SerializedProperty reductionSymbolsProp; // reductionSymbolsフィールド(リスト)への参照を保持しておく変数
@@ -27,6 +28,7 @@ public class CardEntityEditor : Editor // Editorを継承してInspectorの見�
         bpLv2Prop = serializedObject.FindProperty("bpLv2");     // 対象アセットからbpLv2プロパティを取得
         coreLv3Prop = serializedObject.FindProperty("coreLv3"); // 対象アセットからcoreLv3プロパティを取得
         bpLv3Prop = serializedObject.FindProperty("bpLv3");     // 対象アセットからbpLv3プロパティを取得
+        bpBravedProp = serializedObject.FindProperty("bpBraved");     // 対象アセットからbpBravedプロパティを取得
         gainedBpProp = serializedObject.FindProperty("gainedBp");
         symbolsProp = serializedObject.FindProperty("symbols");                   // 対象アセットからsymbolsプロパティを取得
         reductionSymbolsProp = serializedObject.FindProperty("reductionSymbols"); // 対象アセットからreductionSymbolsプロパティを取得
@@ -102,6 +104,7 @@ public class CardEntityEditor : Editor // Editorを継承してInspectorの見�
                 || prop.name == "coreLv1" || prop.name == "bpLv1"
                 || prop.name == "coreLv2" || prop.name == "bpLv2"
                 || prop.name == "coreLv3" || prop.name == "bpLv3"
+                || prop.name == "bpBraved"
                 || prop.name == "gainedBp"
                 || prop.name == "reductionSymbols" || prop.name == "symbols") continue; // スクリプト参照欄と手動描画するフィールドは通常描画から除外
 
@@ -140,6 +143,14 @@ public class CardEntityEditor : Editor // Editorを継承してInspectorの見�
                 EditorGUILayout.PropertyField(bpLv2Prop, new GUIContent(" "));   // レベル2のBPの入力欄を表示
                 EditorGUILayout.PropertyField(coreLv3Prop, new GUIContent("Lv3")); // レベル3の所要コアの入力欄を表示
                 EditorGUILayout.PropertyField(bpLv3Prop, new GUIContent(" "));   // レベル3のBPの入力欄を表示
+                EditorGUI.indentLevel--; // インデントを元に戻す
+            }
+            
+            if (prop.name == "cardType" && (CARDTYPE)prop.enumValueIndex == CARDTYPE.BRAVE) // 今描画したのがcardTypeで、値がBRAVEの場合のみ
+            {
+                EditorGUI.indentLevel++; // 関連フィールドだとわかるように一段インデントする
+                EditorGUILayout.PropertyField(bpLv1Prop, new GUIContent("Lv1"));   // レベル1のBPの入力欄を表示
+                EditorGUILayout.PropertyField(bpBravedProp, new GUIContent("合体+"));   // 合体中のBPの入力欄を表示
                 EditorGUI.indentLevel--; // インデントを元に戻す
             }
 

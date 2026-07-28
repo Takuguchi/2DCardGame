@@ -70,7 +70,7 @@ public class GameManager : MonoBehaviour
     void StartGame()
     {
         uiManager.HideResultPanel(); // ゲーム開始時はリザルト画面を非表示にする
-        player.Init(new List<int>() { 8, 3, 17, 0, 16, 17, 18, 19, 20 }); // プレイヤーのデッキを初期化する
+        player.Init(new List<int>() { 14, 3, 16, 0, 18, 19, 16, 19, 20 }); // プレイヤーのデッキを初期化する
         enemy.Init(new List<int>() { 2, 3, 17, 0, 4, 5, 9, 5, 8, 6, 4, 5, 4 }); // 敵のデッキを初期化する
         uiManager.ShowHeroHP(player.heroHp, enemy.heroHp); // HeroのHP表示を変更するメソッドを呼び出す
         uiManager.ShowManaCost(player.manaCost, enemy.manaCost); // マナコストの表示を変更するメソッドを呼び出す
@@ -587,7 +587,7 @@ public class GameManager : MonoBehaviour
 
             Debug.Log("reserveCoreList.Length:" +  reserveCoreList.Length);
             
-            if (card.model.cardType == CARDTYPE.SPIRIT)
+            if (card.model.cardType == CARDTYPE.SPIRIT || card.model.cardType == CARDTYPE.BRAVE)
             {
                 // 維持コア1個乗せる
                 CoreController core = reserveCoreList[reserveCoreList.Length - 1];
@@ -643,7 +643,7 @@ public class GameManager : MonoBehaviour
 
             CardController[] fieldCards = GetFriendFieldCards(card.model.isPlayerCard);;
 
-            if (card.model.cardType == CARDTYPE.SPIRIT)
+            if (card.model.cardType == CARDTYPE.SPIRIT || card.model.cardType == CARDTYPE.BRAVE)
             {
                 /*
                 // フィールドの一番左のカードのコアを維持コアとして使用
@@ -750,7 +750,7 @@ public class GameManager : MonoBehaviour
 
             Debug.Log("フィールドのカード:" + fieldCards.Length + "枚");
 
-            if (card.model.cardType == CARDTYPE.SPIRIT)
+            if (card.model.cardType == CARDTYPE.SPIRIT  || card.model.cardType == CARDTYPE.BRAVE)
             {
                 // (7コスト以上のカードを召喚する場合は、フィールドのコアを全て乗せる)
                 if (card.model.cost > 6)
@@ -839,6 +839,12 @@ public class GameManager : MonoBehaviour
                         fieldCards[i].model.currentBp = fieldCards[i].model.bpLv3;
                     }
                 }
+            }
+            if (fieldCards[i].model.cardType == CARDTYPE.BRAVE) // ブレイヴの場合
+            {
+                fieldCards[i].model.currentLv = 1;
+                fieldCards[i].model.coreLv1 = 1;
+                fieldCards[i].model.currentBp = fieldCards[i].model.bpLv1;
             }
             fieldCards[i].model.FixBp();
             Debug.Log(fieldCards[i].model.name + " Lv:" + fieldCards[i].model.currentLv + " BP:" + fieldCards[i].model.currentBp);
