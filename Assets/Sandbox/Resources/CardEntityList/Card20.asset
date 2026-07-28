@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: "\u30D6\u30EC\u30A4\u30F4\u30C9\u30ED\u30FC"
   cost: 5
-  reductionSymbols: 3
-  reductionSymbolColor: 1
-  symbols: 0
-  symbolColor: 0
+  reductionSymbols:
+  - color: 1
+    count: 3
+  symbols: []
   icon: {fileID: 21300000, guid: 8bbd693bf8bebff4f81d4cbccd0ce97d, type: 3}
   cardType: 4
   ability: 0

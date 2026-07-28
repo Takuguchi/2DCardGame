@@ -13,10 +13,8 @@ public class CardModel
     // public int coreNum; // カード上に乗っているコアの数
     public int currentLv; // 現在のレベル
     public int currentBp; // 現在のBP
-    public int reductionSymbols; // 軽減シンボルの数
-    public SYMBOLCOLOR reductionSymbolColor; // 軽減シンボルの色
-    public int symbols; // シンボルの数
-    public SYMBOLCOLOR symbolColor; // シンボルの色
+    public List<SymbolEntry> reductionSymbols; // 軽減シンボル(色と数のリスト)
+    public List<SymbolEntry> symbols; // シンボル(色と数のリスト)
     public Sprite icon; // カードの絵柄
     public CARDTYPE cardType;
     public ABILITY ability; // カードのアビリティ
@@ -50,10 +48,8 @@ public class CardModel
         // at = cardEntity.at; 
         cost = cardEntity.cost;
         // coreNum = cardEntity.coreNum;
-        reductionSymbols = cardEntity.reductionSymbols;
-        reductionSymbolColor = cardEntity.reductionSymbolColor;
-        symbols = cardEntity.symbols;
-        symbolColor = cardEntity.symbolColor;
+        reductionSymbols = new List<SymbolEntry>(cardEntity.reductionSymbols); // アセットのリストを複製して代入
+        symbols = new List<SymbolEntry>(cardEntity.symbols); // アセットのリストを複製して代入
         icon = cardEntity.icon;
         cardType = cardEntity.cardType;
         ability = cardEntity.ability;
@@ -141,5 +137,27 @@ public class CardModel
         if (currentLv == 3) return bpLv3;
         else if (currentLv == 2) return bpLv2;
         else return bpLv1;
+    }
+
+    // 指定した色のシンボルの合計数を取得
+    public int GetSymbolCount(SYMBOLCOLOR color)
+    {
+        int count = 0;
+        foreach (SymbolEntry entry in symbols)
+        {
+            if (entry.color == color) count += entry.count;
+        }
+        return count;
+    }
+
+    // シンボルの合計数を取得(色を問わない)
+    public int GetTotalSymbols()
+    {
+        int total = 0;
+        foreach (SymbolEntry entry in symbols)
+        {
+            total += entry.count;
+        }
+        return total;
     }
 }

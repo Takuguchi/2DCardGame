@@ -14,10 +14,8 @@ public class CardEntity : ScriptableObject
     // public int at;      // カードの攻撃力
     public int cost;    // カードのコスト
     // public int coreNum; // カード上のコアの数
-    public int reductionSymbols; // 軽減シンボルの数
-    public SYMBOLCOLOR reductionSymbolColor; // 軽減シンボルの色
-    public int symbols; // シンボルの数
-    public SYMBOLCOLOR symbolColor; // シンボルの色
+    public List<SymbolEntry> reductionSymbols = new List<SymbolEntry>(); // 軽減シンボル(色と数のリスト)
+    public List<SymbolEntry> symbols = new List<SymbolEntry>(); // シンボル(色と数のリスト)
     public Sprite icon; // カードの絵柄
     public CARDTYPE cardType;
     public ABILITY ability; // カードのアビリティ
@@ -70,4 +68,12 @@ public enum SYMBOLCOLOR
     WHITE,  // 白
     YELLOW, // 黄
     BLUE    // 青
+}
+
+// シンボルの色と数のペア
+[System.Serializable]
+public struct SymbolEntry
+{
+    public SYMBOLCOLOR color; // シンボルの色
+    public int count;         // シンボルの数
 }

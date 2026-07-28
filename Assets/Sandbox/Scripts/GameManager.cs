@@ -70,8 +70,8 @@ public class GameManager : MonoBehaviour
     void StartGame()
     {
         uiManager.HideResultPanel(); // ゲーム開始時はリザルト画面を非表示にする
-        player.Init(new List<int>() { 2, 3, 17, 15, 16, 17, 18, 19, 20 }); // プレイヤーのデッキを初期化する
-        enemy.Init(new List<int>() { 2, 3, 17, 10, 4, 5, 9, 5, 8, 6, 4, 5, 4 }); // 敵のデッキを初期化する
+        player.Init(new List<int>() { 8, 3, 17, 0, 16, 17, 18, 19, 20 }); // プレイヤーのデッキを初期化する
+        enemy.Init(new List<int>() { 2, 3, 17, 0, 4, 5, 9, 5, 8, 6, 4, 5, 4 }); // 敵のデッキを初期化する
         uiManager.ShowHeroHP(player.heroHp, enemy.heroHp); // HeroのHP表示を変更するメソッドを呼び出す
         uiManager.ShowManaCost(player.manaCost, enemy.manaCost); // マナコストの表示を変更するメソッドを呼び出す
         turnCount = 1;
@@ -464,54 +464,34 @@ public class GameManager : MonoBehaviour
     public int CalcNetCost(CardController card)
     {
         int netCost = card.model.cost;
-        int fieldSymbols = 0;
+        int totalReduction = 0;
 
-        /*
-        if (card.model.isPlayerCard)
-        {
-            // フィールドの総シンボルを計算(パターン1：symbolsを合算)
-            CardController[] playerFieldCardList = playerFieldTransform.GetComponentsInChildren<CardController>();
-
-            foreach (CardController cards in playerFieldCardList)
-            {
-                if (cards == card) continue; // 召喚中のカード自身のシンボルはカウントしない
-                fieldSymbols += cards.model.symbols;
-            }
-        }
-        else
-        {
-            CardController[] enemyFieldCardList = enemyFieldTransform.GetComponentsInChildren<CardController>();
-
-            foreach (CardController cards in enemyFieldCardList)
-            {
-                if (cards == card) continue; // 召喚中のカード自身のシンボルはカウントしない
-                fieldSymbols += cards.model.symbols;
-            }
-        }
-        */
-
-        // 軽減シンボルと同じ色のフィールドのシンボルの総数を計算
         CardController[] fieldCards = GetFriendFieldCards(card.model.isPlayerCard);
 
-        foreach (CardController fieldCard in fieldCards)
+        // 軽減シンボルの色ごとに、フィールドの同色シンボルの総数を上限まで軽減し合算する
+        foreach (SymbolEntry reduction in card.model.reductionSymbols)
         {
-            if (fieldCard == card) continue; // 召喚中のカード自身のシンボルはカウントしない
-            if (card.model.reductionSymbolColor == fieldCard.model.symbolColor)
+            int fieldSymbolsOfColor = 0;
+
+            foreach (CardController fieldCard in fieldCards)
             {
-                fieldSymbols += fieldCard.model.symbols;
+                if (fieldCard == card) continue; // 召喚中のカード自身のシンボルはカウントしない
+                fieldSymbolsOfColor += fieldCard.model.GetSymbolCount(reduction.color);
             }
+
+            if (fieldSymbolsOfColor > reduction.count)
+            {
+                fieldSymbolsOfColor = reduction.count; // 色ごとの軽減上限でキャップ
+            }
+
+            totalReduction += fieldSymbolsOfColor;
         }
 
-        Debug.Log("フィールドのシンボルの数:" + fieldSymbols);
-        
-        if (fieldSymbols > card.model.reductionSymbols)
-        {
-            fieldSymbols = card.model.reductionSymbols;
-        }
+        Debug.Log("フィールドのシンボルの数:" + totalReduction);
 
-        netCost -= fieldSymbols;
+        netCost -= totalReduction;
 
-        Debug.Log(card.model.cost + "コスト" + fieldSymbols + "軽減" + netCost + "コスト");
+        Debug.Log(card.model.cost + "コスト" + totalReduction + "軽減" + netCost + "コスト");
 
         return netCost;
     }
@@ -939,33 +919,34 @@ public class GameManager : MonoBehaviour
     {
         CoreController[] playerLifeCoreList = playerLifeTransform.GetComponentsInChildren<CoreController>();
         CoreController[] enemyLifeCoreList = enemyLifeTransform.GetComponentsInChildren<CoreController>();
+        int totalSymbols = attacker.model.GetTotalSymbols(); // シンボルの合計数(色を問わない)
         // attackerがプレイヤーのカードだった場合
         if (attacker.model.isPlayerCard)
         {
-            enemy.heroHp -= attacker.model.symbols; // 敵のHeroのライフをシンボル分下げる
+            enemy.heroHp -= totalSymbols; // 敵のHeroのライフをシンボル分下げる
             // enemy.IncreaseManaCost(); // ライフで受けたコアをリザーブに移動
             enemy.manaCost++; // リザーブを1増やす
             enemy.defaultManaCost++; // コアの総数も1増やす
-            // enemyLifeCoreList[enemyLifeCoreList.Length - 1].StartCoroutine(enemyLifeCoreList[enemyLifeCoreList.Length - 1].movement.MoveTo(enemyReserveTransform)); // コアをリザーブへ移動            
-            for (int i = 0; i < attacker.model.symbols; i++)
+            // enemyLifeCoreList[enemyLifeCoreList.Length - 1].StartCoroutine(enemyLifeCoreList[enemyLifeCoreList.Length - 1].movement.MoveTo(enemyReserveTransform)); // コアをリザーブへ移動
+            for (int i = 0; i < totalSymbols; i++)
             {
-                Destroy(enemyLifeCoreList[enemyLifeCoreList.Length - 1 - i].gameObject); // 破壊    
+                Destroy(enemyLifeCoreList[enemyLifeCoreList.Length - 1 - i].gameObject); // 破壊
             }
-            CreateCore(enemyReserveTransform, attacker.model.symbols); // 生成
+            CreateCore(enemyReserveTransform, totalSymbols); // 生成
         }
         // attackerが敵のカードだった場合
         else
         {
-            player.heroHp -= attacker.model.symbols; // プレイヤーのライフをシンボル分下げる
+            player.heroHp -= totalSymbols; // プレイヤーのライフをシンボル分下げる
             // player.IncreaseManaCost(); // ライフで受けたコアをリザーブに移動
             player.manaCost++; // リザーブを1増やす
             player.defaultManaCost++; // コアの総数も1増やす
             // playerLifeCoreList[playerLifeCoreList.Length - 1].StartCoroutine(playerLifeCoreList[playerLifeCoreList.Length - 1].movement.MoveTo(playerReserveTransform)); // コアをリザーブへ移動
-            for (int i = 0; i < attacker.model.symbols; i++)
+            for (int i = 0; i < totalSymbols; i++)
             {
                 Destroy(playerLifeCoreList[playerLifeCoreList.Length - 1 - i].gameObject); // 破壊
             }
-            CreateCore(playerReserveTransform, attacker.model.symbols); // 生成
+            CreateCore(playerReserveTransform, totalSymbols); // 生成
         }
         // attacker.SetCanAttack(false); // 一度攻撃したらattackerを攻撃不可にする
         attacker.ChangeIsRefreshed(false);
