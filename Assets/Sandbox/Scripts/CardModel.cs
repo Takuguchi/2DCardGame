@@ -14,7 +14,9 @@ public class CardModel
     public int currentLv; // 現在のレベル
     public int currentBp; // 現在のBP
     public int reductionSymbols; // 軽減シンボルの数
+    public SYMBOLCOLOR reductionSymbolColor; // 軽減シンボルの色
     public int symbols; // シンボルの数
+    public SYMBOLCOLOR symbolColor; // シンボルの色
     public Sprite icon; // カードの絵柄
     public CARDTYPE cardType;
     public ABILITY ability; // カードのアビリティ
@@ -49,7 +51,9 @@ public class CardModel
         cost = cardEntity.cost;
         // coreNum = cardEntity.coreNum;
         reductionSymbols = cardEntity.reductionSymbols;
+        reductionSymbolColor = cardEntity.reductionSymbolColor;
         symbols = cardEntity.symbols;
+        symbolColor = cardEntity.symbolColor;
         icon = cardEntity.icon;
         cardType = cardEntity.cardType;
         ability = cardEntity.ability;

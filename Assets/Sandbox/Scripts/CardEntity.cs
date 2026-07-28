@@ -15,7 +15,9 @@ public class CardEntity : ScriptableObject
     public int cost;    // カードのコスト
     // public int coreNum; // カード上のコアの数
     public int reductionSymbols; // 軽減シンボルの数
+    public SYMBOLCOLOR reductionSymbolColor; // 軽減シンボルの色
     public int symbols; // シンボルの数
+    public SYMBOLCOLOR symbolColor; // シンボルの色
     public Sprite icon; // カードの絵柄
     public CARDTYPE cardType;
     public ABILITY ability; // カードのアビリティ
@@ -57,4 +59,15 @@ public enum MAGIC
     REFRESH_FRIEND_CARDS,
     DRAW,
     DESTROY_ALL_CARDS
+}
+
+public enum SYMBOLCOLOR
+{
+    NONE,
+    RED,    // 赤
+    PURPLE, // 紫
+    GREEN,  // 緑
+    WHITE,  // 白
+    YELLOW, // 黄
+    BLUE    // 青
 }

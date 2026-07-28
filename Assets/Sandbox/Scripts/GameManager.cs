@@ -70,8 +70,8 @@ public class GameManager : MonoBehaviour
     void StartGame()
     {
         uiManager.HideResultPanel(); // ゲーム開始時はリザルト画面を非表示にする
-        player.Init(new List<int>() { 12, 13, 14, 15, 16, 17, 18, 19, 20 }); // プレイヤーのデッキを初期化する
-        enemy.Init(new List<int>() { 10, 4, 5, 9, 5, 8, 6, 4, 5, 4 }); // 敵のデッキを初期化する
+        player.Init(new List<int>() { 2, 3, 17, 15, 16, 17, 18, 19, 20 }); // プレイヤーのデッキを初期化する
+        enemy.Init(new List<int>() { 2, 3, 17, 10, 4, 5, 9, 5, 8, 6, 4, 5, 4 }); // 敵のデッキを初期化する
         uiManager.ShowHeroHP(player.heroHp, enemy.heroHp); // HeroのHP表示を変更するメソッドを呼び出す
         uiManager.ShowManaCost(player.manaCost, enemy.manaCost); // マナコストの表示を変更するメソッドを呼び出す
         turnCount = 1;
@@ -466,6 +466,7 @@ public class GameManager : MonoBehaviour
         int netCost = card.model.cost;
         int fieldSymbols = 0;
 
+        /*
         if (card.model.isPlayerCard)
         {
             // フィールドの総シンボルを計算(パターン1：symbolsを合算)
@@ -487,6 +488,20 @@ public class GameManager : MonoBehaviour
                 fieldSymbols += cards.model.symbols;
             }
         }
+        */
+
+        // 軽減シンボルと同じ色のフィールドのシンボルの総数を計算
+        CardController[] fieldCards = GetFriendFieldCards(card.model.isPlayerCard);
+
+        foreach (CardController fieldCard in fieldCards)
+        {
+            if (fieldCard == card) continue; // 召喚中のカード自身のシンボルはカウントしない
+            if (card.model.reductionSymbolColor == fieldCard.model.symbolColor)
+            {
+                fieldSymbols += fieldCard.model.symbols;
+            }
+        }
+
         Debug.Log("フィールドのシンボルの数:" + fieldSymbols);
         
         if (fieldSymbols > card.model.reductionSymbols)

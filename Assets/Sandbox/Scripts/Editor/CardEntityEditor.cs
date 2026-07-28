@@ -14,6 +14,10 @@ public class CardEntityEditor : Editor // Editorを継承してInspectorの見�
     SerializedProperty coreLv3Prop; // coreLv3フィールドへの参照を保持しておく変数
     SerializedProperty bpLv3Prop;   // bpLv3フィールドへの参照を保持しておく変数
     SerializedProperty gainedBpProp;
+    SerializedProperty symbolsProp;             // symbolsフィールドへの参照を保持しておく変数
+    SerializedProperty symbolColorProp;         // symbolColorフィールドへの参照を保持しておく変数
+    SerializedProperty reductionSymbolsProp;      // reductionSymbolsフィールドへの参照を保持しておく変数
+    SerializedProperty reductionSymbolColorProp;  // reductionSymbolColorフィールドへの参照を保持しておく変数
 
     void OnEnable() // このEditorがInspectorに表示されるたびに呼ばれる初期化処理
     {
@@ -26,6 +30,29 @@ public class CardEntityEditor : Editor // Editorを継承してInspectorの見�
         coreLv3Prop = serializedObject.FindProperty("coreLv3"); // 対象アセットからcoreLv3プロパティを取得
         bpLv3Prop = serializedObject.FindProperty("bpLv3");     // 対象アセットからbpLv3プロパティを取得
         gainedBpProp = serializedObject.FindProperty("gainedBp");
+        symbolsProp = serializedObject.FindProperty("symbols");         // 対象アセットからsymbolsプロパティを取得
+        symbolColorProp = serializedObject.FindProperty("symbolColor"); // 対象アセットからsymbolColorプロパティを取得
+        reductionSymbolsProp = serializedObject.FindProperty("reductionSymbols");         // 対象アセットからreductionSymbolsプロパティを取得
+        reductionSymbolColorProp = serializedObject.FindProperty("reductionSymbolColor"); // 対象アセットからreductionSymbolColorプロパティを取得
+    }
+
+    // ラベル1つの下に「色(enum)→数(int)」の順で2つのプロパティを1行に横並びで描画する
+    void DrawColorAndIntRow(string label, SerializedProperty colorProp, SerializedProperty intProp)
+    {
+        Rect rowRect = EditorGUILayout.GetControlRect(); // 1行分の描画領域を確保
+        float labelWidth = EditorGUIUtility.labelWidth; // 現在のラベル幅を取得
+
+        Rect labelRect = new Rect(rowRect.x, rowRect.y, labelWidth, rowRect.height); // 行ラベル用の領域
+        EditorGUI.LabelField(labelRect, label); // 行ラベルを表示
+
+        float fieldsWidth = rowRect.width - labelWidth; // ラベルを除いた残り幅
+        float spacing = 4f; // 2つの欄の間隔
+        float colorWidth = (fieldsWidth - spacing) * 0.5f; // 色欄の幅
+        Rect colorRect = new Rect(rowRect.x + labelWidth, rowRect.y, colorWidth, rowRect.height); // 色欄の領域（左側）
+        Rect intRect = new Rect(colorRect.xMax + spacing, rowRect.y, fieldsWidth - colorWidth - spacing, rowRect.height); // 数欄の領域（右側）
+
+        EditorGUI.PropertyField(colorRect, colorProp, GUIContent.none); // 色の選択欄を表示
+        EditorGUI.PropertyField(intRect, intProp, GUIContent.none); // 数の入力欄を表示
     }
 
     public override void OnInspectorGUI() // Inspectorを描画する本体（デフォルトのDrawDefaultInspectorの代わり）
@@ -38,14 +65,22 @@ public class CardEntityEditor : Editor // Editorを継承してInspectorの見�
         {
             enterChildren = false; // 2回目以降は同じ階層の兄弟プロパティだけを辿る
 
-            // magicDrawCount/magicBp/レベル別ステータスは他のプロパティの直後に条件付きで表示するので、通常の並びではスキップ
+            // magicDrawCount/magicBp/レベル別ステータス/シンボル関連フィールドは他のプロパティの直後に条件付きで表示するので、通常の並びではスキップ
             if (prop.name == "m_Script" || prop.name == "magicDrawCount" || prop.name == "magicBp"
                 || prop.name == "coreLv1" || prop.name == "bpLv1"
                 || prop.name == "coreLv2" || prop.name == "bpLv2"
                 || prop.name == "coreLv3" || prop.name == "bpLv3"
-                || prop.name == "gainedBp") continue; // スクリプト参照欄と手動描画するフィールドは通常描画から除外
+                || prop.name == "gainedBp"
+                || prop.name == "reductionSymbols" || prop.name == "reductionSymbolColor"
+                || prop.name == "symbols" || prop.name == "symbolColor") continue; // スクリプト参照欄と手動描画するフィールドは通常描画から除外
 
             EditorGUILayout.PropertyField(prop, true); // 現在のプロパティを通常通りInspectorに描画
+
+            if (prop.name == "cost") // 今描画したのがcostの場合、直後にReductionSymbols行とSymbols行を1行ずつ横並びで表示
+            {
+                DrawColorAndIntRow("Reduction Symbols", reductionSymbolColorProp, reductionSymbolsProp);
+                DrawColorAndIntRow("Symbols", symbolColorProp, symbolsProp);
+            }
 
             if (prop.name == "magic") // 今描画したのがmagicの場合のみ、値に応じた関連フィールドを続けて表示
             {

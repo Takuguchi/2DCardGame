@@ -13,15 +13,18 @@ MonoBehaviour:
   m_Name: Card6
   m_EditorClassIdentifier: 
   name: "\u7345\u6A5F\u9F8D\u795E\u30B9\u30C8\u30E9\u30A4\u30AF\u30F4\u30EB\u30E0\u30FB\u30EC\u30AA"
-  hp: 3
-  at: 1
   cost: 8
-  coreNum: 0
   reductionSymbols: 4
+  reductionSymbolColor: 4
   symbols: 1
+  symbolColor: 4
   icon: {fileID: 21300000, guid: f3fa0f88af7904440ad9f3382853d293, type: 3}
   cardType: 1
   ability: 0
+  gainedBp: 0
+  magic: 0
+  magicDrawCount: 2
+  magicBp: 0
   coreLv1: 1
   bpLv1: 6000
   coreLv2: 2

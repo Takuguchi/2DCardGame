@@ -15,7 +15,9 @@ MonoBehaviour:
   name: "\u30AC\u30C9\u30D5\u30A1\u30F3\u30C8"
   cost: 2
   reductionSymbols: 2
+  reductionSymbolColor: 4
   symbols: 1
+  symbolColor: 4
   icon: {fileID: 21300000, guid: 2915067725fcb6443809d2216fcea508, type: 3}
   cardType: 1
   ability: 4
