@@ -72,6 +72,17 @@ public class CardController : MonoBehaviour
         */
         if (gameManager.turnCount != 1) SetCanAttack(true); // 1ターン目はアタックできない
     }
+
+    public void FixBp()
+    {
+        CardController braveCard = braveTransform.GetComponentInChildren<CardController>();
+        model.FixBp();
+        if (braveCard != null)
+        {
+            model.currentBp += braveCard.model.bpBraved;
+            Debug.Log("model.currentBp:" + model.currentBp);
+        }
+    }
     
     // Aliveがfalseになっていたら破壊するメソッド
     public void CheckAlive()
@@ -104,6 +115,8 @@ public class CardController : MonoBehaviour
     {
         Debug.Log($"{model.name}を{target.model.name}に合体(ブレイヴ)!");
         movement.BraveTo(target.braveTransform);
+
+        target.FixBp(); // ブレイヴのBPを加算
     }
 
     // マジックカードが使用可能かどうか判定するメソッド
@@ -146,6 +159,7 @@ public class CardController : MonoBehaviour
                 // 特定の敵を攻撃する
                 if (target == null) return;
                 if (target.model.isPlayerCard == model.isPlayerCard) return;
+                target.FixBp();
                 Attack(target);
                 target.CheckAlive();
                 break;
@@ -169,6 +183,7 @@ public class CardController : MonoBehaviour
                 if (target != null && !target.model.isPlayerCard && !target.model.isFieldCard) return; // 相手の手札のカードにも同様
                 foreach (CardController opponentFieldCard in opponentFieldCards)
                 {
+                    opponentFieldCard.FixBp();
                     Attack(opponentFieldCard);
                     opponentFieldCard.CheckAlive();
                 }

@@ -846,7 +846,8 @@ public class GameManager : MonoBehaviour
                 fieldCards[i].model.coreLv1 = 1;
                 fieldCards[i].model.currentBp = fieldCards[i].model.bpLv1;
             }
-            fieldCards[i].model.FixBp();
+            // fieldCards[i].model.FixBp();
+            fieldCards[i].FixBp();
             Debug.Log(fieldCards[i].model.name + " Lv:" + fieldCards[i].model.currentLv + " BP:" + fieldCards[i].model.currentBp);
         }
         
@@ -881,8 +882,10 @@ public class GameManager : MonoBehaviour
         Debug.Log("CardsBattle");
         // Debug.Log("attacker HP:" + attacker.model.hp);
         // Debug.Log("defender HP:" + defender.model.hp);
-        attacker.model.FixBp();
-        defender.model.FixBp();
+        // attacker.model.FixBp();
+        // defender.model.FixBp();
+        attacker.FixBp();
+        defender.FixBp();
         Debug.Log("attacker:" + attacker.model.name + " Lv" + attacker.model.currentLv + " BP:" + attacker.model.currentBp);
         Debug.Log("defender:" + defender.model.name + " Lv" + defender.model.currentLv + " BP:" + defender.model.currentBp);
 
