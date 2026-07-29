@@ -12,6 +12,7 @@ public class CardController : MonoBehaviour
     public CardMovement movement; // カードの移動（movement）に関することを操作
     // public Transform iconTransform => view.iconTransform; // コアの移動先として使うIconのTransform
     public Transform iconTransform;
+    public Transform braveTransform;
     GameManager gameManager;
 
     void Awake()
@@ -85,6 +86,24 @@ public class CardController : MonoBehaviour
             Destroy(this.gameObject);    // カードを破壊する
             gameManager.OnDestroyed(model.isPlayerCard, cores); // 破壊されたカード上のコアをリザーブに移動
         }
+    }
+
+    // 合体(ブレイヴ)可能かどうか判定するメソッド
+    public bool CanBrave(CardController target)
+    {
+        if (target.model.cardType != CARDTYPE.SPIRIT) return false; // スピリットでなければ処理終了
+        if (target.model.cost < model.braveConditionCost)
+        {
+            Debug.Log("合体(ブレイヴ)できません");
+            return false; // 合体(ブレイヴ)条件：コスト〇以上 を満たしていなければ処理終了
+        }
+        return true;
+    }
+
+    public void BraveTo(CardController target)
+    {
+        Debug.Log($"{model.name}を{target.model.name}に合体(ブレイヴ)!");
+        movement.BraveTo(target.braveTransform);
     }
 
     // マジックカードが使用可能かどうか判定するメソッド

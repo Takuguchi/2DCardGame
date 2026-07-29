@@ -45,6 +45,14 @@ public class CardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
         }
         else if (card.model.isPlayerCard
                  && GameManager.instance.isPlayerTurn
+                 && GameManager.instance.step == GameManager.STEP.MAIN
+                 && card.model.isFieldCard
+                 && card.model.cardType == CARDTYPE.BRAVE)
+        {
+            isDraggable = true; // 合体(ブレイヴ)させるためならドラッグ可能
+        }
+        else if (card.model.isPlayerCard
+                 && GameManager.instance.isPlayerTurn
                  && GameManager.instance.step == GameManager.STEP.ATTACK
                  && card.model.isFieldCard
                  && card.model.isRefreshed
@@ -173,6 +181,16 @@ public class CardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
         reserveCoreList = GameManager.instance.playerReserveTransform.GetComponentsInChildren<CoreController>();
         Debug.Log($".reserveCoreList:{reserveCoreList.Length}個");
         GameManager.instance.ArrangeCoresAndFixLv(GameManager.instance.GetFriendFieldCards(card.model.isPlayerCard));        
+    }
+
+    // 合体(ブレイヴ)するメソッド
+    public void BraveTo(Transform target)
+    {
+        // 一度親をCanvasに変更する
+        transform.SetParent(defaultParent.parent, false);
+        transform.position = target.position;
+        defaultParent = target;
+        transform.SetParent(defaultParent);
     }
 
     public IEnumerator MoveToTarget(Transform target)

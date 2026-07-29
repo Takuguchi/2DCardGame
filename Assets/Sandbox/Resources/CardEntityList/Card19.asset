@@ -37,3 +37,4 @@ MonoBehaviour:
   coreLv3: 0
   bpLv3: 0
   bpBraved: 5000
+  braveConditionCost: 5

@@ -14,6 +14,7 @@ public class CardEntityEditor : Editor // Editorを継承してInspectorの見�
     SerializedProperty coreLv3Prop; // coreLv3フィールドへの参照を保持しておく変数
     SerializedProperty bpLv3Prop;   // bpLv3フィールドへの参照を保持しておく変数
     SerializedProperty bpBravedProp;   // bpBravedフィールドへの参照を保持しておく変数
+    SerializedProperty braveConditionCostProp;
     SerializedProperty gainedBpProp;
     SerializedProperty symbolsProp;          // symbolsフィールド(リスト)への参照を保持しておく変数
     SerializedProperty reductionSymbolsProp; // reductionSymbolsフィールド(リスト)への参照を保持しておく変数
@@ -29,6 +30,7 @@ public class CardEntityEditor : Editor // Editorを継承してInspectorの見�
         coreLv3Prop = serializedObject.FindProperty("coreLv3"); // 対象アセットからcoreLv3プロパティを取得
         bpLv3Prop = serializedObject.FindProperty("bpLv3");     // 対象アセットからbpLv3プロパティを取得
         bpBravedProp = serializedObject.FindProperty("bpBraved");     // 対象アセットからbpBravedプロパティを取得
+        braveConditionCostProp = serializedObject.FindProperty("braveConditionCost");
         gainedBpProp = serializedObject.FindProperty("gainedBp");
         symbolsProp = serializedObject.FindProperty("symbols");                   // 対象アセットからsymbolsプロパティを取得
         reductionSymbolsProp = serializedObject.FindProperty("reductionSymbols"); // 対象アセットからreductionSymbolsプロパティを取得
@@ -105,6 +107,7 @@ public class CardEntityEditor : Editor // Editorを継承してInspectorの見�
                 || prop.name == "coreLv2" || prop.name == "bpLv2"
                 || prop.name == "coreLv3" || prop.name == "bpLv3"
                 || prop.name == "bpBraved"
+                || prop.name == "braveConditionCost"
                 || prop.name == "gainedBp"
                 || prop.name == "reductionSymbols" || prop.name == "symbols") continue; // スクリプト参照欄と手動描画するフィールドは通常描画から除外
 
@@ -151,6 +154,7 @@ public class CardEntityEditor : Editor // Editorを継承してInspectorの見�
                 EditorGUI.indentLevel++; // 関連フィールドだとわかるように一段インデントする
                 EditorGUILayout.PropertyField(bpLv1Prop, new GUIContent("Lv1"));   // レベル1のBPの入力欄を表示
                 EditorGUILayout.PropertyField(bpBravedProp, new GUIContent("合体+"));   // 合体中のBPの入力欄を表示
+                EditorGUILayout.PropertyField(braveConditionCostProp, new GUIContent("合体条件：コスト"));   // 合体条件のコスト入力欄を表示
                 EditorGUI.indentLevel--; // インデントを元に戻す
             }
 
