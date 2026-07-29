@@ -52,8 +52,8 @@ public class AttackedCard : MonoBehaviour, IDropHandler, IPointerClickHandler
             return; // 何も処理しないで終わる
         }
 
-        // attackerが攻撃可能だった場合
-        if (attacker.model.canAttack)
+        // attackerが攻撃可能・かつアタックステップ中だった場合
+        if (attacker.model.canAttack && GameManager.instance.step == GameManager.STEP.ATTACK)
         {
             // attackerとdefenderを戦わせる
             GameManager.instance.CardsBattle(attacker, defender);

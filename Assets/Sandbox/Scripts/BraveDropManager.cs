@@ -20,6 +20,10 @@ public class BraveDropManager : MonoBehaviour, IDropHandler
         {
             return; // ドラッグ不可なら処理を終了する
         }
+        if (braveCard.model.isPlayerCard != target.model.isPlayerCard)
+        {
+            return; // 相手のスピリットに合体(ブレイヴ)はできない
+        }
         if (braveCard.CanBrave(target))
         {
             braveCard.BraveTo(target);
