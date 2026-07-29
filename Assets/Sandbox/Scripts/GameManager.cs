@@ -929,6 +929,7 @@ public class GameManager : MonoBehaviour
         CoreController[] playerLifeCoreList = playerLifeTransform.GetComponentsInChildren<CoreController>();
         CoreController[] enemyLifeCoreList = enemyLifeTransform.GetComponentsInChildren<CoreController>();
         int totalSymbols = attacker.model.GetTotalSymbols(); // シンボルの合計数(色を問わない)
+        totalSymbols += attacker.BraveSymbols();
         // attackerがプレイヤーのカードだった場合
         if (attacker.model.isPlayerCard)
         {

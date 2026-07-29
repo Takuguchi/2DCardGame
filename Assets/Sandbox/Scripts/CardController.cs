@@ -83,6 +83,18 @@ public class CardController : MonoBehaviour
             Debug.Log("model.currentBp:" + model.currentBp);
         }
     }
+
+    // 合体(ブレイヴ)中のブレイヴのシンボルの数を返すメソッド
+    public int BraveSymbols()
+    {
+        int count = 0;
+        CardController braveCard = braveTransform.GetComponentInChildren<CardController>();
+        if (braveCard != null)
+        {
+            count += braveCard.model.GetTotalSymbols();
+        }
+        return count;
+    }
     
     // Aliveがfalseになっていたら破壊するメソッド
     public void CheckAlive()
