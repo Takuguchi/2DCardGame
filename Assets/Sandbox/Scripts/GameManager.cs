@@ -72,8 +72,8 @@ public class GameManager : MonoBehaviour
     void StartGame()
     {
         uiManager.HideResultPanel(); // ゲーム開始時はリザルト画面を非表示にする
-        player.Init(new List<int>() { 10, 3, 16, 0, 18, 19, 16, 19, 20 }); // プレイヤーのデッキを初期化する
-        enemy.Init(new List<int>() { 10, 3, 17, 0, 4, 5, 9, 5, 8, 6, 4, 5, 4 }); // 敵のデッキを初期化する
+        player.Init(new List<int>() { 10, 1, 16, 0, 18, 19, 16, 19, 20 }); // プレイヤーのデッキを初期化する
+        enemy.Init(new List<int>() { 1, 3, 17, 0, 4, 5, 9, 5, 8, 6, 4, 5, 4 }); // 敵のデッキを初期化する
         uiManager.ShowHeroHP(player.heroHp, enemy.heroHp); // HeroのHP表示を変更するメソッドを呼び出す
         uiManager.ShowManaCost(player.manaCost, enemy.manaCost); // マナコストの表示を変更するメソッドを呼び出す
         turnCount = 1;
@@ -965,6 +965,7 @@ public class GameManager : MonoBehaviour
             }
             CreateCore(playerReserveTransform, totalSymbols); // 生成
         }
+        attacker.WhenReduceOpponentLife();
         // attacker.SetCanAttack(false); // 一度攻撃したらattackerを攻撃不可にする
         attacker.ChangeIsRefreshed(false);
         uiManager.ShowHeroHP(player.heroHp, enemy.heroHp); // HeroのHP表示を変更

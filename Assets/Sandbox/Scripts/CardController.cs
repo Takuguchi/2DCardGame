@@ -211,4 +211,13 @@ public class CardController : MonoBehaviour
         gameManager.ReduceManaCost(this); // コストの支払い
         Destroy(this.gameObject); //スペルカード使用後は削除(本当はトラッシュに移動してから非表示にしたい)
     }
+
+    public void WhenReduceOpponentLife()
+    {
+        if (model.name == "ヴェロキ・ハルパー" && model.currentLv >= 2)
+        {
+            if (model.isPlayerCard) gameManager.GiveCardToHand(gameManager.player.deck, gameManager.playerHandTransform);
+            else gameManager.GiveCardToHand(gameManager.enemy.deck, gameManager.enemyHandTransform);
+        }
+    }
 }
