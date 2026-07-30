@@ -25,9 +25,9 @@ public class CardController : MonoBehaviour
 
 
     // カードを生成したときに呼ばれるメソッド
-    public void Init(int cardID, bool isPlayer)
+    public void Init(CardEntity cardEntity, bool isPlayer)
     {
-        model = new CardModel(cardID, isPlayer); // カードのデータを生成
+        model = new CardModel(cardEntity, isPlayer); // カードのデータを生成
         view.Show(model); // CardViewクラス内の、データをカードの見た目に反映するShow()メソッドにカードのデータを渡す
     }
 

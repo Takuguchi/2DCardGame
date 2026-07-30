@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class GamePlayerManager : MonoBehaviour
 {
-    public List<int> deck = new List<int>(); // プレイヤーのデッキのカードIDを格納するリスト
+    public List<CardEntity> deck = new List<CardEntity>(); // プレイヤーのデッキのカードデータを格納するリスト
 
     public int heroHp; // HeroのHP
     public int manaCost; // マナコスト
     public int defaultManaCost; // マナコストの初期値(ターンごとに増加)
 
-    public void Init(List<int> cardDeck)
+    public void Init(List<CardEntity> cardDeck)
     {
         this.deck = cardDeck; // デッキを初期化する
         heroHp = 5;

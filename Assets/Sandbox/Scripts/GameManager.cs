@@ -25,6 +25,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] CardController cardPrefab; // カードのPrefabをCardController型として取得
     [SerializeField] CoreController corePrefab; // コアのPrefabをCoreController型として取得
 
+    [SerializeField] List<CardEntity> playerDeckList; // プレイヤーのデッキ構成（Inspectorでカードをドラッグ＆ドロップして編集する）
+    [SerializeField] List<CardEntity> enemyDeckList;  // 敵のデッキ構成（Inspectorでカードをドラッグ＆ドロップして編集する）
+
     public bool isPlayerTurn; // プレイヤーのターンかどうかを判定する変数
     public Transform playerHero; // プレイヤーのHeroのTransform
     public Transform enemyHero; // 敵のHeroのTransform
@@ -72,8 +75,8 @@ public class GameManager : MonoBehaviour
     void StartGame()
     {
         uiManager.HideResultPanel(); // ゲーム開始時はリザルト画面を非表示にする
-        player.Init(new List<int>() { 10, 1, 16, 0, 18, 19, 16, 19, 20 }); // プレイヤーのデッキを初期化する
-        enemy.Init(new List<int>() { 1, 3, 17, 0, 4, 5, 9, 5, 8, 6, 4, 5, 4 }); // 敵のデッキを初期化する
+        player.Init(new List<CardEntity>(playerDeckList)); // プレイヤーのデッキを初期化する（Inspectorで設定したリストを複製して使う）
+        enemy.Init(new List<CardEntity>(enemyDeckList)); // 敵のデッキを初期化する（Inspectorで設定したリストを複製して使う）
         uiManager.ShowHeroHP(player.heroHp, enemy.heroHp); // HeroのHP表示を変更するメソッドを呼び出す
         uiManager.ShowManaCost(player.manaCost, enemy.manaCost); // マナコストの表示を変更するメソッドを呼び出す
         turnCount = 1;
@@ -128,11 +131,7 @@ public class GameManager : MonoBehaviour
             Destroy(core.gameObject);
         }
 
-        // デッキを生成
-        player.deck = new List<int>() { 0, 1, 2, 3, 3, 1 }; // プレイヤーのデッキのカードIDを格納するリスト
-        enemy.deck  = new List<int>() { 4, 5, 6, 6, 4 };  // 敵のデッキのカードIDを格納するリスト
-
-        StartGame(); // ゲーム開始時に呼ばれるメソッドを呼び出す
+        StartGame(); // ゲーム開始時に呼ばれるメソッドを呼び出す（デッキはStartGame内でplayerDeckList/enemyDeckListから再生成される）
     }
 
     // ゲーム開始時に手札を初期化するメソッド
@@ -147,35 +146,35 @@ public class GameManager : MonoBehaviour
     }
 
     // デッキからカードを手札に配るメソッド
-    public void GiveCardToHand(List<int> deck, Transform hand)
+    public void GiveCardToHand(List<CardEntity> deck, Transform hand)
     {
         if (deck.Count == 0) // デッキにカードがない場合
         {
             return; // 何も処理しないで終わる
         }
-        int cardID = deck[0]; // デッキの一番上のカードIDを取得
-        deck.RemoveAt(0); // デッキの一番上のカードIDをデッキから削除
-        CreateCard(cardID, hand); // カードを生成するメソッドにカードIDと手札のTransformを渡す
+        CardEntity cardEntity = deck[0]; // デッキの一番上のカードデータを取得
+        deck.RemoveAt(0); // デッキの一番上のカードデータをデッキから削除
+        CreateCard(cardEntity, hand); // カードを生成するメソッドにカードデータと手札のTransformを渡す
     }
 
     // カードを生成するメソッド
-    void CreateCard(int cardID, Transform hand)
+    void CreateCard(CardEntity cardEntity, Transform hand)
     {
         // カードのPrefabをCardController型としてインスタンス(生成)・親要素に任意のTransformを指定
         CardController card = Instantiate(cardPrefab, hand, false);
-        Transform deck;
+        Transform deckTransform;
         if (hand == playerHandTransform)
         {
-            card.Init(cardID, true);    // CardControllerクラスのInit()メソッドを呼び出す(isPlayerはtrueで渡す)
-            deck = playerDeckTransform;
+            card.Init(cardEntity, true);    // CardControllerクラスのInit()メソッドを呼び出す(isPlayerはtrueで渡す)
+            deckTransform = playerDeckTransform;
         }
         else
         {
-            card.Init(cardID, false);    // CardControllerクラスのInit()メソッドを呼び出す(isPlayerはfalseで渡す)
-            deck = enemyDeckTransform;
+            card.Init(cardEntity, false);    // CardControllerクラスのInit()メソッドを呼び出す(isPlayerはfalseで渡す)
+            deckTransform = enemyDeckTransform;
         }
         // GameManagerではなくcard自身にコルーチンを紐付ける（TurnCalc()内のStopAllCoroutines()で移動が中断されないようにするため）
-        card.StartCoroutine(card.movement.MoveFromDeck(deck.position));
+        card.StartCoroutine(card.movement.MoveFromDeck(deckTransform.position));
     }
 
     // ゲーム開始時にリザーブとライフのコアを初期化するメソッド

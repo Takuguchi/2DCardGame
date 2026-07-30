@@ -785,7 +785,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0992a23a58715694e90975c904c086f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deck: 
+  deck: []
   heroHp: 0
   manaCost: 0
   defaultManaCost: 4
@@ -1900,7 +1900,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0992a23a58715694e90975c904c086f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deck: 
+  deck: []
   heroHp: 0
   manaCost: 0
   defaultManaCost: 4
@@ -2455,6 +2455,24 @@ MonoBehaviour:
   enemyDeckTransform: {fileID: 1863149330}
   cardPrefab: {fileID: 68245383862483898, guid: 3d6235cefc847a740bafdd14a99c4cc6, type: 3}
   corePrefab: {fileID: -1587533959833757984, guid: c7816bd785ad4b543ad71097898c3e16, type: 3}
+  playerDeckList:
+  - {fileID: 11400000, guid: 18bcb0d76e8e42f44b53def940a0f7be, type: 2}
+  - {fileID: 11400000, guid: 4872641ccb1487945b687ed7fae9c9dc, type: 2}
+  - {fileID: 11400000, guid: a96bdd8c3188b0b4dafc7a94d8c77aab, type: 2}
+  - {fileID: 11400000, guid: 4e26465419cf3714db2242adc4e7e1fe, type: 2}
+  - {fileID: 11400000, guid: aee0fb967f70cac4a8a90c73619d83ee, type: 2}
+  - {fileID: 11400000, guid: 5ff8490dfc91a64428f005978bd2813d, type: 2}
+  - {fileID: 11400000, guid: 52196c970617a9e409c12177554bc965, type: 2}
+  - {fileID: 11400000, guid: 18bcb0d76e8e42f44b53def940a0f7be, type: 2}
+  enemyDeckList:
+  - {fileID: 11400000, guid: ba62e0695acc00443a1f9f63c67a7044, type: 2}
+  - {fileID: 11400000, guid: 995f7e24a9afe304d8b240f7451454df, type: 2}
+  - {fileID: 11400000, guid: 8533f0303f1a2dd4a9cdad73254d88ac, type: 2}
+  - {fileID: 11400000, guid: 4c333988376dd7e43ae41b011ca46e16, type: 2}
+  - {fileID: 11400000, guid: 18bcb0d76e8e42f44b53def940a0f7be, type: 2}
+  - {fileID: 11400000, guid: 41256d84ec60419429d29528e330821c, type: 2}
+  - {fileID: 11400000, guid: 995f7e24a9afe304d8b240f7451454df, type: 2}
+  - {fileID: 11400000, guid: ba62e0695acc00443a1f9f63c67a7044, type: 2}
   isPlayerTurn: 0
   playerHero: {fileID: 933675142}
   enemyHero: {fileID: 386863020}

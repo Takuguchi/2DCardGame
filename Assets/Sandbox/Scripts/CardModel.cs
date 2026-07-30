@@ -40,11 +40,8 @@ public class CardModel
     public bool isPlayerCard;  // プレイヤーのカードかどうか
 
     // コンストラクタ
-    public CardModel(int cardID, bool isPlayer)
+    public CardModel(CardEntity cardEntity, bool isPlayer)
     {
-        // Card1のデータを入れ物(CardEntityクラス)に渡す
-        CardEntity cardEntity = Resources.Load<CardEntity>("CardEntityList/Card" + cardID);
-
         // CardEntityのデータをCardModel(このクラス)の変数に代入
         name = cardEntity.name;
         // hp = cardEntity.hp;

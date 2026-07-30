@@ -10,27 +10,29 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0058304999a35334999acd26135d03d3, type: 3}
-  m_Name: Card15
+  m_Name: "\u7832\u7ADC\u30D0\u30EB\u30FB\u30AC\u30F3\u30CA\u30FC"
   m_EditorClassIdentifier: 
-  name: "\u592A\u967D\u795E\u9F8D\u30E9\u30A4\u30B8\u30F3\u30B0\u30FB\u30A2\u30DD\u30ED\u30C9\u30E9\u30B4\u30F3"
+  name: "\u7832\u7ADC\u30D0\u30EB\u30FB\u30AC\u30F3\u30CA\u30FC"
   color: 1
-  cost: 7
+  cost: 4
   reductionSymbols:
   - color: 1
-    count: 3
+    count: 2
   symbols:
   - color: 1
     count: 1
-  icon: {fileID: 21300000, guid: d80fc65830dfdb04db72947712b66382, type: 3}
-  cardType: 1
+  icon: {fileID: 21300000, guid: 9b028ec048a3c894d8c3f796d57ae70c, type: 3}
+  cardType: 2
   ability: 0
   gainedBp: 0
   magic: 0
   magicDrawCount: 2
   magicBp: 4000
   coreLv1: 1
-  bpLv1: 6000
+  bpLv1: 2000
   coreLv2: 3
-  bpLv2: 9000
-  coreLv3: 5
-  bpLv3: 11000
+  bpLv2: 3000
+  coreLv3: 0
+  bpLv3: 0
+  bpBraved: 2000
+  braveConditionCost: 4

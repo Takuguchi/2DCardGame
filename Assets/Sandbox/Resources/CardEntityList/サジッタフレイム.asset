@@ -10,24 +10,26 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0058304999a35334999acd26135d03d3, type: 3}
-  m_Name: Card20
+  m_Name: "\u30B5\u30B8\u30C3\u30BF\u30D5\u30EC\u30A4\u30E0"
   m_EditorClassIdentifier: 
-  name: "\u30D6\u30EC\u30A4\u30F4\u30C9\u30ED\u30FC"
+  name: "\u30B5\u30B8\u30C3\u30BF\u30D5\u30EC\u30A4\u30E0"
   color: 1
   cost: 5
   reductionSymbols:
   - color: 1
-    count: 3
+    count: 2
+  - color: 6
+    count: 1
   symbols: []
-  icon: {fileID: 21300000, guid: 8bbd693bf8bebff4f81d4cbccd0ce97d, type: 3}
+  icon: {fileID: 21300000, guid: 737d6e85b14dc2f429a4ce7f00c151a1, type: 3}
   cardType: 4
   ability: 0
   gainedBp: 0
-  magic: 3
+  magic: 1
   magicDrawCount: 2
-  magicBp: 4000
-  coreLv1: 1
-  bpLv1: 5000
+  magicBp: 5000
+  coreLv1: 0
+  bpLv1: 0
   coreLv2: 0
   bpLv2: 0
   coreLv3: 0
