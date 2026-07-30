@@ -173,4 +173,47 @@ public class CardEntityEditor : Editor // Editorを継承してInspectorの見�
 
         serializedObject.ApplyModifiedProperties(); // Inspectorでの変更をアセットに保存
     }
+
+    // trueを返さないと、Projectウィンドウ等のサムネイル生成時にRenderStaticPreviewが呼ばれない
+    public override bool HasPreviewGUI()
+    {
+        CardEntity entity = target as CardEntity;
+        return entity != null && entity.icon != null;
+    }
+
+    // Inspector下部のプレビュー欄に、iconに設定した画像を表示する
+    public override void OnPreviewGUI(Rect r, GUIStyle background)
+    {
+        CardEntity entity = target as CardEntity;
+        if (entity == null || entity.icon == null)
+        {
+            base.OnPreviewGUI(r, background);
+            return;
+        }
+        GUI.DrawTexture(r, entity.icon.texture, ScaleMode.ScaleToFit);
+    }
+
+    // Projectウィンドウ・Hierarchy等で表示されるサムネイルアイコンを、iconに設定した画像に差し替える
+    public override Texture2D RenderStaticPreview(string assetPath, Object[] subAssets, int width, int height)
+    {
+        CardEntity entity = target as CardEntity;
+        Texture sourceTexture = entity != null && entity.icon != null ? entity.icon.texture : null;
+        if (sourceTexture == null) return null; // iconが未設定ならデフォルトのアイコン表示のままにする
+
+        // Graphics.Blit + RenderTexture.ReadPixelsで焼き込むため、テクスチャのRead/Write設定を変更しなくてもよい
+        RenderTexture renderTexture = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32);
+        RenderTexture previousActive = RenderTexture.active;
+
+        Graphics.Blit(sourceTexture, renderTexture);
+        RenderTexture.active = renderTexture;
+
+        Texture2D preview = new Texture2D(width, height, TextureFormat.RGBA32, false);
+        preview.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+        preview.Apply();
+
+        RenderTexture.active = previousActive;
+        RenderTexture.ReleaseTemporary(renderTexture);
+
+        return preview;
+    }
 }
