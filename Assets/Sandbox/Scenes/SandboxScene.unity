@@ -2451,6 +2451,8 @@ MonoBehaviour:
   enemyTrashTransform: {fileID: 132229941}
   playerLifeTransform: {fileID: 1447455157}
   enemyLifeTransform: {fileID: 701360166}
+  playerDeckTransform: {fileID: 211793404}
+  enemyDeckTransform: {fileID: 1863149330}
   cardPrefab: {fileID: 68245383862483898, guid: 3d6235cefc847a740bafdd14a99c4cc6, type: 3}
   corePrefab: {fileID: -1587533959833757984, guid: c7816bd785ad4b543ad71097898c3e16, type: 3}
   isPlayerTurn: 0
