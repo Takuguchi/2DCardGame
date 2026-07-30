@@ -143,6 +143,32 @@ public class CardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
         GetComponent<CanvasGroup>().blocksRaycasts = true;
     }
 
+    // デッキから手札に配られたカードを、デッキの位置から手札の位置へ移動させるメソッド
+    public IEnumerator MoveFromDeck(Vector3 deckPosition)
+    {
+        defaultParent = transform.parent; // 生成時の親（手札）を保存する
+
+        // レイアウト確定待ちの間、手札の位置に一瞬映ってしまわないように非表示にする
+        CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
+        if (canvasGroup != null) canvasGroup.alpha = 0f;
+
+        yield return new WaitForEndOfFrame(); // HorizontalLayoutGroupによる手札内の配置確定を待つ
+
+        Vector3 handPosition = transform.position; // 配置確定後の手札内の位置を保存する
+
+        // 一度親をCanvasに変更する（レイアウトの影響を受けないようにするため）
+        transform.SetParent(defaultParent.parent, true);
+        transform.position = deckPosition; // デッキの位置から開始する
+
+        if (canvasGroup != null) canvasGroup.alpha = 1f; // デッキの位置から再表示する
+
+        // DOTweenでカードをデッキの位置から手札の位置へ移動
+        transform.DOMove(handPosition, 0.25f);
+        yield return new WaitForSeconds(0.25f);
+
+        transform.SetParent(defaultParent);
+    }
+
     public IEnumerator MoveToField(Transform field)
     {
         // 一度親をCanvasに変更する

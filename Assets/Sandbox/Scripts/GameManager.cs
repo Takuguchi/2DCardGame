@@ -18,7 +18,9 @@ public class GameManager : MonoBehaviour
                                playerTrashTransform,    // プレイヤーのトラッシュのTransformを取得
                                enemyTrashTransform,     // 敵のトラッシュのTransformを取得
                                playerLifeTransform,     // プレイヤーのライフのTransformを取得
-                               enemyLifeTransform;      // 敵のライフのTransformを取得
+                               enemyLifeTransform,      // 敵のライフのTransformを取得
+                               playerDeckTransform,     // プレイヤーのデッキのTransformを取得
+                               enemyDeckTransform;      // 敵のデッキのTransformを取得
 
     [SerializeField] CardController cardPrefab; // カードのPrefabをCardController型として取得
     [SerializeField] CoreController corePrefab; // コアのPrefabをCoreController型として取得
@@ -70,8 +72,8 @@ public class GameManager : MonoBehaviour
     void StartGame()
     {
         uiManager.HideResultPanel(); // ゲーム開始時はリザルト画面を非表示にする
-        player.Init(new List<int>() { 14, 3, 16, 0, 18, 19, 16, 19, 20 }); // プレイヤーのデッキを初期化する
-        enemy.Init(new List<int>() { 2, 3, 17, 0, 4, 5, 9, 5, 8, 6, 4, 5, 4 }); // 敵のデッキを初期化する
+        player.Init(new List<int>() { 10, 3, 16, 0, 18, 19, 16, 19, 20 }); // プレイヤーのデッキを初期化する
+        enemy.Init(new List<int>() { 10, 3, 17, 0, 4, 5, 9, 5, 8, 6, 4, 5, 4 }); // 敵のデッキを初期化する
         uiManager.ShowHeroHP(player.heroHp, enemy.heroHp); // HeroのHP表示を変更するメソッドを呼び出す
         uiManager.ShowManaCost(player.manaCost, enemy.manaCost); // マナコストの表示を変更するメソッドを呼び出す
         turnCount = 1;
@@ -161,14 +163,19 @@ public class GameManager : MonoBehaviour
     {
         // カードのPrefabをCardController型としてインスタンス(生成)・親要素に任意のTransformを指定
         CardController card = Instantiate(cardPrefab, hand, false);
-        if (hand.name == "PlayerHand")
+        Transform deck;
+        if (hand == playerHandTransform)
         {
-            card.Init(cardID, true);    // CardControllerクラスのInit()メソッドを呼び出す(isPlayerはtrueで渡す)        
+            card.Init(cardID, true);    // CardControllerクラスのInit()メソッドを呼び出す(isPlayerはtrueで渡す)
+            deck = playerDeckTransform;
         }
         else
         {
             card.Init(cardID, false);    // CardControllerクラスのInit()メソッドを呼び出す(isPlayerはfalseで渡す)
+            deck = enemyDeckTransform;
         }
+        // GameManagerではなくcard自身にコルーチンを紐付ける（TurnCalc()内のStopAllCoroutines()で移動が中断されないようにするため）
+        card.StartCoroutine(card.movement.MoveFromDeck(deck.position));
     }
 
     // ゲーム開始時にリザーブとライフのコアを初期化するメソッド
