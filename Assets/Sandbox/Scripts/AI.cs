@@ -38,6 +38,8 @@ public class AI : MonoBehaviour
                 && (!card.IsSpell || (card.IsSpell && card.CanUseSpell())) );
             // 召喚/使用するカードを選択
             CardController selectCard = selectableHandCardList[0]; // とりあえずカードリストの一番最初のカードを選択
+            // カードを表にする
+            selectCard.Show();
             // スペルカードなら使用する
             if (selectCard.IsSpell)
             {

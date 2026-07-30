@@ -30,7 +30,7 @@ public class CardController : MonoBehaviour
     public void Init(int cardID, bool isPlayer)
     {
         model = new CardModel(cardID, isPlayer); // カードのデータを生成
-        view.Show(model); // CardViewクラス内の、データをカードの見た目に反映するShow()メソッドにカードのデータを渡す
+        view.SetCard(model); // CardViewクラス内の、データをカードの見た目に反映するShow()メソッドにカードのデータを渡す
     }
 
     // カードの攻撃処理
@@ -45,6 +45,11 @@ public class CardController : MonoBehaviour
     {
         model.Heal(friendCard);
         friendCard.RefreshView();
+    }
+
+    public void Show()
+    {
+        view.Show();
     }
 
     // カードの表示を更新するメソッド
