@@ -112,6 +112,7 @@ public class CardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
         {
             card.ChangeIsRefreshed(false);
             GameManager.instance.isDuringAttack = true;
+            card.WhenAttack();
             StartCoroutine(GameManager.instance.enemyAI.PlayerTurn(card));
         }
     }

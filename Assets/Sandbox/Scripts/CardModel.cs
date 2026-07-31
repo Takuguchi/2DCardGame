@@ -72,7 +72,7 @@ public class CardModel
         braveConditionCost = cardEntity.braveConditionCost;
     }
 
-    void DestroyWithOrFewer(int bp)
+    public void DestroyWithOrFewer(int bp)
     {
         currentBp = GetBp();
         Debug.Log(name + ": " + currentBp);

@@ -212,6 +212,34 @@ public class CardController : MonoBehaviour
         Destroy(this.gameObject); //スペルカード使用後は削除(本当はトラッシュに移動してから非表示にしたい)
     }
 
+    public void WhenAttack()
+    {
+        
+        CardController braveCard = braveTransform.GetComponentInChildren<CardController>();
+        CardController[] opponentFieldCards = gameManager.GetOpponentFieldCards(model.isPlayerCard);
+        if (braveCard != null)
+        {
+            if (braveCard.model.name == "砲竜バル・ガンナー")
+            {
+                CardController[] canDestroyCards = Array.FindAll(opponentFieldCards, card => card.model.currentBp <= 4000);
+                if (model.isPlayerCard)
+                {
+                    gameManager.GiveCardToHand(gameManager.player.deck, gameManager.playerHandTransform);
+                }
+                else
+                {
+                    gameManager.GiveCardToHand(gameManager.enemy.deck, gameManager.enemyHandTransform);                  
+                }
+                // BP4000以下の相手のスピリットを1体破壊
+                if (canDestroyCards.Length > 0)
+                {
+                    canDestroyCards[0].model.DestroyWithOrFewer(4000);
+                    canDestroyCards[0].CheckAlive();
+                }
+            }
+        }
+    }
+    
     public void WhenReduceOpponentLife()
     {
         if (model.name == "ヴェロキ・ハルパー" && model.currentLv >= 2)
