@@ -7,6 +7,8 @@
 ## デモ
 
 ▶ [デモ動画を見る](https://youtu.be/QrpOB4RSNoU)
+<img width="1280" height="720" alt="バトルスピリッツ デジタル版 - 00 03" src="https://github.com/user-attachments/assets/66fdd6a0-322a-4440-b575-4c2683e226d5" />
+
 
 ## 主な機能
 
