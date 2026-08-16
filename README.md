@@ -8,8 +8,9 @@
 
 ## デモ
 
-▶ [デモ動画を見る](https://youtu.be/QrpOB4RSNoU)
-<img width="1280" height="720" alt="バトルスピリッツ デジタル版 - 00 03" src="https://github.com/user-attachments/assets/66fdd6a0-322a-4440-b575-4c2683e226d5" />
+▶ [デモ動画を見る](https://youtu.be/UmZAPtDPdQ0)
+<img width="1920" height="1080" alt="2Dカードゲーム - 00 18" src="https://github.com/user-attachments/assets/d7163edb-57a7-43b8-8a67-e0dbdbf0ec1e" />
+
 
 
 ## 主な機能
