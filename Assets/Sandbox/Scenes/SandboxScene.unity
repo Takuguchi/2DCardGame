@@ -2458,14 +2458,14 @@ MonoBehaviour:
   playerDeckList:
   - {fileID: 11400000, guid: 18bcb0d76e8e42f44b53def940a0f7be, type: 2}
   - {fileID: 11400000, guid: 4e26465419cf3714db2242adc4e7e1fe, type: 2}
-  - {fileID: 11400000, guid: 41256d84ec60419429d29528e330821c, type: 2}
-  - {fileID: 11400000, guid: e58cde320b96f4f4b8082b2cb9682854, type: 2}
-  - {fileID: 11400000, guid: 41256d84ec60419429d29528e330821c, type: 2}
-  - {fileID: 11400000, guid: db8093d8872551f4b9ef2a54d7f2d861, type: 2}
-  - {fileID: 11400000, guid: b92d09deae03b9445a1be983336d47cc, type: 2}
+  - {fileID: 11400000, guid: 48dd21a7b195f2e4b8bd7b8c8ebf0ba7, type: 2}
+  - {fileID: 11400000, guid: b4410bcb704e50e40995dff47b9b17d3, type: 2}
+  - {fileID: 11400000, guid: a96bdd8c3188b0b4dafc7a94d8c77aab, type: 2}
+  - {fileID: 11400000, guid: 5ff8490dfc91a64428f005978bd2813d, type: 2}
+  - {fileID: 11400000, guid: 421e22dac2c64d740b13f28ee03b6ba2, type: 2}
+  - {fileID: 11400000, guid: 11ce5864a32cea34d8b7978bd2af2601, type: 2}
   - {fileID: 11400000, guid: 59886d4f7945ab248b7a57a64ca4c1fb, type: 2}
   - {fileID: 11400000, guid: ddc3ff0f468c19642ad1f66d8d5a2599, type: 2}
-  - {fileID: 11400000, guid: 11ce5864a32cea34d8b7978bd2af2601, type: 2}
   - {fileID: 11400000, guid: b92d09deae03b9445a1be983336d47cc, type: 2}
   - {fileID: 11400000, guid: 2fab6ca717fe421409f888cc8945870b, type: 2}
   enemyDeckList:

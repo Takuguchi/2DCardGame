@@ -28,7 +28,7 @@ public class CardController : MonoBehaviour
     public void Init(CardEntity cardEntity, bool isPlayer)
     {
         model = new CardModel(cardEntity, isPlayer); // カードのデータを生成
-        view.Show(model); // CardViewクラス内の、データをカードの見た目に反映するShow()メソッドにカードのデータを渡す
+        view.SetCard(model); // CardViewクラス内の、データをカードの見た目に反映するSetCard()メソッドにカードのデータを渡す
     }
 
     // カードの攻撃処理
@@ -36,6 +36,11 @@ public class CardController : MonoBehaviour
     {
         model.Attack(enemyCard); // 自分のカードの攻撃処理を呼び出す
         SetCanAttack(false);     // 攻撃したカードは攻撃できないようにする
+    }
+
+    public void Show()
+    {
+        view.Show(); // カードを表にする
     }
 
     // カードを攻撃可能にするメソッド

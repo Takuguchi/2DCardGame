@@ -14,17 +14,19 @@ public class CardView : MonoBehaviour
     public Image iconImage; // カードの絵柄を表示するImage
     [SerializeField] GameObject selectablePanel; // カードが選択可能かどうかを表示するパネル
     [SerializeField] GameObject shieldPanel; // カードがシールドを持っているかどうかを表示するパネル
+    [SerializeField] GameObject maskPanel;
 
     // public Transform iconTransform => iconImage.transform; // コアの移動先として使うIconのTransform（GridLayoutGroupで自動整列）
 
     // CardModel型のデータを取得してカードの見た目に反映するメソッド
-    public void Show(CardModel cardModel)
+    public void SetCard(CardModel cardModel)
     {
         nameText.text = cardModel.name; // カードの名前を表示するTextにカードの名前を代入
         // hpText.text = cardModel.hp.ToString(); // カードのHPを表示するTextにカードのHPを代入
         // atText.text = cardModel.at.ToString(); // カードの攻撃力を表示するTextにカードの攻撃力を代入
         costText.text = cardModel.cost.ToString(); // カードのコストを表示するTextにカードのコストを代入
         iconImage.sprite = cardModel.icon; // カードの絵柄を表示するImageにカードの絵柄を代入
+        maskPanel.SetActive(!cardModel.isPlayerCard); // プレイヤーのカードならマスクパネルを非表示にする、敵のカードならマスクパネルを表示する
         // カードのアビリティがシールドなら、シールドパネルを表示する
         if (cardModel.ability == ABILITY.SHIELD)
         {
@@ -34,6 +36,11 @@ public class CardView : MonoBehaviour
         {
             shieldPanel.SetActive(false); // シールドパネルを非表示にする
         }
+    }
+
+    public void Show()
+    {
+        maskPanel.SetActive(false); // カードを表にする
     }
 
     // カードのデータが変化したときに呼ばれるメソッド

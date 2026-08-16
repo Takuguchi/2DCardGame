@@ -52,7 +52,8 @@ public class AI : MonoBehaviour
 
             // 場に出すカードを選択
             CardController enemyCard = selectableHandCardList[0]; // とりあえずカードリストの一番最初のカードを選択
-
+            // カードを表にする
+            enemyCard.Show();
             if (enemyCard.model.cardType == CARDTYPE.MAGIC)
             {
                 StartCoroutine(CastMagicOf(enemyCard));
@@ -230,7 +231,9 @@ public class AI : MonoBehaviour
 
                 // フラッシュタイミングで使用できるカードを選択
                 CardController magicCard = selectableHandCardList[0]; // とりあえずカードリストの一番最初のカードを選択
-
+                // カードを表にする
+                magicCard.Show();
+                
                 if (magicCard.model.cardType == CARDTYPE.MAGIC)
                 {
                     StartCoroutine(CastMagicOf(magicCard));
