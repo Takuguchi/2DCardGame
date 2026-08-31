@@ -2456,20 +2456,20 @@ MonoBehaviour:
   cardPrefab: {fileID: 68245383862483898, guid: 3d6235cefc847a740bafdd14a99c4cc6, type: 3}
   corePrefab: {fileID: -1587533959833757984, guid: c7816bd785ad4b543ad71097898c3e16, type: 3}
   playerDeckList:
-  - {fileID: 11400000, guid: 18bcb0d76e8e42f44b53def940a0f7be, type: 2}
-  - {fileID: 11400000, guid: 4e26465419cf3714db2242adc4e7e1fe, type: 2}
-  - {fileID: 11400000, guid: 48dd21a7b195f2e4b8bd7b8c8ebf0ba7, type: 2}
   - {fileID: 11400000, guid: b4410bcb704e50e40995dff47b9b17d3, type: 2}
-  - {fileID: 11400000, guid: a96bdd8c3188b0b4dafc7a94d8c77aab, type: 2}
-  - {fileID: 11400000, guid: 5ff8490dfc91a64428f005978bd2813d, type: 2}
+  - {fileID: 11400000, guid: 4e26465419cf3714db2242adc4e7e1fe, type: 2}
+  - {fileID: 11400000, guid: 9f1095130d84fa24f88239a14fb142af, type: 2}
+  - {fileID: 11400000, guid: 48dd21a7b195f2e4b8bd7b8c8ebf0ba7, type: 2}
   - {fileID: 11400000, guid: 421e22dac2c64d740b13f28ee03b6ba2, type: 2}
-  - {fileID: 11400000, guid: 11ce5864a32cea34d8b7978bd2af2601, type: 2}
+  - {fileID: 11400000, guid: db8093d8872551f4b9ef2a54d7f2d861, type: 2}
+  - {fileID: 11400000, guid: 4872641ccb1487945b687ed7fae9c9dc, type: 2}
   - {fileID: 11400000, guid: 59886d4f7945ab248b7a57a64ca4c1fb, type: 2}
+  - {fileID: 11400000, guid: 11ce5864a32cea34d8b7978bd2af2601, type: 2}
   - {fileID: 11400000, guid: ddc3ff0f468c19642ad1f66d8d5a2599, type: 2}
   - {fileID: 11400000, guid: b92d09deae03b9445a1be983336d47cc, type: 2}
   - {fileID: 11400000, guid: 2fab6ca717fe421409f888cc8945870b, type: 2}
   enemyDeckList:
-  - {fileID: 11400000, guid: ba62e0695acc00443a1f9f63c67a7044, type: 2}
+  - {fileID: 11400000, guid: 2be51437b69ba2a43b585fa0188e00a2, type: 2}
   - {fileID: 11400000, guid: 995f7e24a9afe304d8b240f7451454df, type: 2}
   - {fileID: 11400000, guid: 8533f0303f1a2dd4a9cdad73254d88ac, type: 2}
   - {fileID: 11400000, guid: 4c333988376dd7e43ae41b011ca46e16, type: 2}

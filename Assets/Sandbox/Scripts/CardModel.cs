@@ -22,6 +22,7 @@ public class CardModel
     public int gainedBp; // 加算BP
     public MAGIC magic;
     public int magicDrawCount; // MAGIC.DRAW時のドロー枚数
+    public int magicOpenCount; // MAGIC.OPEN時のオープン枚数
     public int magicBp; // 破壊対象BP
 
     public int coreLv1; // レベル1の所要コア
@@ -57,6 +58,7 @@ public class CardModel
         gainedBp = cardEntity.gainedBp;
         magic = cardEntity.magic;
         magicDrawCount = cardEntity.magicDrawCount;
+        magicOpenCount = cardEntity.magicOpenCount;
         magicBp = cardEntity.magicBp;
         isAlive = true; // カードは最初は生きている状態
         isPlayerCard = isPlayer; // 引数のisPlayerを代入

@@ -172,8 +172,8 @@ public class CardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
 
     public IEnumerator MoveToField(Transform field)
     {
-        // 一度親をCanvasに変更する
-        transform.SetParent(defaultParent.parent, false);
+        // 一度親をCanvasに変更する（ワールド座標を維持したまま変更し、位置が飛ばないようにする）
+        transform.SetParent(defaultParent.parent, true);
         // DOTweenでカードをフィールドに移動
         transform.DOMove(field.position, 0.25f);
         yield return new WaitForSeconds(0.25f); 

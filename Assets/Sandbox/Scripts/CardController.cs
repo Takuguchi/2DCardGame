@@ -156,6 +156,8 @@ public class CardController : MonoBehaviour
                 return gameManager.step == GameManager.STEP.MAIN;
             case MAGIC.DESTROY_ALL_CARDS:
                 return friendFieldCards.Length > 0 || opponentFieldCards.Length > 0;
+            case MAGIC.OPEN:
+                return gameManager.step == GameManager.STEP.MAIN;
             case MAGIC.NONE:
                 return false; // マジックカードでなかった場合は使用不可
         }
@@ -190,7 +192,7 @@ public class CardController : MonoBehaviour
             case MAGIC.DRAW:
                 for (int i = 0; i < model.magicDrawCount; i++)
                 {
-                    if (this.model.isPlayerCard) gameManager.GiveCardToHand(gameManager.player.deck, gameManager.playerHandTransform);
+                    if (model.isPlayerCard) gameManager.GiveCardToHand(gameManager.player.deck, gameManager.playerHandTransform);
                     else gameManager.GiveCardToHand(gameManager.enemy.deck, gameManager.enemyHandTransform);
                 }
                 break;
@@ -210,10 +212,66 @@ public class CardController : MonoBehaviour
                     friendFieldCard.CheckAlive();
                 }
                 break;
+            case MAGIC.OPEN:
+                // オープン演出の完了待ちと、その後の判定・移動が必要なためコルーチンで処理する
+                // コスト支払いと自身の破棄もコルーチンの最後で行う
+                StartCoroutine(OpenMagicRoutine());
+                return;
             case MAGIC.NONE:
                 return;
         }
         gameManager.ReduceManaCost(this); // コストの支払い
+        Destroy(this.gameObject); //スペルカード使用後は削除(本当はトラッシュに移動してから非表示にしたい)
+    }
+
+    // MAGIC.OPEN専用の処理：デッキの上からカードをオープンし、演出が終わってから条件判定を行うコルーチン
+    private IEnumerator OpenMagicRoutine()
+    {
+        gameManager.ReduceManaCost(this); // コストの支払い（使用した瞬間に支払う。他のマジックと同じタイミング）
+
+        CardController[] opendCards = new CardController[model.magicOpenCount];
+        List<Coroutine> openCoroutines = new List<Coroutine>();
+
+        for (int i = 0; i < model.magicOpenCount; i++)
+        {
+            Coroutine openCoroutine;
+            CardController opendCard = model.isPlayerCard
+                ? gameManager.OpenCard(gameManager.player.deck, gameManager.playerFieldTransform, out openCoroutine)
+                : gameManager.OpenCard(gameManager.enemy.deck, gameManager.enemyFieldTransform, out openCoroutine);
+            opendCards[i] = opendCard;
+            if (openCoroutine != null) openCoroutines.Add(openCoroutine);
+        }
+
+        // オープン演出（デッキ→フィールドへの移動）が全て終わるまで待つ
+        foreach (Coroutine openCoroutine in openCoroutines)
+        {
+            yield return openCoroutine;
+        }
+
+        yield return new WaitForSeconds(1.5f); // オープンしたカードを少し見せる
+
+        // 条件を満たしたカードは手札へ、それ以外は破壊する
+        List<Coroutine> resultCoroutines = new List<Coroutine>();
+        foreach (CardController opendCard in opendCards)
+        {
+            if (opendCard == null) continue; // デッキにカードがない場合は処理をスキップする
+            if (opendCard.model.name == "光龍騎神サジット・アポロドラゴン" || opendCard.model.name == "輝竜シャイン・ブレイザー")
+            {
+                Transform handTransform = opendCard.model.isPlayerCard ? gameManager.playerHandTransform : gameManager.enemyHandTransform;
+                resultCoroutines.Add(opendCard.StartCoroutine(opendCard.movement.MoveToField(handTransform)));
+            }
+            else
+            {
+                Destroy(opendCard.gameObject); // 条件を満たさなかったカードは破壊する
+            }
+        }
+
+        // 手札への移動が全て終わるまで待つ
+        foreach (Coroutine resultCoroutine in resultCoroutines)
+        {
+            yield return resultCoroutine;
+        }
+
         Destroy(this.gameObject); //スペルカード使用後は削除(本当はトラッシュに移動してから非表示にしたい)
     }
 

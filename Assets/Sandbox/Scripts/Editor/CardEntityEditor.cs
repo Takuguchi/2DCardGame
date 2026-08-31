@@ -6,6 +6,8 @@ using UnityEngine; // GUIContentなど、UI表示用のAPIを使うため
 public class CardEntityEditor : Editor // Editorを継承してInspectorの見た目を上書きする
 {
     SerializedProperty magicDrawCountProp; // magicDrawCountフィールドへの参照を保持しておく変数
+    SerializedProperty magicOpenCountProp; // magicOpenCountフィールドへの参照を保持しておく変数
+
     SerializedProperty magicBpProp; // magicBpフィールドへの参照を保持しておく変数
     SerializedProperty coreLv1Prop; // coreLv1フィールドへの参照を保持しておく変数
     SerializedProperty bpLv1Prop;   // bpLv1フィールドへの参照を保持しておく変数
@@ -22,6 +24,7 @@ public class CardEntityEditor : Editor // Editorを継承してInspectorの見�
     void OnEnable() // このEditorがInspectorに表示されるたびに呼ばれる初期化処理
     {
         magicDrawCountProp = serializedObject.FindProperty("magicDrawCount"); // 対象アセットからmagicDrawCountプロパティを取得
+        magicOpenCountProp = serializedObject.FindProperty("magicOpenCount"); // 対象アセットからmagicOpenCountプロパティを取得
         magicBpProp = serializedObject.FindProperty("magicBp"); // 対象アセットからmagicBpプロパティを取得
         coreLv1Prop = serializedObject.FindProperty("coreLv1"); // 対象アセットからcoreLv1プロパティを取得
         bpLv1Prop = serializedObject.FindProperty("bpLv1");     // 対象アセットからbpLv1プロパティを取得
@@ -101,8 +104,8 @@ public class CardEntityEditor : Editor // Editorを継承してInspectorの見�
         {
             enterChildren = false; // 2回目以降は同じ階層の兄弟プロパティだけを辿る
 
-            // magicDrawCount/magicBp/レベル別ステータス/シンボル関連フィールドは他のプロパティの直後に条件付きで表示するので、通常の並びではスキップ
-            if (prop.name == "m_Script" || prop.name == "magicDrawCount" || prop.name == "magicBp"
+            // magicDrawCount/magicOpenCount/magicBp/レベル別ステータス/シンボル関連フィールドは他のプロパティの直後に条件付きで表示するので、通常の並びではスキップ
+            if (prop.name == "m_Script" || prop.name == "magicDrawCount" || prop.name == "magicOpenCount" || prop.name == "magicBp"
                 || prop.name == "coreLv1" || prop.name == "bpLv1"
                 || prop.name == "coreLv2" || prop.name == "bpLv2"
                 || prop.name == "coreLv3" || prop.name == "bpLv3"
@@ -133,6 +136,12 @@ public class CardEntityEditor : Editor // Editorを継承してInspectorの見�
                 {
                     EditorGUI.indentLevel++; // 関連フィールドだとわかるように一段インデントする
                     EditorGUILayout.PropertyField(magicBpProp, new GUIContent("破壊対象BP")); // 破壊対象BPの入力欄を表示
+                    EditorGUI.indentLevel--; // インデントを元に戻す
+                }
+                else if (magicValue == MAGIC.OPEN)
+                {
+                    EditorGUI.indentLevel++; // 関連フィールドだとわかるように一段インデントする
+                    EditorGUILayout.PropertyField(magicOpenCountProp, new GUIContent("オープン枚数")); // オープン枚数の入力欄を表示
                     EditorGUI.indentLevel--; // インデントを元に戻す
                 }
             }

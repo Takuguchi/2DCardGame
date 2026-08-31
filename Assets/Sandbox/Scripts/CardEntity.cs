@@ -23,6 +23,7 @@ public class CardEntity : ScriptableObject
     public int gainedBp; // 加算BP
     public MAGIC magic;
     public int magicDrawCount = 2; // MAGIC.DRAW時のドロー枚数
+    public int magicOpenCount = 2; // MAGIC.OPEN時のオープン枚数
     public int magicBp; // 破壊対象BP
 
     public int coreLv1; // レベル1の所要コア
@@ -59,7 +60,8 @@ public enum MAGIC
     DESTROY_ENEMY_CARD,
     REFRESH_FRIEND_CARDS,
     DRAW,
-    DESTROY_ALL_CARDS
+    DESTROY_ALL_CARDS,
+    OPEN
 }
 
 public enum COLOR

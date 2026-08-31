@@ -177,6 +177,34 @@ public class GameManager : MonoBehaviour
         card.StartCoroutine(card.movement.MoveFromDeck(deckTransform.position));
     }
 
+    public CardController OpenCard(List<CardEntity> deck, Transform field, out Coroutine moveCoroutine)
+    {
+        moveCoroutine = null;
+        if (deck.Count == 0) // デッキにカードがない場合
+        {
+            return null; // 何も処理しないで終わる
+        }
+        CardEntity cardEntity = deck[0]; // デッキの一番上のカードデータを取得
+        deck.RemoveAt(0); // デッキの一番上のカードデータをデッキから削除
+
+        CardController card = Instantiate(cardPrefab, field, false);
+        Transform deckTransform;
+        if (field == playerFieldTransform)
+        {
+            card.Init(cardEntity, true);    // CardControllerクラスのInit()メソッドを呼び出す(isPlayerはtrueで渡す)
+            deckTransform = playerDeckTransform;
+        }
+        else
+        {
+            card.Init(cardEntity, false);    // CardControllerクラスのInit()メソッドを呼び出す(isPlayerはfalseで渡す)
+            deckTransform = enemyDeckTransform;
+        }
+        // 呼び出し元でオープン演出の完了を待てるように、開始したコルーチンを返す
+        moveCoroutine = card.StartCoroutine(card.movement.MoveFromDeck(deckTransform.position));
+        Debug.Log(card.model.name + "をオープン！");
+        return card;
+    }
+
     // ゲーム開始時にリザーブとライフのコアを初期化するメソッド
     void SettingInitCore()
     {
@@ -810,7 +838,10 @@ public class GameManager : MonoBehaviour
             CoreController[] cores = friendFieldCards[i].GetComponentsInChildren<CoreController>(); // カードに乗っているコアを取得
             if (cores.Length == 0)
             {
-                Destroy(friendFieldCards[i].gameObject);
+                if (card.model.magic != MAGIC.OPEN)
+                {
+                    Destroy(friendFieldCards[i].gameObject);
+                }
             }
         }
     }
